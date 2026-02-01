@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class HigtLightButton1 : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class HigtLightButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private Image imgFone;
 
