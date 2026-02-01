@@ -25,14 +25,25 @@ public class EditorBoard : MonoBehaviour
     {
         int i, j;
         Vector3 pos = new Vector3(0, 0.2f, 0);
-        for (i = 0; i < _sizeBoard; i++)
+        //for (i = 0; i < _sizeBoard; i++)
+        //{
+        //    pos.z = _ofsY - i - 0.5f;
+        //    for (j = 0; j < _sizeBoard; j++)
+        //    {
+        //        pos.x = _ofsX + j + 0.5f;
+        //        GameObject ceil = Instantiate(_ceilPrefab, pos, Quaternion.identity);
+        //        ceil.transform.parent = transform;
+        //    }
+        //}
+        for (i = 0; i < _sizeBoard; i += 2)
         {
-            pos.z = _ofsY - i - 0.5f;
-            for (j = 0; j < _sizeBoard; j++)
+            pos.z = _ofsY - i - 1f;
+            for (j = 0; j < _sizeBoard; j += 2)
             {
-                pos.x = _ofsX + j + 0.5f;
+                pos.x = _ofsX + j + 1f;
                 GameObject ceil = Instantiate(_ceilPrefab, pos, Quaternion.identity);
                 ceil.transform.parent = transform;
+                ceil.transform.localScale = new Vector3(2.75f, 1f, 2.75f);
             }
         }
         //for (i = 0; i < _sizeBoard; i += 7)
@@ -46,5 +57,22 @@ public class EditorBoard : MonoBehaviour
         //        ceil.transform.localScale = new Vector3(9.7f, 1f, 9.7f);
         //    }
         //}
+        //_sizeBoard = 50;
+        //for (i = 0; i < _sizeBoard; i++)
+        //{
+        //    pos.z = _ofsY - 1.4f * i - 0.7f;
+        //    for (j = 0; j < _sizeBoard; j++)
+        //    {
+        //        pos.x = _ofsX + 1.4f * j + 0.7f;
+        //        GameObject ceil = Instantiate(_ceilPrefab, pos, Quaternion.identity);
+        //        ceil.transform.parent = transform;
+        //        ceil.transform.localScale = new Vector3(1.9f, 1f, 1.9f);
+        //    }
+        //}
+    }
+
+    public void CreateLevel()
+    {
+
     }
 }

@@ -25,13 +25,13 @@ public class HigtLightButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         // Наведение курсора: показываем imgFone
         imgFone.enabled = true;
-        print($"Enter to {gameObject.name}");
+        //print($"Enter to {gameObject.name}");
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         // Выход курсора: скрываем imgFone
         imgFone.enabled = false;
-        print($"Exit from {gameObject.name}");
+        //print($"Exit from {gameObject.name}");
     }
 }
