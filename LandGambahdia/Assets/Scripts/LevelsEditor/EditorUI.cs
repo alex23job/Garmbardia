@@ -6,6 +6,10 @@ using UnityEngine.SceneManagement;
 
 public class EditorUI : MonoBehaviour
 {
+    // Делегат для уведомления о смене уровня
+    public delegate void LevelChangedEventHandler(LevelShema level);
+    public event LevelChangedEventHandler OnLevelChanged;
+
     [SerializeField] private Button[] tailButtons;
     [SerializeField] private CameraControl _cameraControl;
 
@@ -15,6 +19,9 @@ public class EditorUI : MonoBehaviour
     [SerializeField] private InputField[] _conditions;
     [SerializeField] private InputField[] _bonuses;
     [SerializeField] private Toggle[] _togleSZs;
+
+    [SerializeField] private GameObject _msgPanel;
+    [SerializeField] private Text _msgText;
  
     private Color _baseColor = new Color(0.7f, 1f, 0.9f, 1f), _selectColor = new Color(1f, 0.9f, 0.7f, 1f);
 
@@ -188,6 +195,8 @@ public class EditorUI : MonoBehaviour
             return;
         }
         _createPanel.SetActive(false);
+        // Уровень создан, надо как-то сообщить в EditorBoard о перерисовке уровня
+        OnLevelChanged?.Invoke(_curLevel); // Уведомляем подписчиков
     }
 
     public void ViewCreatePanel()
@@ -198,7 +207,8 @@ public class EditorUI : MonoBehaviour
 
     private void ViewInputError(string err)
     {
-
+        _msgText.text = err;
+        _msgPanel.SetActive(true);
     }
 
     public void SaveLevels()

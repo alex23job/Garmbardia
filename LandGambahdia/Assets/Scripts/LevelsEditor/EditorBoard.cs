@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class EditorBoard : MonoBehaviour
@@ -8,11 +10,18 @@ public class EditorBoard : MonoBehaviour
     [SerializeField] private float _ofsX;
     [SerializeField] private float _ofsY;
     [SerializeField] private int _sizeBoard;
+    [SerializeField] private EditorUI _editorUI;
+
+    private LevelShema _levelShema = null;
+    private float _sizeMult = 1.0f;
 
     // Start is called before the first frame update
     void Start()
     {
-        CreateGrid();
+        // Подписываемся на событие смены уровня
+        _editorUI.OnLevelChanged += ViewCurrentLevel;
+
+        //CreateGrid();
     }
 
     // Update is called once per frame
@@ -21,29 +30,50 @@ public class EditorBoard : MonoBehaviour
         
     }
 
+    private void OnDisable()
+    {
+        _editorUI.OnLevelChanged -= ViewCurrentLevel;
+    }
+
+    private void ViewCurrentLevel(LevelShema level)
+    {
+        if (level != null)
+        {
+            _levelShema = level;
+            CreateGrid();
+        }
+    }
+
     private void CreateGrid()
     {
         int i, j;
         Vector3 pos = new Vector3(0, 0.2f, 0);
-        //for (i = 0; i < _sizeBoard; i++)
-        //{
-        //    pos.z = _ofsY - i - 0.5f;
-        //    for (j = 0; j < _sizeBoard; j++)
-        //    {
-        //        pos.x = _ofsX + j + 0.5f;
-        //        GameObject ceil = Instantiate(_ceilPrefab, pos, Quaternion.identity);
-        //        ceil.transform.parent = transform;
-        //    }
-        //}
-        for (i = 0; i < _sizeBoard; i += 2)
-        {
-            pos.z = _ofsY - i - 1f;
-            for (j = 0; j < _sizeBoard; j += 2)
+        if (_levelShema.BoardSize == 70)
+        {   //  70 x 70
+            for (i = 0; i < _sizeBoard; i++)
             {
-                pos.x = _ofsX + j + 1f;
-                GameObject ceil = Instantiate(_ceilPrefab, pos, Quaternion.identity);
-                ceil.transform.parent = transform;
-                ceil.transform.localScale = new Vector3(2.75f, 1f, 2.75f);
+                pos.z = _ofsY - i - 0.5f;
+                for (j = 0; j < _sizeBoard; j++)
+                {
+                    pos.x = _ofsX + j + 0.5f;
+                    GameObject ceil = Instantiate(_ceilPrefab, pos, Quaternion.identity);
+                    ceil.transform.parent = transform;
+                }
+            }
+        }
+        else
+        {   //  35 x 35
+            _sizeMult = 2.0f;
+            for (i = 0; i < _sizeBoard; i += 2)
+            {
+                pos.z = _ofsY - i - 1f;
+                for (j = 0; j < _sizeBoard; j += 2)
+                {
+                    pos.x = _ofsX + j + 1f;
+                    GameObject ceil = Instantiate(_ceilPrefab, pos, Quaternion.identity);
+                    ceil.transform.parent = transform;
+                    ceil.transform.localScale = new Vector3(2.75f, 1f, 2.75f);
+                }
             }
         }
         //for (i = 0; i < _sizeBoard; i += 7)
@@ -71,8 +101,8 @@ public class EditorBoard : MonoBehaviour
         //}
     }
 
-    public void CreateLevel()
-    {
+    //public void CreateLevel()
+    //{
 
-    }
+    //}
 }
