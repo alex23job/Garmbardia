@@ -9,6 +9,12 @@ public class EditorUI : MonoBehaviour
     // ƒелегат дл€ уведомлени€ о смене уровн€
     public delegate void LevelChangedEventHandler(LevelShema level);
     public event LevelChangedEventHandler OnLevelChanged;
+    // ƒелегат дл€ уведомлени€ о выборе части местности
+    public delegate void SelectLandTailEventHandler(int type, int num);
+    public event SelectLandTailEventHandler OnSelectLandTail;
+    // ƒелегат дл€ уведомлени€ о выборе специальной части
+    public delegate void SelectSpecTailEventHandler(int num);
+    public event SelectSpecTailEventHandler OnSelectSpecTail;
 
     [SerializeField] private Button[] tailButtons;
     [SerializeField] private CameraControl _cameraControl;
@@ -20,6 +26,7 @@ public class EditorUI : MonoBehaviour
     [SerializeField] private InputField[] _bonuses;
     [SerializeField] private Toggle[] _togleSZs;
 
+    [SerializeField] private GameObject _specTailPanel;
     [SerializeField] private GameObject _landTailPanel;
     [SerializeField] private Text _landTailText;
     [SerializeField] private Button _landTailBtn1;
@@ -227,8 +234,8 @@ public class EditorUI : MonoBehaviour
     public void OnLandTypeClick(int num)
     {
         _landTailsType = num;
-        Image img1 = _landTailBtn1.transform.GetChild(0).gameObject.GetComponent<Image>();
-        Image img5 = _landTailBtn5.transform.GetChild(0).gameObject.GetComponent<Image>();
+        Image img1 = _landTailBtn1.image;
+        Image img5 = _landTailBtn5.image;
         switch (num)
         {
             case 1:
@@ -258,5 +265,17 @@ public class EditorUI : MonoBehaviour
                 break;
         }
         _landTailPanel.SetActive(true);
+    }
+
+    public void OnLandTailClick(int num)
+    {
+        _landTailPanel.SetActive(false);
+        OnSelectLandTail?.Invoke(_landTailsType, num);
+    }
+
+    public void OnSpecLandTailClick(int num)
+    {
+        _specTailPanel.SetActive(false);
+        OnSelectSpecTail?.Invoke(num);
     }
 }
