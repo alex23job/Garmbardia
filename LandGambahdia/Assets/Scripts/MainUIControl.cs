@@ -36,4 +36,9 @@ public class MainUIControl : MonoBehaviour
     {
         SceneManager.LoadScene("EditorScene");
     }
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
 }

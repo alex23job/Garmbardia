@@ -20,13 +20,20 @@ public class EditorUI : MonoBehaviour
     [SerializeField] private InputField[] _bonuses;
     [SerializeField] private Toggle[] _togleSZs;
 
+    [SerializeField] private GameObject _landTailPanel;
+    [SerializeField] private Text _landTailText;
+    [SerializeField] private Button _landTailBtn1;
+    [SerializeField] private Button _landTailBtn5;
+
     [SerializeField] private GameObject _msgPanel;
     [SerializeField] private Text _msgText;
  
     private Color _baseColor = new Color(0.7f, 1f, 0.9f, 1f), _selectColor = new Color(1f, 0.9f, 0.7f, 1f);
+    private Color[] _landColor = new Color[4] { new Color(8f, 0.7f, 0.3f, 1f), new Color(0.1f, 0.8f, 0.1f, 1f), new Color(0.6f, 0.6f, 0.6f, 1f), new Color(0.3f, 0.3f, 0.9f, 1f) };
 
     private LevelShema _curLevel = null;
     private bool _isNew = true;
+    private int _landTailsType = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -194,6 +201,7 @@ public class EditorUI : MonoBehaviour
             ViewInputError($"Не указано ни одного победного бонуса. Укажите хотя бы в одном поле ввода бонусов через <;> категорию бонуса, число, название, например, < Технология; 1; Металлургия >");
             return;
         }
+        _curLevel.SetTerain(new int[] { 0 });
         _createPanel.SetActive(false);
         // Уровень создан, надо как-то сообщить в EditorBoard о перерисовке уровня
         OnLevelChanged?.Invoke(_curLevel); // Уведомляем подписчиков
@@ -214,5 +222,41 @@ public class EditorUI : MonoBehaviour
     public void SaveLevels()
     {
         LevelList.Instance.SaveLevels();
+    }
+
+    public void OnLandTypeClick(int num)
+    {
+        _landTailsType = num;
+        Image img1 = _landTailBtn1.transform.GetChild(0).gameObject.GetComponent<Image>();
+        Image img5 = _landTailBtn5.transform.GetChild(0).gameObject.GetComponent<Image>();
+        switch (num)
+        {
+            case 1:
+                _landTailText.text = "Трава - Река";
+                img1.color = _landColor[1];
+                img5.color = _landColor[3];
+                break;
+            case 2:
+                _landTailText.text = "Трава - Гора";
+                img1.color = _landColor[1];
+                img5.color = _landColor[2];
+                break;
+            case 3:
+                _landTailText.text = "Песок - Трава";
+                img1.color = _landColor[0];
+                img5.color = _landColor[1];
+                break;
+            case 4:
+                _landTailText.text = "Песок - Море";
+                img1.color = _landColor[0];
+                img5.color = _landColor[3];
+                break;
+            case 5:
+                _landTailText.text = "Песок - Гора";
+                img1.color = _landColor[0];
+                img5.color = _landColor[2];
+                break;
+        }
+        _landTailPanel.SetActive(true);
     }
 }
