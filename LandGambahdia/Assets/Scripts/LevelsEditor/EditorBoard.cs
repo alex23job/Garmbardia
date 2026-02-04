@@ -35,6 +35,7 @@ public class EditorBoard : MonoBehaviour
         _editorUI.OnLevelChanged += ViewCurrentLevel;
         _editorUI.OnSelectLandTail += SelectLandTail;
         _editorUI.OnSelectSpecTail += SelectSpecTail;
+        _editorUI.OnDelOrRotTail += DelOrRotTail;
 
         //CreateGrid();
         FillLandTails();
@@ -57,6 +58,7 @@ public class EditorBoard : MonoBehaviour
         _editorUI.OnLevelChanged -= ViewCurrentLevel;
         _editorUI.OnSelectLandTail -= SelectLandTail;
         _editorUI.OnSelectSpecTail -= SelectSpecTail;
+        _editorUI.OnDelOrRotTail -= DelOrRotTail;
     }
 
     private void FillLandTails()
@@ -65,6 +67,33 @@ public class EditorBoard : MonoBehaviour
         for (int i = 0; i < _landTailPrefabs.Length; i++) 
         {
             _landTails[i] = _landTailPrefabs[i].GetComponent<LandTail>();
+        }
+    }
+
+    private void DelOrRotTail(int num)
+    {
+        if (_currentLandTail != null)
+        {
+            if (num == 3)
+            {   //  окно закрыли
+                _currentLandTail = null;
+            }            
+            if (num == 2)
+            {   //  окно обновляем с новым углом поворота
+                LandTail landTail = _currentLandTail.GetComponent<LandTail>();
+                landTail.RotateTail();
+                if (landTail != null && _editorUI != null)
+                {
+                    _editorUI.ViewDelOrRotPanel(landTail.GetTailInfo(), landTail.IsRotate);
+                }
+            }
+            if (num == 1)
+            {   //  удалили часть и окно закрыто
+                _tails.Remove(_currentLandTail);
+                Destroy(_currentLandTail, 0.01f);
+                _currentLandTail = null;
+            }
+            print($"DelOrRotTail   num={num}    curTail=< {_currentLandTail} >");
         }
     }
 
@@ -91,10 +120,34 @@ public class EditorBoard : MonoBehaviour
                     if (_levelShema.BoardSize == 35) tail.transform.localScale = _levelTailScale;
                     LandTail landTail = tail.GetComponent<LandTail>();
                     if (landTail != null) landTail.SetBoardAndPosition(_board, y, x);
-                    _tails.Add(tail);
+                    AddTail(tail, y, x);
                 }
                 break;
             }
+        }
+    }
+
+    private void AddTail(GameObject tail, int y, int x)
+    {
+        bool isNew = true;
+        GameObject landTail = null;
+        foreach(GameObject go in _tails)
+        {
+            if (go.GetComponent<LandTail>().CmpPosition(y, x))
+            {
+                landTail = go;
+                isNew = false;
+                break;
+            }
+        }
+        if (isNew)
+        {
+            _tails.Add(tail);
+            _selectCeil = null;
+        }
+        else
+        {   // в этой клетке уже что-то есть
+
         }
     }
 
@@ -147,7 +200,7 @@ public class EditorBoard : MonoBehaviour
                 landID = l2;
                 break;
         }
-        print($"l1={l1}  l2={l2}  landID={landID}(0x{landID:X08})");
+        //print($"l1={l1}  l2={l2}  landID={landID}(0x{landID:X08})");
         BuildTail(landID, 0);
     }
 
@@ -231,7 +284,12 @@ public class EditorBoard : MonoBehaviour
 
     public void TailSelect(GameObject tail)
     {
-
+        _currentLandTail = tail;
+        LandTail landTail = tail.GetComponent<LandTail>();
+        if (landTail != null && _editorUI != null)
+        {
+            _editorUI.ViewDelOrRotPanel(landTail.GetTailInfo(), landTail.IsRotate);
+        }
     }
 
     public void CeilSelect(GameObject ceil)

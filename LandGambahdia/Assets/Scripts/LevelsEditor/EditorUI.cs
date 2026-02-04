@@ -15,6 +15,9 @@ public class EditorUI : MonoBehaviour
     // Делегат для уведомления о выборе специальной части
     public delegate void SelectSpecTailEventHandler(int num);
     public event SelectSpecTailEventHandler OnSelectSpecTail;
+    // Делегат для уведомления о выборе поворота или удаления части местности
+    public delegate void ActionTailEventHandler(int num);
+    public event ActionTailEventHandler OnDelOrRotTail;
 
     [SerializeField] private Button[] tailButtons;
     [SerializeField] private CameraControl _cameraControl;
@@ -31,6 +34,10 @@ public class EditorUI : MonoBehaviour
     [SerializeField] private Text _landTailText;
     [SerializeField] private Button _landTailBtn1;
     [SerializeField] private Button _landTailBtn5;
+
+    [SerializeField] private GameObject _delRotPanel;
+    [SerializeField] private Text _delRotInfoText;
+    [SerializeField] private Button _delRotBtn;
 
     [SerializeField] private GameObject _msgPanel;
     [SerializeField] private Text _msgText;
@@ -293,5 +300,21 @@ public class EditorUI : MonoBehaviour
         ChangePrizrak(false);
         _specTailPanel.SetActive(false);
         OnSelectSpecTail?.Invoke(num);
+    }
+
+    public void ViewDelOrRotPanel(string info, bool isRot)
+    {
+        _delRotInfoText.text = info;
+        _delRotBtn.interactable = isRot;
+        _delRotPanel.SetActive(true);
+    }
+
+    public void OnActionTailClick(int value)
+    {
+        if (value == 1 || value == 3)
+        {   //  удалить часть местности или закрыть окно
+            _delRotPanel.SetActive(false);
+        }
+        OnDelOrRotTail?.Invoke(value);
     }
 }
