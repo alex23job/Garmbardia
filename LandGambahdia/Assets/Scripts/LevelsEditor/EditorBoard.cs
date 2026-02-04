@@ -68,7 +68,7 @@ public class EditorBoard : MonoBehaviour
         }
     }
 
-    private void SelectSpecTail(int num)
+    private void BuildTail(int num, int type = 9)
     {
         int i, x, y;
         float mult = 1f;
@@ -76,7 +76,7 @@ public class EditorBoard : MonoBehaviour
         if (_levelShema.BoardSize == 35) mult = 2f;
         for (i = 0; i < _landTails.Length; i++)
         {
-            if (_landTails[i].CmpID(num))
+            if (_landTails[i].CmpID(num, type))
             {
                 if (_selectCeil != null)
                 {
@@ -87,7 +87,7 @@ public class EditorBoard : MonoBehaviour
                     pos.z = _selectCeil.transform.position.z;
                     tail.transform.position = pos;
                     tail.transform.parent = transform;
-                    print($"SelectSpecTail  pos={pos}    parentPos={tail.transform.position}   ceilPos={_selectCeil.transform.position}");
+                    //print($"SelectSpecTail  pos={pos}    parentPos={tail.transform.position}   ceilPos={_selectCeil.transform.position}");
                     if (_levelShema.BoardSize == 35) tail.transform.localScale = _levelTailScale;
                     LandTail landTail = tail.GetComponent<LandTail>();
                     if (landTail != null) landTail.SetBoardAndPosition(_board, y, x);
@@ -98,9 +98,57 @@ public class EditorBoard : MonoBehaviour
         }
     }
 
+    private void SelectSpecTail(int num)
+    {
+        BuildTail(num);
+    }
+
+    /// <summary>
+    /// Функция определения префаба местности по выбранным из панели постройки параметрам 
+    /// </summary>
+    /// <param name="type">1 - трава/гора, 2 - трава/вода, 3 - песок/трава, 4 - песок/вода, 5 - песок/гора</param>
+    /// <param name="num">0 - весь 1й, 1 - 50/50, 2 - угол 1й, 3 - угол 2й, 4 - весь 2й </param>
     private void SelectLandTail(int type, int num)
     {
-        //throw new NotImplementedException();
+        int l1 = -1, l2 = -1, landID = -1;
+        switch(type)
+        {
+            case 1:
+                l1 = 0; l2 = 1;
+                break;
+            case 2:
+                l1 = 0; l2 = 2;
+                break;
+            case 3:
+                l1 = 3; l2 = 0;
+                break;
+            case 4:
+                l1 = 3; l2 = 2;
+                break;
+            case 5:
+                l1 = 3; l2 = 1;
+                break;
+        }
+        switch(num)
+        {
+            case 0:
+                landID = l1; 
+                break;
+            case 1:
+                landID = l1 + (l2 << 2) + (1 << 4);
+                break;
+            case 2:
+                landID = l1 + (l2 << 2) + (2 << 4);
+                break;
+            case 3:
+                landID = l2 + (l1 << 2) + (2 << 4);
+                break;
+            case 4:
+                landID = l2;
+                break;
+        }
+        print($"l1={l1}  l2={l2}  landID={landID}(0x{landID:X08})");
+        BuildTail(landID, 0);
     }
 
     private void ViewCurrentLevel(LevelShema level)
@@ -189,6 +237,6 @@ public class EditorBoard : MonoBehaviour
     public void CeilSelect(GameObject ceil)
     {
         _selectCeil = ceil;
-        print($"Ceil position={_selectCeil.transform.position}");
+        //print($"Ceil position={_selectCeil.transform.position}");
     }
 }

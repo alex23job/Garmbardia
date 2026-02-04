@@ -36,7 +36,7 @@ public class EditorUI : MonoBehaviour
     [SerializeField] private Text _msgText;
  
     private Color _baseColor = new Color(0.7f, 1f, 0.9f, 1f), _selectColor = new Color(1f, 0.9f, 0.7f, 1f);
-    private Color[] _landColor = new Color[4] { new Color(8f, 0.7f, 0.3f, 1f), new Color(0.1f, 0.8f, 0.1f, 1f), new Color(0.6f, 0.6f, 0.6f, 1f), new Color(0.3f, 0.3f, 0.9f, 1f) };
+    private Color[] _landColor = new Color[4] { new Color(0.1f, 0.8f, 0.1f, 1f), new Color(0.6f, 0.6f, 0.6f, 1f), new Color(0.3f, 0.3f, 0.9f, 1f), new Color(8f, 0.7f, 0.3f, 1f) };
 
     private LevelShema _curLevel = null;
     private bool _isNew = true;
@@ -253,29 +253,29 @@ public class EditorUI : MonoBehaviour
         switch (num)
         {
             case 1:
-                _landTailText.text = "Трава - Река";
-                img1.color = _landColor[1];
-                img5.color = _landColor[3];
+                _landTailText.text = "Трава - Гора";
+                img1.color = _landColor[0];
+                img5.color = _landColor[1];
                 break;
             case 2:
-                _landTailText.text = "Трава - Гора";
-                img1.color = _landColor[1];
+                _landTailText.text = "Трава - Река";
+                img1.color = _landColor[0];
                 img5.color = _landColor[2];
                 break;
             case 3:
                 _landTailText.text = "Песок - Трава";
-                img1.color = _landColor[0];
-                img5.color = _landColor[1];
+                img1.color = _landColor[3];
+                img5.color = _landColor[0];
                 break;
             case 4:
                 _landTailText.text = "Песок - Море";
-                img1.color = _landColor[0];
-                img5.color = _landColor[3];
+                img1.color = _landColor[3];
+                img5.color = _landColor[2];
                 break;
             case 5:
                 _landTailText.text = "Песок - Гора";
-                img1.color = _landColor[0];
-                img5.color = _landColor[2];
+                img1.color = _landColor[3];
+                img5.color = _landColor[1];
                 break;
         }
         _landTailPanel.SetActive(true);

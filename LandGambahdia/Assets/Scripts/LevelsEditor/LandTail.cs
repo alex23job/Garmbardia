@@ -4,10 +4,20 @@ using UnityEngine;
 
 public class LandTail : MonoBehaviour
 {
+    /// <summary>
+    /// 0-1 - тип местности основной, 2-3 - тип местности дополнительный, 4-5 - вид местности
+    /// 0 - трава, 1 - гора, 2 - вода, 3 - песок; 0 - весь, 1 - 50/50, 2 - угол 
+    ///  > 90 - специальные типы
+    /// </summary>
     [SerializeField] private int _id = -1;
     [SerializeField] private int _rot = 0;
     [SerializeField] private bool _isRotate = false;
 
+    /// <summary>
+    /// 0-1 - тип местности основной, 2-3 - тип местности дополнительный, 4-5 - вид местности
+    /// 0 - трава, 1 - камень, 2 - вода, 3 - песок; 0 - весь, 1 - 50/50, 2 - угол 
+    ///  > 90 - специальные типы
+    /// </summary>
     public int TailID { get { return _id; } }
     public int TailRot { get { return _rot; } }
     public bool IsRotate { get { return _isRotate; } }
@@ -38,7 +48,7 @@ public class LandTail : MonoBehaviour
     {
         _board = eb;
         _tailInfo = (_id << 16) + (row << 8) + col;
-        print($"x={col} y={row} tailInfo={_tailInfo}(0x{_tailInfo:X08})    pos={transform.position}");
+        //print($"x={col} y={row} tailInfo={_tailInfo}(0x{_tailInfo:X08})    pos={transform.position}");
     }
 
     public bool CmpID(int num, int type = 9)

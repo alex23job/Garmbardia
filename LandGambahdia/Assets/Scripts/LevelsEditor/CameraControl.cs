@@ -72,7 +72,7 @@ public class CameraControl : MonoBehaviour
 
         //Vector3 delta = new Vector3(_ofsX + (col - 1) * 0.5f * (_maxSz - sz) + col * _halfSz, _ofsY, _ofsZ - (row - 1) * 0.5f * (_maxSz - sz) - row * _halfSz);
         Vector3 delta = new Vector3(_ofsX - dx + col * _halfSz, _ofsY, _ofsZ + dz - row * _halfSz);
-        print($"sq  delta={delta}   dx={dx}   dz={dz}");
+        //print($"sq  delta={delta}   dx={dx}   dz={dz}");
         transform.position = delta;
     }
 
@@ -95,7 +95,7 @@ public class CameraControl : MonoBehaviour
             //Vector3 center = new Vector3(_ofsX - col * _ofsX, _ofsY, 1.5f * (_ofsZ - row * _ofsZ));
             //Vector3 center = new Vector3(_ofsX + (col - 1) * 0.5f * (_maxSz - newSize) + col * _halfSz, _ofsY, _ofsZ - (row - 1) * 0.5f * (_maxSz - newSize) - row * _halfSz);
             Vector3 center = new Vector3(_ofsX - dx + col * _halfSz, _ofsY, _ofsZ + dz - row * _halfSz);
-            print($"cs  delta={center}   dx={dx}   dz={dz}");
+            //print($"cs  delta={center}   dx={dx}   dz={dz}");
             transform.position = center;
         }
     }
