@@ -11,7 +11,8 @@ public class LevelShema
     private int _boardSize;
     private List<VictoryCondition> _conditions = new List<VictoryCondition>();
     private List<VictoryBonus> _bonuses = new List<VictoryBonus>();
-    private int[] _terain = null;
+    private int[] _terrain = null;
+    private List<int> _tmpTails = new List<int>();
 
     public int NumberLevel { get { return _number; } }
     public string Name { get { return _name; } }
@@ -47,17 +48,15 @@ public class LevelShema
             {
                 _bonuses.Add(new VictoryBonus(bonus));
             }
-            List<int> tmp = new List<int>();
             int i, zn;
             string s;
             for (i = 0; i < _boardSize; i++)
             {
                 s = ar[6].Substring(8 * i, 8);
                 zn = Convert.ToInt32(s, 16);
-                tmp.Add(zn);
+                _tmpTails.Add(zn);
             }
-            _terain = tmp.ToArray();
-
+            _terrain = _tmpTails.ToArray();
         }
     }
 
@@ -86,9 +85,39 @@ public class LevelShema
         _number = num;
     }
 
+    public int[] GetTerrain()
+    {
+        int[] res = new int[_terrain.Length];
+        for (int i = 0; i < res.Length; i++)
+        {
+            res[i] = _terrain[i];
+        }
+        return res;
+    }
+
     public void SetTerain(int[] ter)
     {
-        _terain = ter;
+        _terrain = ter;
+    }
+
+    public void UpdateTerainTails(int tailInfo)
+    {
+        bool isNew = true;
+        for (int i = 0; i < _tmpTails.Count; i++) 
+        {
+            if ((tailInfo & 0xffff) == (_tmpTails[i] & 0xffff))
+            {
+                _tmpTails[i] = tailInfo;
+                isNew = false;
+                break;
+            }
+        }
+        if (isNew) _tmpTails.Add(tailInfo);
+    }
+
+    public void RemoveTerainTail(int tailInfo)
+    {
+        _tmpTails.Remove(tailInfo);
     }
 
     public string ToCsvString(char sep = '#', char sepVL = '=')
@@ -98,7 +127,8 @@ public class LevelShema
         sb.Append(sep);
         foreach(VictoryBonus vb in _bonuses) { sb.Append(vb.ToCsvString(';') + sepVL); }
         sb.Append(sep);
-        if (_terain != null) foreach (int zn in _terain) { sb.Append($"{zn:X08}"); }
+        foreach(int zn in _tmpTails) { if ((zn & 0xff0000) > 0) sb.Append($"{zn:X08}"); }
+        //if (_terrain != null) foreach (int zn in _terrain) { sb.Append($"{zn:X08}"); }
         sb.Append(sep);
         return sb.ToString();
     }

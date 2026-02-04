@@ -85,10 +85,13 @@ public class EditorBoard : MonoBehaviour
                 if (landTail != null && _editorUI != null)
                 {
                     _editorUI.ViewDelOrRotPanel(landTail.GetTailInfo(), landTail.IsRotate);
+                    _levelShema.UpdateTerainTails(landTail.TailInfo);
                 }
             }
             if (num == 1)
             {   //  удалили часть и окно закрыто
+                LandTail landTail = _currentLandTail.GetComponent<LandTail>();
+                _levelShema.RemoveTerainTail(landTail.TailInfo);
                 _tails.Remove(_currentLandTail);
                 Destroy(_currentLandTail, 0.01f);
                 _currentLandTail = null;
@@ -130,12 +133,11 @@ public class EditorBoard : MonoBehaviour
     private void AddTail(GameObject tail, int y, int x)
     {
         bool isNew = true;
-        GameObject landTail = null;
+        LandTail landTail = tail.GetComponent<LandTail>();
         foreach(GameObject go in _tails)
         {
             if (go.GetComponent<LandTail>().CmpPosition(y, x))
             {
-                landTail = go;
                 isNew = false;
                 break;
             }
@@ -143,6 +145,7 @@ public class EditorBoard : MonoBehaviour
         if (isNew)
         {
             _tails.Add(tail);
+            _levelShema.UpdateTerainTails(landTail.TailInfo);
             _selectCeil = null;
         }
         else
@@ -215,6 +218,66 @@ public class EditorBoard : MonoBehaviour
                 if (_levelShema.BoardSize == 70) _levelTailScale = new Vector3(1f, 1f, 1f);
             }
             CreateGrid();
+            CreateTerrain();
+        }
+    }
+
+    private void CreateTerrain()
+    {
+        int[] terrain = _levelShema.GetTerrain();
+        int i, j, x, y, num, rot;
+        Vector3 pos = new Vector3(0, 0.5f, 0);
+        if (_levelShema.BoardSize == 35)
+        {
+            for (i = 0; i < terrain.Length; i++)
+            {
+                x = terrain[i] & 0xff;
+                y = (terrain[i] >> 8) & 0xff;
+                num = (terrain[i] >> 16) & 0xff;
+                rot = (terrain[i] >> 24) & 0x3;
+                for (j = 0; j < _landTails.Length; j++)
+                {
+                    if (_landTails[j].CmpID(num % 90, (num >= 90 ? 9 : 0)))
+                    {                        
+                        pos.x = _ofsX + 2 * x + 1f;
+                        pos.z = _ofsY - 2 * y - 1f;
+                        GameObject tail = Instantiate(_landTailPrefabs[j], pos, Quaternion.identity);
+                        tail.transform.parent = transform;
+                        tail.transform.localScale = _levelTailScale;
+                        LandTail landTail = tail.GetComponent<LandTail>();
+                        if (landTail != null) landTail.SetBoardAndPosition(_board, y, x);
+                        if (landTail.IsRotate) for (j = 0; j < rot; j++) landTail.RotateTail();
+                        _tails.Add(tail);
+                        break;
+                    }
+                }
+            }
+        }
+        if (_levelShema.BoardSize == 70)
+        {
+            for (i = 0; i < terrain.Length; i++)
+            {
+                x = terrain[i] & 0xff;
+                y = (terrain[i] >> 8) & 0xff;
+                num = (terrain[i] >> 16) & 0xff;
+                rot = (terrain[i] >> 24) & 0x3;
+                for (j = 0; j < _landTails.Length; j++)
+                {
+                    if (_landTails[j].CmpID(num % 90, (num >= 90 ? 9 : 0)))
+                    {
+                        pos.x = _ofsX + x + 0.5f;
+                        pos.z = _ofsY - y - 0.5f;
+                        GameObject tail = Instantiate(_landTailPrefabs[j], pos, Quaternion.identity);
+                        tail.transform.parent = transform;
+                        //tail.transform.localScale = _levelTailScale;
+                        LandTail landTail = tail.GetComponent<LandTail>();
+                        if (landTail != null) landTail.SetBoardAndPosition(_board, y, x);
+                        if (landTail.IsRotate) for (j = 0; j < rot; j++) landTail.RotateTail();
+                        _tails.Add(tail);
+                        break;
+                    }
+                }
+            }
         }
     }
 
