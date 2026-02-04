@@ -42,6 +42,8 @@ public class EditorUI : MonoBehaviour
     private bool _isNew = true;
     private int _landTailsType = 0;
 
+    private GameObject _prizrak = null;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -57,6 +59,12 @@ public class EditorUI : MonoBehaviour
     public void LoadMainScene()
     {
         SceneManager.LoadScene("MainScene");
+    }
+
+    public void SetPrizrak(GameObject prz)
+    {
+        _prizrak = prz;
+        _prizrak.SetActive(false);
     }
 
     public void SelectTail(int num)
@@ -231,8 +239,14 @@ public class EditorUI : MonoBehaviour
         LevelList.Instance.SaveLevels();
     }
 
+    public void ChangePrizrak(bool value)
+    {
+        _prizrak.SetActive(value);
+    }
+
     public void OnLandTypeClick(int num)
     {
+        ChangePrizrak(true);
         _landTailsType = num;
         Image img1 = _landTailBtn1.image;
         Image img5 = _landTailBtn5.image;
@@ -269,12 +283,14 @@ public class EditorUI : MonoBehaviour
 
     public void OnLandTailClick(int num)
     {
+        ChangePrizrak(false);
         _landTailPanel.SetActive(false);
         OnSelectLandTail?.Invoke(_landTailsType, num);
     }
 
     public void OnSpecLandTailClick(int num)
     {
+        ChangePrizrak(false);
         _specTailPanel.SetActive(false);
         OnSelectSpecTail?.Invoke(num);
     }
