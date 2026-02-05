@@ -11245,7 +11245,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 204a97c860d098847be2d226b752acad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tailButtons: []
+  _tailButtons:
+  - {fileID: 2064825421}
+  - {fileID: 1502611561}
+  - {fileID: 1499199253}
+  - {fileID: 579005357}
+  - {fileID: 203444592}
+  - {fileID: 1663326144}
+  - {fileID: 959435264}
+  - {fileID: 999686440}
+  - {fileID: 1342809949}
   _cameraControl: {fileID: 1538150915}
   _createPanel: {fileID: 301397224}
   _nameLevel: {fileID: 70587168}

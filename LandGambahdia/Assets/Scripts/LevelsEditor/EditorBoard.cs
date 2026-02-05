@@ -23,6 +23,7 @@ public class EditorBoard : MonoBehaviour
     private GameObject _currentLandTail = null;
     private GameObject _selectCeil = null;
     private List<GameObject> _tails = new List<GameObject>();
+    private List<GameObject> _ceils = new List<GameObject>();
 
     private void Awake()
     {
@@ -218,6 +219,7 @@ public class EditorBoard : MonoBehaviour
             {
                 if (_levelShema.BoardSize == 35) _levelTailScale = new Vector3(2.75f, 100f, 2.75f);
                 if (_levelShema.BoardSize == 70) _levelTailScale = new Vector3(1f, 1f, 1f);
+                print($"BoardSize={_levelShema.BoardSize}");
             }
             CreateGrid();
             CreateTerrain();
@@ -239,7 +241,7 @@ public class EditorBoard : MonoBehaviour
                 y = (terrain[i] >> 8) & 0xff;
                 num = (terrain[i] >> 16) & 0xff;
                 rot = (terrain[i] >> 24) & 0x3;
-                print($"0x{terrain[i]:X08}  x={x}  y={y}  num={num}  rot={rot}");
+                //print($"0x{terrain[i]:X08}  x={x}  y={y}  num={num}  rot={rot}");
                 for (j = 0; j < _landTails.Length; j++)
                 {
                     if (_landTails[j].CmpID(num % 90, (num >= 90 ? 9 : 0)))
@@ -293,13 +295,22 @@ public class EditorBoard : MonoBehaviour
     {
         for (int i = _tails.Count; i > 0; i--)
         {
-            Destroy(_tails[i], 0.01f);
+            Destroy(_tails[i - 1], 0.01f);
         }
         _tails.Clear();
+    }
+    private void ClearCeils()
+    {
+        for (int i = _ceils.Count; i > 0; i--)
+        {
+            Destroy(_ceils[i - 1], 0.01f);
+        }
+        _ceils.Clear();
     }
 
     private void CreateGrid()
     {
+        ClearCeils();
         int i, j;
         Vector3 pos = new Vector3(0, 0.2f, 0);
         if (_levelShema.BoardSize == 70)
@@ -313,6 +324,7 @@ public class EditorBoard : MonoBehaviour
                     GameObject ceil = Instantiate(_ceilPrefab, pos, Quaternion.identity);
                     ceil.transform.parent = transform;
                     ceil.GetComponent<CeilControl>().SetBoard(_board);
+                    _ceils.Add(ceil);
                 }
             }
         }
@@ -329,6 +341,7 @@ public class EditorBoard : MonoBehaviour
                     ceil.transform.parent = transform;
                     ceil.transform.localScale = _levelTailScale;
                     ceil.GetComponent<CeilControl>().SetBoard(_board);
+                    _ceils.Add(ceil);
                 }
             }
         }
@@ -374,7 +387,8 @@ public class EditorBoard : MonoBehaviour
 
     public void CeilSelect(GameObject ceil)
     {
+        if (_editorUI.IsLandType) return;
         _selectCeil = ceil;
-        //print($"Ceil position={_selectCeil.transform.position}");
+        print($"Ceil position={_selectCeil.transform.position}");
     }
 }

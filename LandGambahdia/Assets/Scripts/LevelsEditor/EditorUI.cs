@@ -60,6 +60,8 @@ public class EditorUI : MonoBehaviour
     private LevelShema _curLevel = null;
     private bool _isNew = true;
     private int _landTailsType = 0;
+    private bool _isLandType = false;
+    public bool IsLandType {  get { return _isLandType; } }
 
     private GameObject _prizrak = null;
 
@@ -95,6 +97,7 @@ public class EditorUI : MonoBehaviour
         {
             btn.interactable = value;
         }
+        ChangePrizrak(false);
     }
 
     public void LoadMainScene()
@@ -289,6 +292,7 @@ public class EditorUI : MonoBehaviour
     public void OnLandTypeClick(int num)
     {
         ChangePrizrak(true);
+        _isLandType = true;
         _landTailsType = num;
         Image img1 = _landTailBtn1.image;
         Image img5 = _landTailBtn5.image;
@@ -325,6 +329,7 @@ public class EditorUI : MonoBehaviour
 
     public void OnLandTailClick(int num)
     {
+        _isLandType = false;
         ChangePrizrak(false);
         _landTailPanel.SetActive(false);
         OnSelectLandTail?.Invoke(_landTailsType, num);
@@ -332,6 +337,7 @@ public class EditorUI : MonoBehaviour
 
     public void OnSpecLandTailClick(int num)
     {
+        _isLandType = false;
         ChangePrizrak(false);
         _specTailPanel.SetActive(false);
         OnSelectSpecTail?.Invoke(num);
@@ -354,6 +360,7 @@ public class EditorUI : MonoBehaviour
     }
     public void ViewSelectLoadLevelPanel()
     {
+        ChangePrizrak(true);
         _levelShemaInfos = LevelList.Instance.GetLevelInfos();
         _curIndexLevels = 0;
         if (_levelShemaInfos.Count > _items.Length)
@@ -363,7 +370,7 @@ public class EditorUI : MonoBehaviour
             _curIndexLevels = index;
         }
         _scrollbar.gameObject.SetActive(_levelShemaInfos.Count > _items.Length);
-        _scrollbar.size = ((float)_items.Length) / _levelShemaInfos.Count;
+        if (_levelShemaInfos.Count > 0 && _levelShemaInfos.Count > _items.Length) _scrollbar.size = ((float)_items.Length) / _levelShemaInfos.Count;
         UpdateNumberLevelItems();
         _selectLoadLevelPanel.SetActive(true);
     }
