@@ -96,7 +96,7 @@ public class LandTail : MonoBehaviour
         _rot++;
         _rot %= 4;
         _tailInfo = (_rot << 24) + (_tailInfo & 0xffffff);
-        print($"Rotate tail rot={_rot} tailInfo={_tailInfo}(0x{_tailInfo:X08})");
+        //print($"Rotate tail rot={_rot} tailInfo={_tailInfo}(0x{_tailInfo:X08})");
         transform.Rotate(0, 90, 0, Space.World);
     }
 

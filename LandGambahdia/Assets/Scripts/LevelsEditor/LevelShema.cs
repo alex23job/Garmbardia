@@ -50,9 +50,9 @@ public class LevelShema
             }
             int i, zn;
             string s;
-            for (i = 0; i < _boardSize; i++)
+            for (i = 0; i < ar[6].Length; i += 8)
             {
-                s = ar[6].Substring(8 * i, 8);
+                s = ar[6].Substring(i, 8);
                 zn = Convert.ToInt32(s, 16);
                 _tmpTails.Add(zn);
             }

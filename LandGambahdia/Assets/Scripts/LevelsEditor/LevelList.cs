@@ -175,6 +175,16 @@ public class LevelList : MonoBehaviour
         return null;
     }
 
+    public LevelShema GetShemaLevel(LevelShemaInfo lsi)
+    {
+        print(lsi.ToString());
+        foreach (LevelShema level in levels)
+        {
+            if (level.NumberLevel == lsi.LevelNumber && level.Name == lsi.LevelName) return level;
+        }
+        return null;
+    }
+
     public List<int> GetLevelsNumbers()
     {
         List<int> numbers = new List<int>();
@@ -183,6 +193,30 @@ public class LevelList : MonoBehaviour
             numbers.Add(level.NumberLevel);
         }
         return numbers;
+    }
+
+    public List<LevelShemaInfo> GetLevelInfos()
+    {
+        List<LevelShemaInfo> list = new List<LevelShemaInfo>();
+        foreach (LevelShema level in levels)
+        {
+            list.Add(new LevelShemaInfo(level.NumberLevel, level.Name));
+        }
+        return list;
+    }
+
+    public List<LevelShemaInfo> GetLevelInfosAfterDelLevel(LevelShemaInfo lsi)
+    {
+        for (int i = levels.Count; i > 0; i--)
+        {
+            if (levels[i - 1].Name == lsi.LevelName && levels[i - 1].NumberLevel == lsi.LevelNumber)
+            {
+                levels.RemoveAt(i - 1);
+                SaveLevels();
+                break;
+            }
+        }
+        return GetLevelInfos();
     }
 
     public List<int> GetLevelsNumbersAndDelLevel(int numLevel)
@@ -202,5 +236,28 @@ public class LevelList : MonoBehaviour
             numbers.Add(level.NumberLevel);
         }
         return numbers;
+    }
+}
+
+[Serializable]
+public class LevelShemaInfo
+{
+    private int _levelNumber;
+    private string _levelName;
+
+    public LevelShemaInfo(){}
+
+    public LevelShemaInfo(int num, string name)
+    {
+        _levelNumber = num;
+        _levelName = name;
+    }
+
+    public int LevelNumber { get => _levelNumber; }
+    public string LevelName { get => _levelName; }
+
+    public override string ToString()
+    {
+        return $"LevelShemaInfo for NumberLevel {_levelNumber} Name {_levelName}";
     }
 }

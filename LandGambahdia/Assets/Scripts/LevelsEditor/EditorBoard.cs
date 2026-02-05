@@ -95,6 +95,7 @@ public class EditorBoard : MonoBehaviour
                 _tails.Remove(_currentLandTail);
                 Destroy(_currentLandTail, 0.01f);
                 _currentLandTail = null;
+                _editorUI.InterUndo(_tails.Count > 0);
             }
             print($"DelOrRotTail   num={num}    curTail=< {_currentLandTail} >");
         }
@@ -123,7 +124,7 @@ public class EditorBoard : MonoBehaviour
                     if (_levelShema.BoardSize == 35) tail.transform.localScale = _levelTailScale;
                     LandTail landTail = tail.GetComponent<LandTail>();
                     if (landTail != null) landTail.SetBoardAndPosition(_board, y, x);
-                    AddTail(tail, y, x);
+                    AddTail(tail, y, x);                    
                 }
                 break;
             }
@@ -145,6 +146,7 @@ public class EditorBoard : MonoBehaviour
         if (isNew)
         {
             _tails.Add(tail);
+            _editorUI.InterUndo(true);
             _levelShema.UpdateTerainTails(landTail.TailInfo);
             _selectCeil = null;
         }
@@ -219,11 +221,13 @@ public class EditorBoard : MonoBehaviour
             }
             CreateGrid();
             CreateTerrain();
+            _editorUI.InterBtnArr(true);
         }
     }
 
     private void CreateTerrain()
     {
+        ClearTails();
         int[] terrain = _levelShema.GetTerrain();
         int i, j, x, y, num, rot;
         Vector3 pos = new Vector3(0, 0.5f, 0);
@@ -235,12 +239,15 @@ public class EditorBoard : MonoBehaviour
                 y = (terrain[i] >> 8) & 0xff;
                 num = (terrain[i] >> 16) & 0xff;
                 rot = (terrain[i] >> 24) & 0x3;
+                print($"0x{terrain[i]:X08}  x={x}  y={y}  num={num}  rot={rot}");
                 for (j = 0; j < _landTails.Length; j++)
                 {
                     if (_landTails[j].CmpID(num % 90, (num >= 90 ? 9 : 0)))
-                    {                        
-                        pos.x = _ofsX + 2 * x + 1f;
-                        pos.z = _ofsY - 2 * y - 1f;
+                    {
+                        //pos.x = _ofsX + 2 * x + 1f;
+                        //pos.z = _ofsY - 2 * y - 1f;
+                        pos.x = _ofsX + x * 0.5f + 1f;
+                        pos.z = _ofsY - y * 0.5f - 1f;
                         GameObject tail = Instantiate(_landTailPrefabs[j], pos, Quaternion.identity);
                         tail.transform.parent = transform;
                         tail.transform.localScale = _levelTailScale;
@@ -279,6 +286,16 @@ public class EditorBoard : MonoBehaviour
                 }
             }
         }
+        _editorUI.InterUndo(_tails.Count > 0);
+    }
+
+    private void ClearTails()
+    {
+        for (int i = _tails.Count; i > 0; i--)
+        {
+            Destroy(_tails[i], 0.01f);
+        }
+        _tails.Clear();
     }
 
     private void CreateGrid()

@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class EditorUI : MonoBehaviour
 {
@@ -19,7 +20,7 @@ public class EditorUI : MonoBehaviour
     public delegate void ActionTailEventHandler(int num);
     public event ActionTailEventHandler OnDelOrRotTail;
 
-    [SerializeField] private Button[] tailButtons;
+    [SerializeField] private Button[] _tailButtons;
     [SerializeField] private CameraControl _cameraControl;
 
     [SerializeField] private GameObject _createPanel;
@@ -41,7 +42,18 @@ public class EditorUI : MonoBehaviour
 
     [SerializeField] private GameObject _msgPanel;
     [SerializeField] private Text _msgText;
- 
+
+    [SerializeField] private Text _txtAskDel;
+    [SerializeField] private GameObject _askDelPanel;
+    [SerializeField] private GameObject _selectLoadLevelPanel;
+    [SerializeField] private GameObject[] _items;
+    [SerializeField] private Scrollbar _scrollbar;
+    private int _curIndexLevels = 0;
+    private List<LevelShemaInfo> _levelShemaInfos = null;
+
+    [SerializeField] private Button _undoBtn;
+    [SerializeField] private Button[] _landBtns;
+
     private Color _baseColor = new Color(0.7f, 1f, 0.9f, 1f), _selectColor = new Color(1f, 0.9f, 0.7f, 1f);
     private Color[] _landColor = new Color[4] { new Color(0.1f, 0.8f, 0.1f, 1f), new Color(0.6f, 0.6f, 0.6f, 1f), new Color(0.3f, 0.3f, 0.9f, 1f), new Color(8f, 0.7f, 0.3f, 1f) };
 
@@ -54,6 +66,8 @@ public class EditorUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        InterUndo(false);
+        InterBtnArr(false);
         SelectTail(0);
     }
 
@@ -61,6 +75,17 @@ public class EditorUI : MonoBehaviour
     void Update()
     {
         
+    }
+    public void InterUndo(bool value)
+    {
+        _undoBtn.interactable = value;
+    }
+    public void InterBtnArr(bool value)
+    {
+        foreach (var btn in _landBtns)
+        {
+            btn.interactable = value;
+        }
     }
 
     public void LoadMainScene()
@@ -77,9 +102,9 @@ public class EditorUI : MonoBehaviour
     public void SelectTail(int num)
     {
         int i;
-        for (i = 0; i < tailButtons.Length; i++)
+        for (i = 0; i < _tailButtons.Length; i++)
         {
-            tailButtons[i].gameObject.GetComponent<Image>().color = (i != num) ? _baseColor : _selectColor; 
+            _tailButtons[i].gameObject.GetComponent<Image>().color = (i != num) ? _baseColor : _selectColor; 
         }
         _cameraControl.SetQuadrant(num);
     }
@@ -225,6 +250,7 @@ public class EditorUI : MonoBehaviour
         }
         _curLevel.SetTerain(new int[] { 0 });
         _createPanel.SetActive(false);
+        InterBtnArr(true);
         // Уровень создан, надо как-то сообщить в EditorBoard о перерисовке уровня
         OnLevelChanged?.Invoke(_curLevel); // Уведомляем подписчиков
     }
@@ -316,5 +342,109 @@ public class EditorUI : MonoBehaviour
             _delRotPanel.SetActive(false);
         }
         OnDelOrRotTail?.Invoke(value);
+    }
+    public void ViewSelectLoadLevelPanel()
+    {
+        _levelShemaInfos = LevelList.Instance.GetLevelInfos();
+        _curIndexLevels = 0;
+        if (_levelShemaInfos.Count > _items.Length)
+        {
+            int index = Mathf.RoundToInt(_scrollbar.value * _levelShemaInfos.Count);
+            if (index > _levelShemaInfos.Count - _items.Length) index = _levelShemaInfos.Count - _items.Length;
+            _curIndexLevels = index;
+        }
+        _scrollbar.gameObject.SetActive(_levelShemaInfos.Count > _items.Length);
+        _scrollbar.size = ((float)_items.Length) / _levelShemaInfos.Count;
+        UpdateNumberLevelItems();
+        _selectLoadLevelPanel.SetActive(true);
+    }
+
+    private void UpdateNumberLevelItems()
+    {
+        for (int i = 0; i < _items.Length; i++)
+        {
+            GameObject item = _items[i]; //.gameObject;
+            if (_curIndexLevels + i < _levelShemaInfos.Count)
+            {
+                Text[] arTxt = item.GetComponentsInChildren<Text>();
+                //Text txtBtn = item.transform.GetChild(1).GetChild(0).GetComponent<Text>();
+
+                if (arTxt != null && arTxt.Length >= 2)
+                {
+                    arTxt[0].text = $"{_levelShemaInfos[_curIndexLevels + i].LevelNumber:D02}.";
+                    arTxt[1].text = _levelShemaInfos[_curIndexLevels + i].LevelName;
+                }
+                item.SetActive(true);
+            }
+            else
+            {
+                item.SetActive(false);
+            }
+        }
+    }
+    public void SelectLoadLevel(int numItem)
+    {
+        //print($"NumItem => {numItem}");
+        GameObject item = _items[numItem];
+        Text[] arTxt = item.GetComponentsInChildren<Text>();
+        if (arTxt != null && arTxt.Length >= 2 && int.TryParse(arTxt[0].text.Substring(0, 2), out int numLevel))
+        {
+            LevelShema tmp = LevelList.Instance.GetShemaLevel(new LevelShemaInfo(numLevel, arTxt[1].text));
+            if (tmp != null)
+            {
+                _curLevel = tmp;
+            }
+        }
+        // Уровень выбран, надо как-то сообщить в LevelBoard о перерисовке уровня
+        OnLevelChanged?.Invoke(_curLevel); // Уведомляем подписчиков
+        _selectLoadLevelPanel.SetActive(false);
+    }
+
+    public void SelectDeletingLevel(int numItem)
+    {
+        GameObject item = _items[numItem];
+        Text[] arTxt = item.GetComponentsInChildren<Text>();
+        if (arTxt != null && arTxt.Length >= 2 && int.TryParse(arTxt[0].text.Substring(0, 2), out int numLevel))
+        {
+            LevelShema tmp = LevelList.Instance.GetShemaLevel(new LevelShemaInfo(numLevel, arTxt[1].text));
+            if (tmp != null)
+            {
+                _curLevel = tmp;
+                ViewAskDelPanel();
+            }
+        }
+    }
+
+    private void ViewAskDelPanel()
+    {
+        _txtAskDel.text = $"Удалить {_curLevel.NumberLevel} уровень <{_curLevel.Name}> ?";
+        _askDelPanel.SetActive(true);
+    }
+
+    public void DeletingLevel()
+    {
+        _askDelPanel.SetActive(false);
+        _levelShemaInfos = LevelList.Instance.GetLevelInfosAfterDelLevel(new LevelShemaInfo(_curLevel.NumberLevel, _curLevel.Name));
+        _curLevel = null;
+        _curIndexLevels = 0;
+        if (_levelShemaInfos.Count > _items.Length)
+        {
+            int index = Mathf.RoundToInt(_scrollbar.value * _levelShemaInfos.Count);
+            if (index > _levelShemaInfos.Count - _items.Length) index = _levelShemaInfos.Count - _items.Length;
+            _curIndexLevels = index;
+        }
+        _scrollbar.gameObject.SetActive(_levelShemaInfos.Count > _items.Length);
+        _scrollbar.size = ((float)_items.Length) / _levelShemaInfos.Count;
+        UpdateNumberLevelItems();
+    }
+
+    public void OnScrollValueChanged()
+    {
+        float zn = _scrollbar.value;
+        int index = Mathf.RoundToInt(zn * _levelShemaInfos.Count);
+        if (index > _levelShemaInfos.Count - 7) index = _levelShemaInfos.Count - 7;
+        //print($"scrollValue = {value}   zn={zn}   index={index}");
+        _curIndexLevels = index;
+        UpdateNumberLevelItems();
     }
 }
