@@ -76,6 +76,15 @@ public class EditorUI : MonoBehaviour
     {
         
     }
+
+    private void LateUpdate()
+    {
+        // Получить вращение колеса мыши
+        float scrollAmount = Input.GetAxis("Mouse ScrollWheel");
+        if (scrollAmount < 0) _cameraControl.ChangeSize(0.5f);
+        if (scrollAmount > 0) _cameraControl.ChangeSize(-0.5f);
+    }
+
     public void InterUndo(bool value)
     {
         _undoBtn.interactable = value;
