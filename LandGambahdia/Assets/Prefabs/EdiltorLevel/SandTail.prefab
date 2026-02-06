@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2313792414251071323}
   - component: {fileID: 7219581102333459109}
   - component: {fileID: 3893117888498404579}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SandTail
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class LandTail : MonoBehaviour
 {
@@ -102,6 +103,13 @@ public class LandTail : MonoBehaviour
 
     private void OnMouseUp()
     {
+        // Проверяем, попал ли клик в UI
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            // Игнорируем клик, если он попал в UI
+            return;
+        }
+
         if (_board != null) _board.TailSelect(gameObject);
     }
 }

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1996853787764855670}
   - component: {fileID: 3545761555665162029}
   - component: {fileID: 1570488083500915451}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SandRockAngleOut
   m_TagString: Untagged
   m_Icon: {fileID: 0}

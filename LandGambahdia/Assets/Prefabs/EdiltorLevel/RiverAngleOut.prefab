@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4361011941154084279}
   - component: {fileID: 4658282155446824355}
   - component: {fileID: 363232296820350114}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RiverAngleOut
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4189890501061323879}
   - component: {fileID: 963202730133191740}
   - component: {fileID: 3579059649446000015}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RockTail
   m_TagString: Untagged
   m_Icon: {fileID: 0}

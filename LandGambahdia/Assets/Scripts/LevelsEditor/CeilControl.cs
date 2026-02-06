@@ -18,6 +18,11 @@ public class CeilControl : MonoBehaviour
 
     private void OnMouseUp()
     {
+        Invoke("TranslateToBoard", 0.05f);
+    }
+
+    private void TranslateToBoard()
+    {
         if (_board != null) _board.CeilSelect(gameObject);
     }
 }

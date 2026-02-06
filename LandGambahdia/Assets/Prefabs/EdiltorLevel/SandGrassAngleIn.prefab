@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6936714857540208117}
   - component: {fileID: 3416885732522200399}
   - component: {fileID: 2618966216503325430}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SandGrassAngleIn
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7805377724887592448}
   - component: {fileID: 314725890705077030}
   - component: {fileID: 5411469776570043290}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DoorTail
   m_TagString: Untagged
   m_Icon: {fileID: 0}

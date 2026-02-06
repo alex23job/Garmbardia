@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 392643909972630619}
   - component: {fileID: 6350225162401985882}
   - component: {fileID: 8848382776657792775}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SwampTail
   m_TagString: Untagged
   m_Icon: {fileID: 0}

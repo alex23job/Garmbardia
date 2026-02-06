@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 707634470662830418}
   - component: {fileID: 5931641919059037121}
   - component: {fileID: 7615873305706174310}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FoxGrib2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 3223785848382248688}
   - component: {fileID: 1055275035317289558}
   - component: {fileID: 8184704073018984169}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FoxGrib3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -181,7 +181,7 @@ GameObject:
   - component: {fileID: 6637388409138205121}
   - component: {fileID: 8042513265769119699}
   - component: {fileID: 8845353549691695344}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GribTail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -303,7 +303,7 @@ GameObject:
   - component: {fileID: 3324222842559741076}
   - component: {fileID: 6899453247626430643}
   - component: {fileID: 4590541336945335800}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FoxGrib1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

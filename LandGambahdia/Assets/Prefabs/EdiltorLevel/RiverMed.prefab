@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5143628686198385658}
   - component: {fileID: 5795481634630531450}
   - component: {fileID: 1144960088544464863}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RiverMed
   m_TagString: Untagged
   m_Icon: {fileID: 0}

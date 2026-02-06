@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1245828320016514993}
   - component: {fileID: 4106375241822711592}
   - component: {fileID: 7121590804712889286}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SandRcckAngle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

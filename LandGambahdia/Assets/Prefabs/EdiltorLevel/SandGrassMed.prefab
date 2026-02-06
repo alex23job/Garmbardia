@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6903414642913264296}
   - component: {fileID: 6284006763594299976}
   - component: {fileID: 5698226773786895943}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SandGrassMed
   m_TagString: Untagged
   m_Icon: {fileID: 0}

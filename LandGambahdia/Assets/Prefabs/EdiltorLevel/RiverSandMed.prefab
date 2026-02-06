@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6366631732435870866}
   - component: {fileID: 3922615611031543100}
   - component: {fileID: 807666212801919140}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RiverSandMed
   m_TagString: Untagged
   m_Icon: {fileID: 0}

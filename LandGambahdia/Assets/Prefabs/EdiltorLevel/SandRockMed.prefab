@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3374073701625305431}
   - component: {fileID: 7339467566607248340}
   - component: {fileID: 3077150765826183153}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SandRockMed
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class EditorBoard : MonoBehaviour
 {
+    [SerializeField] private SelectTailViewing _selectTailViewing;
     [SerializeField] private GameObject _ceilPrefab;
     [SerializeField] private float _ofsX;
     [SerializeField] private float _ofsY;
@@ -22,6 +23,7 @@ public class EditorBoard : MonoBehaviour
 
     private GameObject _currentLandTail = null;
     private GameObject _selectCeil = null;
+    private int _selectIndexLand = -1;
     private List<GameObject> _tails = new List<GameObject>();
     private List<GameObject> _ceils = new List<GameObject>();
 
@@ -51,7 +53,16 @@ public class EditorBoard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            OnKeyEscPressed();
+        }
+    }
+
+    private void OnKeyEscPressed()
+    {
+        _selectIndexLand = -1;
+        _selectTailViewing.StopSelect();
     }
 
     private void OnDisable()
@@ -104,6 +115,7 @@ public class EditorBoard : MonoBehaviour
 
     private void BuildTail(int num, int type = 9)
     {
+        print($"selectLand={_selectIndexLand}  num={num}  type={type}");
         int i, x, y;
         float mult = 1f;
         Vector3 pos = new Vector3(0, 0.5f, 0);
@@ -159,6 +171,8 @@ public class EditorBoard : MonoBehaviour
 
     private void SelectSpecTail(int num)
     {
+        _selectTailViewing.SetLandTail(90 + num);
+        _selectIndexLand = 90 + num;
         BuildTail(num);
     }
 
@@ -207,6 +221,8 @@ public class EditorBoard : MonoBehaviour
                 break;
         }
         //print($"l1={l1}  l2={l2}  landID={landID}(0x{landID:X08})");
+        _selectTailViewing.SetLandTail(landID);
+        _selectIndexLand = landID;
         BuildTail(landID, 0);
     }
 
@@ -370,13 +386,10 @@ public class EditorBoard : MonoBehaviour
         //}
     }
 
-    //public void CreateLevel()
-    //{
-
-    //}
-
     public void TailSelect(GameObject tail)
     {
+        OnKeyEscPressed();
+        _selectCeil = null;
         _currentLandTail = tail;
         LandTail landTail = tail.GetComponent<LandTail>();
         if (landTail != null && _editorUI != null)
@@ -389,6 +402,7 @@ public class EditorBoard : MonoBehaviour
     {
         if (_editorUI.IsLandType) return;
         _selectCeil = ceil;
-        print($"Ceil position={_selectCeil.transform.position}");
+        print($"Ceil position={_selectCeil.transform.position}  selectLand={_selectIndexLand}");
+        if (_selectIndexLand != -1) BuildTail(_selectIndexLand % 90, ((_selectIndexLand >= 90) ? 9 : 0));
     }
 }

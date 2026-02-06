@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3278953496177862760}
   - component: {fileID: 44540756917618860}
   - component: {fileID: 4524282251220820645}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RiverAngleIn
   m_TagString: Untagged
   m_Icon: {fileID: 0}

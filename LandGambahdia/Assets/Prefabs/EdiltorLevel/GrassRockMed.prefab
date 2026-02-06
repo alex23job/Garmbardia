@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1360656455654835046}
   - component: {fileID: 2306420650034029693}
   - component: {fileID: 8766558364277179138}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GrassRockMed
   m_TagString: Untagged
   m_Icon: {fileID: 0}

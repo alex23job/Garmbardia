@@ -286,7 +286,7 @@ public class EditorUI : MonoBehaviour
 
     public void ChangePrizrak(bool value)
     {
-        _prizrak.SetActive(value);
+        if (_prizrak != null) _prizrak.SetActive(value);
     }
 
     public void OnLandTypeClick(int num)

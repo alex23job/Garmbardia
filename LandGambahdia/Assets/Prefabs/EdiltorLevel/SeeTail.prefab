@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 432911313572325592}
   - component: {fileID: 2608309152794888834}
   - component: {fileID: 8231765124994941811}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SeeTail
   m_TagString: Untagged
   m_Icon: {fileID: 0}

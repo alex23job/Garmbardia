@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3144454179279087924}
   - component: {fileID: 114997661523019925}
   - component: {fileID: 4379171563770042992}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RiverSandAngleIn
   m_TagString: Untagged
   m_Icon: {fileID: 0}

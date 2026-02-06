@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6811511784676533301}
   - component: {fileID: 4961106631363675620}
   - component: {fileID: 6046182265519990136}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SeeIslandTail
   m_TagString: Untagged
   m_Icon: {fileID: 0}

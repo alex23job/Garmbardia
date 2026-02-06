@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6763089607426231271}
   - component: {fileID: 2472546116601873289}
   - component: {fileID: 5557110966133698892}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ForestTail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 1852843549107381932}
   - component: {fileID: 293635556168393539}
   - component: {fileID: 2861897662621437086}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Fir2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -219,7 +219,7 @@ GameObject:
   - component: {fileID: 6302528223081830005}
   - component: {fileID: 1000699408141338494}
   - component: {fileID: 2453826254056689392}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Fir1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -303,7 +303,7 @@ GameObject:
   - component: {fileID: 7734265339330782737}
   - component: {fileID: 9058623280188301164}
   - component: {fileID: 3975613501501571696}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Fir3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
