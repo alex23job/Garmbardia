@@ -26,8 +26,6 @@ public class EditorUI : MonoBehaviour
     [SerializeField] private GameObject _createPanel;
     [SerializeField] private InputField _nameLevel;
     [SerializeField] private InputField _numLevel;
-    [SerializeField] private InputField[] _conditions;
-    [SerializeField] private InputField[] _bonuses;
     [SerializeField] private Toggle[] _togleSZs;
 
     [SerializeField] private GameObject _condBonusPanel;
@@ -168,109 +166,10 @@ public class EditorUI : MonoBehaviour
                 return;
             }
         }
+        _curLevel.AddCondions(new VictoryCondition("Время", 5, ""));
+        _curLevel.AddBonus(new VictoryBonus("Опыт", 100, ""));
         if (_togleSZs[0].isOn) { _curLevel.SetBoardSize(35); }
         if (_togleSZs[1].isOn) { _curLevel.SetBoardSize(70); }
-        int count = -1;
-        if (_conditions[0].text != "")
-        {
-            if (int.TryParse(_conditions[0].text, out count)) _curLevel.AddCondions(new VictoryCondition("Процветание", count, ""));
-            else
-            {
-                ViewInputError($"Укажите число в диапазоне 100-10000 для процветания вместо <{_conditions[0].text}>");
-                return;
-            }
-        }
-        if (_conditions[1].text != "")
-        {
-            if (int.TryParse(_conditions[1].text, out count)) _curLevel.AddCondions(new VictoryCondition("Население", count, ""));
-            else
-            {
-                ViewInputError($"Укажите число в диапазоне 100-10000 для населения вместо <{_conditions[1].text}>");
-                return;
-            }
-        }
-        if (_conditions[2].text != "")
-        {
-            if (int.TryParse(_conditions[2].text, out count)) _curLevel.AddCondions(new VictoryCondition("Монеты", count, ""));
-            else
-            {
-                ViewInputError($"Укажите число в диапазоне 100-10000 для монет вместо <{_conditions[2].text}>");
-                return;
-            }
-        }
-        if (_conditions[3].text != "")
-        {
-            if (int.TryParse(_conditions[3].text, out count)) _curLevel.AddCondions(new VictoryCondition("Условие", count, ""));
-            else
-            {
-                ViewInputError($"Укажите число в диапазоне 100-10000 для 4 условия вместо <{_conditions[3].text}>");
-                return;
-            }
-        }
-        if (_curLevel.CountConditions == 0)
-        {
-            ViewInputError("Не указано ни одного условия для победы! Задайте хотя бы одно такое условие!");
-            return;
-        }
-        if (_bonuses[0].text != "")
-        {
-            string[] ar = _bonuses[0].text.Split(';', System.StringSplitOptions.RemoveEmptyEntries);
-            if (ar.Length >= 3)
-            {
-                if (int.TryParse(ar[1], out count)) _curLevel.AddBonus(new VictoryBonus(ar[0], count, ar[2]));
-                else
-                {
-                    ViewInputError($"Ошибка формата ввода победного бонуса. Укажите через <;> категорию бонуса, число, название вместо <{ar[0]}><{ar[1]}><{ar[2]}>");
-                    return;
-                }
-            }
-            else
-            {
-                ViewInputError($"Ошибка формата ввода победного бонуса. Укажите через <;> категорию бонуса, число, название вместо <{_bonuses[0]}>");
-                return;
-            }
-        }
-        if (_bonuses[1].text != "")
-        {
-            string[] ar = _bonuses[1].text.Split(';', System.StringSplitOptions.RemoveEmptyEntries);
-            if (ar.Length >= 3)
-            {
-                if (int.TryParse(ar[1], out count)) _curLevel.AddBonus(new VictoryBonus(ar[0], count, ar[2]));
-                else
-                {
-                    ViewInputError($"Ошибка формата ввода победного бонуса. Укажите через <;> категорию бонуса, число, название вместо <{ar[0]}><{ar[1]}><{ar[2]}>");
-                    return;
-                }
-            }
-            else
-            {
-                ViewInputError($"Ошибка формата ввода победного бонуса. Укажите через <;> категорию бонуса, число, название вместо <{_bonuses[1]}>");
-                return;
-            }
-        }
-        if (_bonuses[2].text != "")
-        {
-            string[] ar = _bonuses[2].text.Split(';', System.StringSplitOptions.RemoveEmptyEntries);
-            if (ar.Length >= 3)
-            {
-                if (int.TryParse(ar[1], out count)) _curLevel.AddBonus(new VictoryBonus(ar[0], count, ar[2]));
-                else
-                {
-                    ViewInputError($"Ошибка формата ввода победного бонуса. Укажите через <;> категорию бонуса, число, название вместо <{ar[0]}><{ar[1]}><{ar[2]}>");
-                    return;
-                }
-            }
-            else
-            {
-                ViewInputError($"Ошибка формата ввода победного бонуса. Укажите через <;> категорию бонуса, число, название вместо <{_bonuses[2]}>");
-                return;
-            }
-        }
-        if (_curLevel.CountBonuse == 0)
-        {
-            ViewInputError($"Не указано ни одного победного бонуса. Укажите хотя бы в одном поле ввода бонусов через <;> категорию бонуса, число, название, например, < Технология; 1; Металлургия >");
-            return;
-        }
         _curLevel.SetTerain(new int[] { 0 });
         _createPanel.SetActive(false);
         InterBtnArr(true);
