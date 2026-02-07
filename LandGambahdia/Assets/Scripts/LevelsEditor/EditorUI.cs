@@ -30,6 +30,9 @@ public class EditorUI : MonoBehaviour
     [SerializeField] private InputField[] _bonuses;
     [SerializeField] private Toggle[] _togleSZs;
 
+    [SerializeField] private GameObject _condBonusPanel;
+    [SerializeField] private Button _btnCondBonus;
+
     [SerializeField] private GameObject _specTailPanel;
     [SerializeField] private GameObject _landTailPanel;
     [SerializeField] private Text _landTailText;
@@ -71,6 +74,7 @@ public class EditorUI : MonoBehaviour
         InterUndo(false);
         InterBtnArr(false);
         SelectTail(0);
+        _btnCondBonus.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -162,7 +166,7 @@ public class EditorUI : MonoBehaviour
         int count = -1;
         if (_conditions[0].text != "")
         {
-            if (int.TryParse(_conditions[0].text, out count)) _curLevel.AddCondions(new VictoryCondition(count, "Процветание"));
+            if (int.TryParse(_conditions[0].text, out count)) _curLevel.AddCondions(new VictoryCondition("Процветание", count, ""));
             else
             {
                 ViewInputError($"Укажите число в диапазоне 100-10000 для процветания вместо <{_conditions[0].text}>");
@@ -171,7 +175,7 @@ public class EditorUI : MonoBehaviour
         }
         if (_conditions[1].text != "")
         {
-            if (int.TryParse(_conditions[1].text, out count)) _curLevel.AddCondions(new VictoryCondition(count, "Население"));
+            if (int.TryParse(_conditions[1].text, out count)) _curLevel.AddCondions(new VictoryCondition("Население", count, ""));
             else
             {
                 ViewInputError($"Укажите число в диапазоне 100-10000 для населения вместо <{_conditions[1].text}>");
@@ -180,7 +184,7 @@ public class EditorUI : MonoBehaviour
         }
         if (_conditions[2].text != "")
         {
-            if (int.TryParse(_conditions[2].text, out count)) _curLevel.AddCondions(new VictoryCondition(count, "Монеты"));
+            if (int.TryParse(_conditions[2].text, out count)) _curLevel.AddCondions(new VictoryCondition("Монеты", count, ""));
             else
             {
                 ViewInputError($"Укажите число в диапазоне 100-10000 для монет вместо <{_conditions[2].text}>");
@@ -189,7 +193,7 @@ public class EditorUI : MonoBehaviour
         }
         if (_conditions[3].text != "")
         {
-            if (int.TryParse(_conditions[3].text, out count)) _curLevel.AddCondions(new VictoryCondition(count, "Условие"));
+            if (int.TryParse(_conditions[3].text, out count)) _curLevel.AddCondions(new VictoryCondition("Условие", count, ""));
             else
             {
                 ViewInputError($"Укажите число в диапазоне 100-10000 для 4 условия вместо <{_conditions[3].text}>");
@@ -263,6 +267,7 @@ public class EditorUI : MonoBehaviour
         _curLevel.SetTerain(new int[] { 0 });
         _createPanel.SetActive(false);
         InterBtnArr(true);
+        _btnCondBonus.gameObject.SetActive(true);
         // Уровень создан, надо как-то сообщить в EditorBoard о перерисовке уровня
         OnLevelChanged?.Invoke(_curLevel); // Уведомляем подписчиков
     }
@@ -411,6 +416,7 @@ public class EditorUI : MonoBehaviour
                 _curLevel = tmp;
             }
         }
+        _btnCondBonus.gameObject.SetActive(true);
         // Уровень выбран, надо как-то сообщить в LevelBoard о перерисовке уровня
         OnLevelChanged?.Invoke(_curLevel); // Уведомляем подписчиков
         _selectLoadLevelPanel.SetActive(false);
@@ -462,5 +468,15 @@ public class EditorUI : MonoBehaviour
         //print($"scrollValue = {value}   zn={zn}   index={index}");
         _curIndexLevels = index;
         UpdateNumberLevelItems();
+    }
+
+    public void ViewCondBonusPanel()
+    {
+        CondBonusUI condBonusUI = _condBonusPanel.GetComponent<CondBonusUI>();
+        if (condBonusUI != null)
+        {
+            condBonusUI.SetLevelShema(_curLevel);
+            _condBonusPanel.SetActive(true);
+        }
     }
 }

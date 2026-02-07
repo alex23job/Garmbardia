@@ -65,6 +65,30 @@ public class LevelShema
         _conditions.Add(vc);
     }
 
+    public List<VictoryCondition> GetConditions()
+    {
+        List<VictoryCondition> res = new List<VictoryCondition>();
+        for (int i = 0; i < _conditions.Count; i++) res.Add(new VictoryCondition(_conditions[i]));
+        return res;
+    }
+
+    public List<VictoryBonus> GetBonuses()
+    {
+        List<VictoryBonus> res = new List<VictoryBonus>();
+        for (int i = 0; i < _bonuses.Count; i++) res.Add(new VictoryBonus(_bonuses[i]));
+        return res;
+    }
+
+    public void SetConditions(List<VictoryCondition> vc)
+    {
+        _conditions = vc;
+    }
+
+    public void SetBonuses(List<VictoryBonus> vb)
+    {
+        _bonuses = vb;
+    }
+
     public void AddBonus(VictoryBonus vb)
     {
         _bonuses.Add(vb);
@@ -137,14 +161,25 @@ public class LevelShema
 [Serializable]
 public class VictoryCondition
 {
+    private string _nameCat;
     private int _count;
     private string _name;
     public int Count { get { return _count; } }
     public string NameCondition { get { return _name; } }
+    public string NameConditionCategory { get { return _nameCat; } }
 
     public VictoryCondition() { }
-    public VictoryCondition(int n, string nm)
+
+    public VictoryCondition(VictoryCondition vc)
     {
+        _nameCat = vc.NameConditionCategory;
+        _count = vc.Count;
+        _name = vc.NameCondition;
+    }
+
+    public VictoryCondition(string nmCat, int n, string nm)
+    {
+        _nameCat = nmCat;
         _count = n;
         _name = nm;
     }
@@ -154,17 +189,24 @@ public class VictoryCondition
         string[] ar = csv.Split(sep, StringSplitOptions.RemoveEmptyEntries);
         if (ar.Length >= 2)
         {
-            _name = ar[0];
+            _nameCat = ar[0];
             if (int.TryParse(ar[1], out int zn))
             {
                 _count = zn;
             }
+            if (ar.Length >= 3) _name = ar[2];
+            else _name = "";
         }
     }
 
     public string ToCsvString(char sep = ';')
     {
-        return $"{_name}{sep}{_count}{sep}";
+        return $"{_nameCat}{sep}{_count}{sep}{_name}{sep}";
+    }
+
+    public override string ToString()
+    {
+        return $"{_nameCat}: {_count} {_name}";
     }
 }
 
@@ -179,6 +221,14 @@ public class VictoryBonus
     public int Count { get { return _count; } }
     public string Title {  get { return _title; } }
     public VictoryBonus() { }
+
+    public VictoryBonus(VictoryBonus vb)
+    {
+        _title = vb.Title;
+        _count = vb.Count;
+        _nameBonus = vb.NameBonus;
+    }
+
     public VictoryBonus(string t, int n, string nm)
     {
         _title = t;
@@ -202,5 +252,10 @@ public class VictoryBonus
     public string ToCsvString(char sep = ';')
     {
         return $"{_title}{sep}{_count}{sep}{_nameBonus}{sep}";
+    }
+
+    public override string ToString()
+    {
+        return $"{_title}: {_nameBonus} {_count} רע.";
     }
 }
