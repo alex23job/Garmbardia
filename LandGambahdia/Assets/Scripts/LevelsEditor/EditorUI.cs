@@ -57,6 +57,12 @@ public class EditorUI : MonoBehaviour
     [SerializeField] private Button _undoBtn;
     [SerializeField] private Button[] _landBtns;
 
+    [SerializeField] private Button _btnEditNameLevel;
+    [SerializeField] private GameObject _panelEditLevelName;
+    [SerializeField] private Button _btnSaveNameLevel;
+    [SerializeField] private InputField _inputEditLevelNumber;
+    [SerializeField] private InputField _inputEditLevelName;
+
     private Color _baseColor = new Color(0.7f, 1f, 0.9f, 1f), _selectColor = new Color(1f, 0.9f, 0.7f, 1f);
     private Color[] _landColor = new Color[4] { new Color(0.1f, 0.8f, 0.1f, 1f), new Color(0.6f, 0.6f, 0.6f, 1f), new Color(0.3f, 0.3f, 0.9f, 1f), new Color(8f, 0.7f, 0.3f, 1f) };
 
@@ -64,7 +70,7 @@ public class EditorUI : MonoBehaviour
     private bool _isNew = true;
     private int _landTailsType = 0;
     private bool _isLandType = false;
-    public bool IsLandType {  get { return _isLandType; } }
+    public bool IsLandType { get { return _isLandType; } }
 
     private GameObject _prizrak = null;
 
@@ -75,12 +81,13 @@ public class EditorUI : MonoBehaviour
         InterBtnArr(false);
         SelectTail(0);
         _btnCondBonus.gameObject.SetActive(false);
+        _btnEditNameLevel.interactable = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void LateUpdate()
@@ -120,7 +127,7 @@ public class EditorUI : MonoBehaviour
         int i;
         for (i = 0; i < _tailButtons.Length; i++)
         {
-            _tailButtons[i].gameObject.GetComponent<Image>().color = (i != num) ? _baseColor : _selectColor; 
+            _tailButtons[i].gameObject.GetComponent<Image>().color = (i != num) ? _baseColor : _selectColor;
         }
         _cameraControl.SetQuadrant(num);
     }
@@ -268,6 +275,7 @@ public class EditorUI : MonoBehaviour
         _createPanel.SetActive(false);
         InterBtnArr(true);
         _btnCondBonus.gameObject.SetActive(true);
+        ViewEditNameLevel();
         // Уровень создан, надо как-то сообщить в EditorBoard о перерисовке уровня
         OnLevelChanged?.Invoke(_curLevel); // Уведомляем подписчиков
     }
@@ -417,9 +425,38 @@ public class EditorUI : MonoBehaviour
             }
         }
         _btnCondBonus.gameObject.SetActive(true);
+        ViewEditNameLevel();
         // Уровень выбран, надо как-то сообщить в LevelBoard о перерисовке уровня
         OnLevelChanged?.Invoke(_curLevel); // Уведомляем подписчиков
         _selectLoadLevelPanel.SetActive(false);
+    }
+
+    public void ViewEditNameLevel()
+    {
+        Text txtNameLevel = _btnEditNameLevel.gameObject.GetComponentInChildren<Text>();
+        if (txtNameLevel != null) txtNameLevel.text = $"{_curLevel.NumberLevel:D02}. {_curLevel.Name}";
+        _btnEditNameLevel.interactable = true;
+    }
+
+    public void ViewEditNameLevelPanel()
+    {
+        _inputEditLevelNumber.text = $"{_curLevel.NumberLevel:D02}";
+        _inputEditLevelName.text = _curLevel.Name;
+        _panelEditLevelName.SetActive(true);
+    }
+
+    public void OnSaveNameNumberLevelClick()
+    {
+        int num;
+        if (int.TryParse(_inputEditLevelNumber.text, out num))
+        {
+            if ((num != _curLevel.NumberLevel) || (_inputEditLevelName.text != _curLevel.Name))
+            {
+                _curLevel.SetNameLevel(_inputEditLevelName.text);
+                _curLevel.SetNumber(num);
+            }
+        }
+        _panelEditLevelName.SetActive(false);
     }
 
     public void SelectDeletingLevel(int numItem)
