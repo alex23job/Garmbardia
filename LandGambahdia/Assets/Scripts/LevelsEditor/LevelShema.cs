@@ -122,6 +122,10 @@ public class LevelShema
     public void SetTerain(int[] ter)
     {
         _terrain = ter;
+        for (int i = 0;i < ter.Length;i++)
+        {
+            _tmpTails.Add(ter[i]);
+        }
     }
 
     public void UpdateTerainTails(int tailInfo)
@@ -151,6 +155,7 @@ public class LevelShema
         sb.Append(sep);
         foreach(VictoryBonus vb in _bonuses) { sb.Append(vb.ToCsvString(';') + sepVL); }
         sb.Append(sep);
+        _terrain = _tmpTails.ToArray();
         foreach(int zn in _tmpTails) { if ((zn & 0xff0000) > 0) sb.Append($"{zn:X08}"); }
         //if (_terrain != null) foreach (int zn in _terrain) { sb.Append($"{zn:X08}"); }
         sb.Append(sep);

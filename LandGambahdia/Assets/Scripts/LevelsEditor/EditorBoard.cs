@@ -82,6 +82,19 @@ public class EditorBoard : MonoBehaviour
         }
     }
 
+    public void OnUndoButtonClick()
+    {
+        if (_tails.Count > 0)
+        {
+            GameObject tail = _tails[_tails.Count - 1];
+            LandTail landTail = tail.GetComponent<LandTail>();
+            _levelShema.RemoveTerainTail(landTail.TailInfo);
+            _tails.RemoveAt(_tails.Count - 1);
+            Destroy(tail, 0.01f);
+        }
+        _editorUI.InterUndo(_tails.Count > 0);
+    }
+
     private void DelOrRotTail(int num)
     {
         if (_currentLandTail != null)

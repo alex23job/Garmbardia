@@ -353,6 +353,7 @@ public class EditorUI : MonoBehaviour
             {
                 _curLevel.SetNameLevel(_inputEditLevelName.text);
                 _curLevel.SetNumber(num);
+                ViewEditNameLevel();
             }
         }
         _panelEditLevelName.SetActive(false);

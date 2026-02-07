@@ -9,17 +9,17 @@ public class OnOffPrizrak : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        _prizrak.SetActive(true);
+        if (_prizrak != null) _prizrak.SetActive(true);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        _prizrak.SetActive(false);
+        if (_prizrak != null) _prizrak.SetActive(false);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        _prizrak.SetActive(false);
+        if (_prizrak != null) _prizrak.SetActive(false);
     }
 }
