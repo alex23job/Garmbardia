@@ -3545,7 +3545,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 247314436}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 616166460}
+        m_TargetAssemblyTypeName: CondBonusUI, Assembly-CSharp
+        m_MethodName: AddCondition
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &247314436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7675,7 +7687,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 581188429}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 616166460}
+        m_TargetAssemblyTypeName: CondBonusUI, Assembly-CSharp
+        m_MethodName: AddBonus
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &581188429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7952,7 +7976,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 612455218}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 616166460}
+        m_TargetAssemblyTypeName: CondBonusUI, Assembly-CSharp
+        m_MethodName: DelCondition
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &612455218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8109,6 +8145,7 @@ MonoBehaviour:
   _condDropdown: {fileID: 516402120}
   _condCountInp: {fileID: 1818147841}
   _condNameInp: {fileID: 1127183063}
+  _condTitle: {fileID: 1293567852}
   _bonusDelBtns:
   - {fileID: 1648108851}
   - {fileID: 712050912}
@@ -8123,6 +8160,7 @@ MonoBehaviour:
   _bonusDropdown: {fileID: 827245710}
   _bonusCountInp: {fileID: 131289850}
   _bonusNameInp: {fileID: 854884906}
+  _bonusTitle: {fileID: 2118291622}
 --- !u!1 &618716818
 GameObject:
   m_ObjectHideFlags: 0
@@ -8284,7 +8322,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 634645672}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 616166460}
+        m_TargetAssemblyTypeName: CondBonusUI, Assembly-CSharp
+        m_MethodName: DelCondition
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &634645672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9114,7 +9164,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 712050913}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 616166460}
+        m_TargetAssemblyTypeName: CondBonusUI, Assembly-CSharp
+        m_MethodName: DelBonus
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &712050913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9712,7 +9774,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 759072747}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 616166460}
+        m_TargetAssemblyTypeName: CondBonusUI, Assembly-CSharp
+        m_MethodName: DelBonus
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &759072747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15919,7 +15993,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1270349157}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 616166460}
+        m_TargetAssemblyTypeName: CondBonusUI, Assembly-CSharp
+        m_MethodName: SaveChanges
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1270349157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20676,7 +20762,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1622618222}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 616166460}
+        m_TargetAssemblyTypeName: CondBonusUI, Assembly-CSharp
+        m_MethodName: DelCondition
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1622618222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20929,7 +21027,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1648108852}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 616166460}
+        m_TargetAssemblyTypeName: CondBonusUI, Assembly-CSharp
+        m_MethodName: DelBonus
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1648108852
 MonoBehaviour:
   m_ObjectHideFlags: 0
