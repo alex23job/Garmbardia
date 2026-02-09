@@ -7,6 +7,9 @@ using UnityEngine.SceneManagement;
 public class LevelUI : MonoBehaviour
 {
     [SerializeField] private GameObject _pausePanel;
+    [SerializeField] private Text _levelInfo;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +20,11 @@ public class LevelUI : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void ViewLevelInfo(LevelShema ls)
+    {
+        _levelInfo.text = $"{ls.NumberLevel}. {ls.Name}";
     }
 
     public void OnSaveLevelClick()

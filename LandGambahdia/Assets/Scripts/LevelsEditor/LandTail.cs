@@ -30,6 +30,7 @@ public class LandTail : MonoBehaviour
     public int TailInfo { get { return _tailInfo; } }
 
     private EditorBoard _board = null;
+    private LevelBoard _levelBoard = null;
     /// <summary>
     /// 0-7 биты - столбец, 8-15 биты - строка, 16-23 - _id, 24-25 - _rot => 0 - 0, 1 - 90, 2 - 180, 3 - 270 
     /// </summary>
@@ -55,6 +56,13 @@ public class LandTail : MonoBehaviour
     public void SetBoardAndPosition(EditorBoard eb, int row, int col)
     {
         _board = eb;
+        _tailInfo = (_id << 16) + (row << 8) + col;
+        //print($"x={col} y={row} tailInfo={_tailInfo}(0x{_tailInfo:X08})    pos={transform.position}");
+    }
+
+    public void SetBoardAndPosition(LevelBoard lb, int row, int col)
+    {
+        _levelBoard = lb;
         _tailInfo = (_id << 16) + (row << 8) + col;
         //print($"x={col} y={row} tailInfo={_tailInfo}(0x{_tailInfo:X08})    pos={transform.position}");
     }
@@ -111,5 +119,6 @@ public class LandTail : MonoBehaviour
         }
 
         if (_board != null) _board.TailSelect(gameObject);
+        if (_levelBoard != null) _levelBoard.TailSelect(gameObject);
     }
 }
