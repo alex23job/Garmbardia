@@ -41,8 +41,9 @@ public class MainUIControl : MonoBehaviour
         selectLevelPanel.SetActive(true);
     }
 
-    public void LoadLevel()
+    public void LoadLevel(int num)
     {
+        GameManager.Instance.currentPlayer.currentLevel = num;
         SceneManager.LoadScene("LevelScene");
     }
 
@@ -54,5 +55,10 @@ public class MainUIControl : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
+    }
+
+    public void ViewRecord()
+    {
+
     }
 }
