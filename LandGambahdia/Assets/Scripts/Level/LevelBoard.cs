@@ -9,6 +9,7 @@ public class LevelBoard : MonoBehaviour
     [SerializeField] private float _ofsX;
     [SerializeField] private float _ofsY;
     [SerializeField] private int _sizeBoard;
+    [SerializeField] private GameObject[] _buildingPrefabs;
 
     private LandTail[] _landTails = null;
     private LevelShema _levelShema = null;
@@ -16,6 +17,10 @@ public class LevelBoard : MonoBehaviour
     private List<GameObject> _tails = new List<GameObject>();
     private LevelBoard _levelBoard = null;
     private int[] _tailsID = null;
+
+    private LevelControl _levelControl = null;
+
+    private GameObject _selectTail = null;
 
     private void Awake()
     {
@@ -26,13 +31,24 @@ public class LevelBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Invoke("TranslateBuildingInfo", 1f);
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    private void TranslateBuildingInfo()
+    {
+        List<BuildingInfo> list = new List<BuildingInfo>();
+        foreach (GameObject go in _buildingPrefabs)
+        {
+            BuildingControl bc = go.GetComponent<BuildingControl>();
+            if (bc != null) list.Add(bc.GetBuildingInfo());
+        }
+        if (_levelControl != null) _levelControl.TranslateBuildingInfo(list.ToArray());
     }
 
     private void FillLandTails()
@@ -45,8 +61,41 @@ public class LevelBoard : MonoBehaviour
         }
     }
 
-    public void ViewCurrentLevel(LevelShema level)
+    public GameObject CreateBuilding(int cat, int build)
     {
+        int buildID = (cat << 5) + build;
+        print($"CreateBuilding id={buildID}");
+        if (_selectTail != null)
+        {
+            LandTail landTail = _selectTail.GetComponent<LandTail>();
+            if (landTail == null) return null;
+            foreach (GameObject prefab in _buildingPrefabs)
+            {
+                BuildingControl bc = prefab.GetComponent<BuildingControl>();
+                if (bc != null)
+                {
+                    if (bc.BuildingID == buildID)
+                    {
+                        int tailID = landTail.TailID;
+                        int x = tailID & 0xff;
+                        int y = (tailID >> 8) & 0xff;
+                        Vector3 pos = _selectTail.transform.position;
+                        pos.y = 1.5f;
+                        GameObject b = Instantiate(prefab, pos, Quaternion.identity);
+                        if (_levelShema.BoardSize == 35) b.transform.localScale = new Vector3(2f, 2f, 2f);
+                        BuildingControl nbc = b.GetComponent<BuildingControl>();
+                        nbc.SetBoardAndPosition(_levelBoard, y, x);
+                        return b;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public void ViewCurrentLevel(LevelShema level, LevelControl lc)
+    {
+        _levelControl = lc;
         if (level != null)
         {
             _levelShema = level;
@@ -92,7 +141,7 @@ public class LevelBoard : MonoBehaviour
                         if (landTail != null) landTail.SetBoardAndPosition(_levelBoard, y, x);
                         if (landTail.IsRotate) for (j = 0; j < rot; j++) landTail.RotateTail();
                         _tails.Add(tail);
-                        print($"y={y} x={x}  index={_levelShema.BoardSize * (y / 4) + x / 4}    max={_levelShema.BoardSize * _levelShema.BoardSize}");
+                        //print($"y={y} x={x}  index={_levelShema.BoardSize * (y / 4) + x / 4}    max={_levelShema.BoardSize * _levelShema.BoardSize}");
                         _tailsID[_levelShema.BoardSize * (y / 4) + x / 4] = num;
                         break;
                     }
@@ -171,6 +220,10 @@ public class LevelBoard : MonoBehaviour
 
     public void TailSelect(GameObject tail)
     {
-
+        if (_levelControl  != null)
+        {
+            _levelControl.TailSelect(tail);
+            _selectTail = tail;
+        }
     }
 }
