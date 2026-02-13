@@ -24,6 +24,26 @@ public class ProductionControl : MonoBehaviour
         
     }
 
+    public bool AddWorker()
+    {
+        if (_workerCount < _maxWorkersCount)
+        {
+            _workerCount++;
+            return true;
+        }
+        return false;
+    }
+
+    public bool RemoveWorker()
+    {
+        if (_workerCount > 0)
+        {
+            _workerCount--;
+            return true;
+        }
+        return false;
+    }
+
     public void AddSecond()
     {
         if (_workerCount > 0)
@@ -41,12 +61,14 @@ public class ProductionControl : MonoBehaviour
         }
     }
 
-    public void TakeResourse()
+    public bool TakeResourse()
     {
         if (_producedCount > 0)
         {
             _producedCount--;
             _products[_producedCount].gameObject.SetActive(false);
+            return true;
         }
+        return false;
     }
 }
