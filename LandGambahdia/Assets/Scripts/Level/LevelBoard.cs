@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class LevelBoard : MonoBehaviour
 {
+    [SerializeField] private GameObject _ceil;
     [SerializeField] private GameObject[] _landTailPrefabs;
     [SerializeField] private float _ofsX;
     [SerializeField] private float _ofsY;
@@ -76,6 +77,12 @@ public class LevelBoard : MonoBehaviour
                 {
                     if (bc.BuildingID == buildID)
                     {
+                        if (_levelControl.CheckMany(bc.Price) == false)
+                        {
+                            _levelControl.ViewError("Недостаточно денег для постройки !");
+                            return null;
+                        }
+                        _levelControl.ChangeMany(-bc.Price);
                         int tailID = landTail.TailID;
                         int x = tailID & 0xff;
                         int y = (tailID >> 8) & 0xff;
@@ -85,6 +92,10 @@ public class LevelBoard : MonoBehaviour
                         if (_levelShema.BoardSize == 35) b.transform.localScale = new Vector3(2f, 2f, 2f);
                         BuildingControl nbc = b.GetComponent<BuildingControl>();
                         nbc.SetBoardAndPosition(_levelBoard, y, x);
+                        ConturRadius cr = b.GetComponent<ConturRadius>();
+                        if (cr != null) cr.SetSize(nbc.Radius);
+                        _selectTail = null;
+                        _ceil.SetActive(false);
                         return b;
                     }
                 }
@@ -220,10 +231,45 @@ public class LevelBoard : MonoBehaviour
 
     public void TailSelect(GameObject tail)
     {
+        if (_selectTail != null)
+        {
+            ConturRadius cr = _selectTail.GetComponent<ConturRadius>();
+            if (cr != null) cr.ViewContur(false);
+            LandTail land = _selectTail.GetComponent<LandTail>();
+            if (land != null) _ceil.SetActive(false);
+        }
+
         if (_levelControl  != null)
         {
+            ConturRadius cr = tail.GetComponent<ConturRadius>();
+            if (cr != null) cr.ViewContur(true);
             _levelControl.TailSelect(tail);
             _selectTail = tail;
+            LandTail land = tail.GetComponent<LandTail>();
+            if (land != null)
+            {
+                //int x = land.TailInfo & 0xff;
+                //int y = (land.TailInfo >> 8) & 0xff;
+                _ceil.transform.position = new Vector3(tail.transform.position.x, 1.5f, tail.transform.position.z);
+                _ceil.SetActive(true);
+            }
         }
+    }
+
+    private Vector3 GetPos(int x, int y, float h = 1.5f)
+    {
+        Vector3 pos = Vector3.zero;
+        pos.y = h;
+        if (_levelShema.BoardSize == 35)
+        {
+            pos.x = _ofsX + x * 0.5f + 1f;
+            pos.z = _ofsY - y * 0.5f - 1f;
+        }
+        if (_levelShema.BoardSize == 70)
+        {
+            pos.x = _ofsX + x + 0.5f;
+            pos.z = _ofsY - y - 0.5f;
+        }
+        return pos;
     }
 }

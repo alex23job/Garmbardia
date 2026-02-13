@@ -38,12 +38,12 @@ public class LevelShema
             {
                 _boardSize = sz;
             }
-            string[] arCond = ar[4].Split(sepVL);
+            string[] arCond = ar[4].Split(sepVL, StringSplitOptions.RemoveEmptyEntries);
             foreach (string cond in arCond)
             {
                 _conditions.Add(new VictoryCondition(cond));
             }
-            string[] arBonus = ar[5].Split(sepVL);
+            string[] arBonus = ar[5].Split(sepVL, StringSplitOptions.RemoveEmptyEntries);
             foreach (string bonus in arBonus)
             {
                 _bonuses.Add(new VictoryBonus(bonus));
@@ -169,7 +169,9 @@ public class VictoryCondition
     private string _nameCat;
     private int _count;
     private string _name;
+    private int _value;
     public int Count { get { return _count; } }
+    public int Value { get { return _value; } }
     public string NameCondition { get { return _name; } }
     public string NameConditionCategory { get { return _nameCat; } }
 
@@ -180,6 +182,7 @@ public class VictoryCondition
         _nameCat = vc.NameConditionCategory;
         _count = vc.Count;
         _name = vc.NameCondition;
+        _value = vc.Value;
     }
 
     public VictoryCondition(string nmCat, int n, string nm)
@@ -187,6 +190,7 @@ public class VictoryCondition
         _nameCat = nmCat;
         _count = n;
         _name = nm;
+        _value = 0;
     }
 
     public VictoryCondition(string csv, char sep = ';')
@@ -202,6 +206,12 @@ public class VictoryCondition
             if (ar.Length >= 3) _name = ar[2];
             else _name = "";
         }
+        _value = 0;
+    }
+
+    public void SetValue(int val)
+    {
+        _value = val;
     }
 
     public string ToCsvString(char sep = ';')

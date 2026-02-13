@@ -19,6 +19,17 @@ public class LevelUI : MonoBehaviour
     private int _selectCategory = -1;
     private BuildingInfo[] _buildingInfos = null;
 
+    [SerializeField] private GameObject _conditionsPanel;
+    [SerializeField] private GameObject[] _conditionItems;
+
+    [SerializeField] private Slider _speedSlider;
+    [SerializeField] private Text _speedTxt;
+    [SerializeField] private Text _manyTxt;
+    [SerializeField] private Text _currentTimeTxt;
+
+    [SerializeField] private GameObject _errorPanel;
+    [SerializeField] private Text _errorTxt;
+
 
     // Start is called before the first frame update
     void Start()
@@ -30,6 +41,12 @@ public class LevelUI : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void ViewErrorPanel(string textError)
+    {
+        _errorTxt.text = textError;
+        _errorPanel.SetActive(true);
     }
 
     public void ViewLevelInfo(LevelShema ls)
@@ -95,6 +112,52 @@ public class LevelUI : MonoBehaviour
             OnSelectBuilding?.Invoke(_selectCategory, num);
             _selectCategory = -1;
         }
+    }
+
+    public void ViewConditionPanel(bool value, List<VictoryCondition> list = null)
+    {
+        if (value && list != null && list.Count > 0)
+        {
+            for (int i = 0; i < _conditionItems.Length; i++) 
+            {
+                if (i <  list.Count)
+                {
+                    Text txtLeft = _conditionItems[i].transform.GetChild(0).gameObject.GetComponent<Text>();
+                    Text txtRight = _conditionItems[i].transform.GetChild(1).gameObject.GetComponent<Text>();
+                    txtLeft.text = $"{list[i].NameConditionCategory} {list[i].NameCondition}";
+                    txtRight.text = $"{list[i].Value}/{list[i].Count}";
+                    if (list[i].Value >= list[i].Count) txtRight.color = Color.green;
+                    else
+                    {
+                        if (list[i].Value * 2 >= list[i].Count) txtRight.color = Color.yellow;
+                        else txtRight.color = Color.red;
+                    }
+                    if (list[i].NameConditionCategory == "Время") txtRight.color = Color.green;
+                    _conditionItems[i].SetActive(true);
+                }
+                else
+                {
+                    _conditionItems[i].SetActive(false);
+                }
+            }
+        }
+        _conditionsPanel.SetActive(value);
+    }
+
+    public void SetSliderSpeed(float speed)
+    {
+        _speedTxt.text = $"x{speed:F1}";
+        if (_speedSlider.value != speed) _speedSlider.value = speed;
+    }
+
+    public void ViewMany(int many)
+    {
+        _manyTxt.text = many.ToString();
+    }
+
+    public void ViewCurrentTime(int month)
+    {
+        _currentTimeTxt.text = $"Месяц:{month % 12} Год:{month / 12}";
     }
 
     public void OnSaveLevelClick()
