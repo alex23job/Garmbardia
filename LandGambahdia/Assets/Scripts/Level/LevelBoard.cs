@@ -81,13 +81,20 @@ public class LevelBoard : MonoBehaviour
                         {
                             _levelControl.ViewError("Недостаточно денег для постройки !");
                             return null;
-                        }
-                        _levelControl.ChangeMany(-bc.Price);
+                        }                        
                         int tailID = landTail.TailID;
+                        int num = (tailID >> 16) & 0xff;
+                        if (CheckBuilding(num, buildID) == false)
+                        {
+                            _levelControl.ViewError("Тип местности не соответствует виду постройки !");
+                            return null;
+                        }
                         int x = tailID & 0xff;
                         int y = (tailID >> 8) & 0xff;
                         Vector3 pos = _selectTail.transform.position;
                         pos.y = 1.5f;
+
+                        _levelControl.ChangeMany(-bc.Price);
                         GameObject b = Instantiate(prefab, pos, Quaternion.identity);
                         if (_levelShema.BoardSize == 35) b.transform.localScale = new Vector3(2f, 2f, 2f);
                         BuildingControl nbc = b.GetComponent<BuildingControl>();
@@ -102,6 +109,35 @@ public class LevelBoard : MonoBehaviour
             }
         }
         return null;
+    }
+
+    private bool CheckBuilding(int landID, int buildingID)
+    {
+        if (landID == 24 || landID == 27)
+        {   //  проверка на начало/конец моста
+        }
+        if (landID == 20 || landID == 23)
+        {   //  проверка на постройку шахты
+        }
+        if (landID == 2)
+        {   //  проверка на средину моста
+        }
+        if (landID == 90)
+        {   //  проверка на постройку лесопилки
+        }
+        if (landID == 3)
+        {   //  проверка на постройку стеклодува
+        }
+        if (landID == 96)
+        {   //  это дорога
+            if ((buildingID == 129) || (buildingID == 130)) return true;
+            else return false;
+        }
+        if (landID > 0)
+        {   //  это не трава
+            return false;
+        }
+        return true;
     }
 
     public void ViewCurrentLevel(LevelShema level, LevelControl lc)
@@ -197,7 +233,7 @@ public class LevelBoard : MonoBehaviour
                         if (landTail != null) landTail.SetBoardAndPosition(_levelBoard, y, x);
                         if (landTail.IsRotate) for (j = 0; j < rot; j++) landTail.RotateTail();
                         _tails.Add(tail);
-                        _tailsID[_levelShema.BoardSize * y + x] = num;
+                        _tailsID[_levelShema.BoardSize * y + x] = num;  //  возможно нужно y/2 и x/2
                         break;
                     }
                 }

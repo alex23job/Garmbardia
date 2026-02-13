@@ -244,6 +244,7 @@ GameObject:
   - component: {fileID: 7747834581584205102}
   - component: {fileID: 2174078267262759551}
   - component: {fileID: -758624317354058323}
+  - component: {fileID: 5665185317015056202}
   m_Layer: 0
   m_Name: WaterWell
   m_TagString: Untagged
@@ -324,6 +325,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _contur: {fileID: 4577997793355193471}
+--- !u!114 &5665185317015056202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4466625031435986403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fe7e2e5f9f2e2f478688d901385633d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _products:
+  - {fileID: 3987297733642004905}
+  - {fileID: 7623413420947673350}
+  - {fileID: 820634814886723223}
+  _maxWorkersCount: 2
+  _oneResourceCompleteTime: 10
 --- !u!1 &4577997793355193471
 GameObject:
   m_ObjectHideFlags: 0

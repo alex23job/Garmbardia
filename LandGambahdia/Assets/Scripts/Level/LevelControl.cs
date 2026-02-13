@@ -16,6 +16,7 @@ public class LevelControl : MonoBehaviour
     private LevelControl _levelControl;
 
     private List<GameObject> _buildingList = new List<GameObject>();
+    private List<GameObject> _houseList = new List<GameObject>();
 
     private bool _isVictoryConditionsView = false;
     private float _speedGame = 1f;
@@ -82,7 +83,11 @@ public class LevelControl : MonoBehaviour
     private void OnSelectBuilding(int type, int num)
     {
         GameObject build = _levelBoard.CreateBuilding(type, num);
-        if (build != null) _buildingList.Add(build); 
+        if (build != null)
+        {
+            if (type > 0) _buildingList.Add(build);
+            else _houseList.Add(build);
+        }
     }
 
     public void TailSelect(GameObject tail)
@@ -119,6 +124,14 @@ public class LevelControl : MonoBehaviour
     private void AddSecond()
     {
         _countSecond++;
+        foreach(GameObject prod in _buildingList)
+        {
+            ProductionControl pc = prod.GetComponent<ProductionControl>();
+            if (pc != null)
+            {
+                pc.AddSecond();
+            }
+        }
         if (_countSecond >= _countSecondInMonth)
         {
             _countMonth++;
