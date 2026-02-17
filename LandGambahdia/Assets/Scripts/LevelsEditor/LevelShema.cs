@@ -65,6 +65,10 @@ public class LevelShema
         _conditions.Add(vc);
     }
 
+    /// <summary>
+    /// ѕолучить список условий победы дл€ редактировани€ с сохранением исходного списка неизменным в схеме уровн€
+    /// </summary>
+    /// <returns>список условий победы</returns>
     public List<VictoryCondition> GetConditions()
     {
         List<VictoryCondition> res = new List<VictoryCondition>();

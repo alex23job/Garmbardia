@@ -97,9 +97,10 @@ GameObject:
   - component: {fileID: 2681022796206983990}
   - component: {fileID: 7076424122619509602}
   - component: {fileID: 4488707991517661478}
+  - component: {fileID: 1324006672390460088}
   m_Layer: 0
   m_Name: WoodHouse
-  m_TagString: Untagged
+  m_TagString: House
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -160,3 +161,20 @@ MonoBehaviour:
   _nameBuilding: "\u0414\u0440\u0435\u0432\u043E\u0434\u043E\u043C"
   _price: 10
   _radius: 0
+  _requirement: -1
+  _prosperity: 1
+  _serviceCost: 0
+--- !u!114 &1324006672390460088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7077776410835692281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeb3ba2c7894b484baacd10d21baaeb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxCitizens: 4
+  _oneCitizenNalog: 2

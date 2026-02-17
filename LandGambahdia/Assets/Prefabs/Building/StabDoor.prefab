@@ -137,8 +137,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 0.1, z: 1}
-  m_Center: {x: 0, y: 0.05, z: 0}
+  m_Size: {x: 1, y: 0.08, z: 1}
+  m_Center: {x: 0, y: 0.04, z: 0}
 --- !u!114 &2623414442450709849
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,7 +154,10 @@ MonoBehaviour:
   _id: 128
   _rot: 0
   _isRotate: 0
-  _sprite: {fileID: 21300000, guid: 712a93ee22a3b9746a1d512014d262b6, type: 3}
+  _sprite: {fileID: 21300000, guid: 40b82c61a08300f48a4c8eab696b2c6f, type: 3}
   _nameBuilding: "\u0414\u0435\u0440\u0435\u0432\u043E"
   _price: 2
-  _radius: 0
+  _radius: 1
+  _requirement: 0
+  _prosperity: -1
+  _serviceCost: 0

@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class LevelControl : MonoBehaviour
 {
@@ -9,6 +11,7 @@ public class LevelControl : MonoBehaviour
     [SerializeField] private LevelBoard _levelBoard;
     [SerializeField] private LevelCamera _levelCamera;
     [SerializeField] private Slider _speedSlider;
+    [SerializeField] private SpawnSitizen _spawnSitizen;
 
     [SerializeField] private int _countSecondInMonth = 300;
 
@@ -17,14 +20,28 @@ public class LevelControl : MonoBehaviour
 
     private List<GameObject> _buildingList = new List<GameObject>();
     private List<GameObject> _houseList = new List<GameObject>();
+    private List<int> _freePlacesIndex = new List<int>();
 
+    private List<GameObject> _citizens = new List<GameObject>();
+    private List<CitizenMovement> _citizenMovements = new List<CitizenMovement>();
+
+    private List<VictoryCondition> _victoryConditions = new List<VictoryCondition>();
     private bool _isVictoryConditionsView = false;
     private float _speedGame = 1f;
-    private int _many = 100;
+    private int _many = 200;
 
     private float _timer = 1f;
     private int _countMonth = 0;
     private int _countSecond = 0;
+
+    private int _countProsperity = 0;
+    private int _countCitizens = 0;
+    private int _freePlaces = 0;
+    private int _vacancy = 0;
+    private int _totalServiceCost = 0;
+    private int _totalNalog = 0;
+    private bool _isWin = false;
+    private bool _isLoss = false;
 
     private void Awake()
     {
@@ -39,6 +56,9 @@ public class LevelControl : MonoBehaviour
         {
             if (_levelUI != null) _levelUI.ViewLevelInfo(_levelShema);
             if (_levelBoard != null) _levelBoard.ViewCurrentLevel(_levelShema, _levelControl);
+            _victoryConditions = _levelShema.GetConditions();
+            _levelUI.ViewConditionPanel(false, _victoryConditions);
+            if (_spawnSitizen != null && _levelBoard != null) _spawnSitizen.SetLevelParams(_levelControl, _levelBoard.SpawnPosition);
         }
         _levelUI.SetSliderSpeed(_speedGame);
         _levelUI.ViewMany(_many);
@@ -56,6 +76,13 @@ public class LevelControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (_citizenMovements.Count > 0)
+        {
+            foreach(CitizenMovement movement in _citizenMovements)
+            {
+                movement.MoveCitizen();
+            }
+        }
         if (_timer > 0) _timer -= Time.deltaTime;
         else
         {
@@ -69,7 +96,7 @@ public class LevelControl : MonoBehaviour
         _isVictoryConditionsView = !_isVictoryConditionsView;
         if (_isVictoryConditionsView && _levelShema != null)
         {
-            _levelUI.ViewConditionPanel(_isVictoryConditionsView, _levelShema.GetConditions());
+            _levelUI.ViewConditionPanel(_isVictoryConditionsView, _victoryConditions);
         }
         else _levelUI.ViewConditionPanel(_isVictoryConditionsView);
     }
@@ -85,8 +112,74 @@ public class LevelControl : MonoBehaviour
         GameObject build = _levelBoard.CreateBuilding(type, num);
         if (build != null)
         {
-            if (type > 0) _buildingList.Add(build);
-            else _houseList.Add(build);
+            if (type > 0)
+            {
+                _buildingList.Add(build);
+                BuildingControl bc = build.GetComponent<BuildingControl>();
+                if (bc != null)                    
+                {
+                    if (bc.Requirment != -1)
+                    {
+                        int row = (bc.BuildingInfo >> 8) & 0xff;
+                        int col = bc.BuildingInfo & 0xff;
+                        int multRadius = (_levelShema.BoardSize == 35) ? 4 : 2;
+                        foreach (GameObject house in _houseList)
+                        {
+                            HouseRequirement houseRequirement = house.GetComponent<HouseRequirement>();
+                            if (houseRequirement != null) houseRequirement.AddRequirement(bc.Requirment, row, col, bc.Radius * multRadius);
+                        }
+                        CheckHouses();
+                    }
+                    if (bc.Prosperity > 0)
+                    {
+                        _countProsperity += bc.Prosperity;
+                        foreach (VictoryCondition vc in _victoryConditions)
+                        {
+                            if (vc.NameConditionCategory == "Процветание")
+                            {
+                                vc.SetValue(_countProsperity);
+                            }
+                        }
+                    }
+                }
+                ProductionControl pc = build.GetComponent<ProductionControl>();
+                if (pc != null)
+                {
+                    _vacancy += pc.Vacancy;
+                }
+                if (_spawnSitizen != null)
+                {
+                    _spawnSitizen.CalcInterval(_countProsperity, _vacancy, _freePlaces);
+                }
+            }
+            else
+            {
+                _houseList.Add(build);
+                
+                HouseRequirement houseRequirement = build.GetComponent<HouseRequirement>();
+                if (houseRequirement != null)
+                {
+                    houseRequirement.SetLevelControl(_levelControl);
+                    int indexHouse = GetIndexBuilding(build);
+                    if (indexHouse != -1) for (int i = 0; i < houseRequirement.FreePlaces; i++) _freePlacesIndex.Add(indexHouse);
+                    foreach (GameObject go in _buildingList)
+                    {
+                        BuildingControl bc = go.GetComponent<BuildingControl>();
+                        if (bc != null && bc.Requirment != -1)
+                        {
+                            int row = (bc.BuildingInfo >> 8) & 0xff;
+                            int col = bc.BuildingInfo & 0xff;
+                            int multRadius = (_levelShema.BoardSize == 35) ? 4 : 2;
+                            houseRequirement.AddRequirement(bc.Requirment, row, col, bc.Radius * multRadius);
+                        }
+                    }
+                    _freePlaces += houseRequirement.FreePlaces;
+                    if (_spawnSitizen != null)
+                    {
+                        _spawnSitizen.CalcInterval(_countProsperity, _vacancy, _freePlaces);
+                    }
+                }
+            }
         }
     }
 
@@ -124,6 +217,16 @@ public class LevelControl : MonoBehaviour
     private void AddSecond()
     {
         _countSecond++;
+        if (_spawnSitizen != null)
+        {
+            GameObject nc = _spawnSitizen.SpawnCitizen();
+            if (nc != null)
+            {   //  передать маршрут движения к свободному жилью в жителя
+                CitizenMovement movement = nc.GetComponent<CitizenMovement>();
+                if (movement != null) _citizenMovements.Add(movement);
+                _citizens.Add(nc);
+            }
+        }
         foreach(GameObject prod in _buildingList)
         {
             ProductionControl pc = prod.GetComponent<ProductionControl>();
@@ -134,14 +237,238 @@ public class LevelControl : MonoBehaviour
         }
         if (_countSecond >= _countSecondInMonth)
         {
+            _countSecond = 0;
             _countMonth++;
             _levelUI.ViewCurrentTime(_countMonth);
-            CalcProfit();
+            SumProsperity();
+            CheckHouses();
+            CalcProfit(_countMonth % 12 == 0);
+
+            foreach (VictoryCondition vc in _victoryConditions)
+            {
+                if (vc.NameConditionCategory == "Время")
+                {
+                    vc.SetValue(_countMonth / 12);
+                }
+            }
+
+            if (TestEndGame())
+            {   //  конец игры что-то нужно сделать кроме показа финишных панелей ?!
+                if (_isWin) _levelUI.ViewWinPanel(_victoryConditions, _levelShema.GetBonuses());
+                if (_isLoss) _levelUI.ViewLossPanel(_victoryConditions);
+            }
+            else
+            {
+                if (_spawnSitizen != null)
+                {
+                    _spawnSitizen.CalcInterval(_countProsperity, _vacancy, _freePlaces);
+                }
+            }
         }
     }
 
-    private void CalcProfit()
+    private bool TestEndGame()
     {
+        int countYes = 0;
+        bool isEndTime = false;
+        foreach (VictoryCondition vc in _victoryConditions)
+        {
+            if (vc.NameConditionCategory == "Деньги")
+            {
+                if (vc.Value > vc.Count) countYes++;
+                if (vc.Value < 0) _isLoss = true;
+            }
+            else if (vc.NameConditionCategory == "Время")
+            {
+                if (vc.Value < vc.Value) countYes++;
+                if (vc.Count >= vc.Value)
+                {   //  Отведённое время закончилось и что ?
+                    //  Если все остальные условия выполнены, то победа
+                    isEndTime = true;
+                    //if (countYes + 1 == _victoryConditions.Count) _isWin = true;
+                }
+            }
+            else
+            {
+                if (vc.Value > vc.Count) countYes++;
+            }
+        }
+        if (countYes == _victoryConditions.Count)
+        {
+            _isWin = true;
+            return true;
+        }
+        if (isEndTime)
+        {
+            if (countYes + 1 == _victoryConditions.Count) _isWin = true;
+            else _isLoss = true;
+            return true;
+        }
+        if (_isLoss) return true;
+        return false;
+    }
 
+    private void SumProsperity()
+    {
+        _countProsperity = 0;
+        _totalServiceCost = 0;
+        _vacancy = 0;
+        foreach(GameObject build in _buildingList)
+        {
+            BuildingControl bc = build.GetComponent<BuildingControl>();
+            if (bc != null && bc.Prosperity != -1) 
+            {
+                _countProsperity += bc.Prosperity;
+                _totalServiceCost += bc.ServiceCost;
+            }
+            ProductionControl productionControl = build.GetComponent<ProductionControl>();
+            if (productionControl != null)
+            {
+                _vacancy += productionControl.Vacancy;
+            }
+        }
+        foreach(GameObject build in _houseList)
+        {
+            BuildingControl bc = build.GetComponent<BuildingControl>();
+            if (bc != null && bc.Prosperity != -1)
+            {
+                _countProsperity += bc.Prosperity;
+            }
+        }
+        foreach(VictoryCondition vc in _victoryConditions)
+        {
+            if (vc.NameConditionCategory == "Процветание")
+            {
+                vc.SetValue(_countProsperity);
+            }
+        }
+    }
+
+    private void CheckHouses()
+    {
+        _countCitizens = 0;
+        _freePlaces = 0;
+        _totalNalog = 0;
+        for(int i = _houseList.Count; i > 0; i--)
+        {
+            HouseRequirement houseRequirement = _houseList[i - 1].GetComponent<HouseRequirement>();
+            if (houseRequirement != null && houseRequirement.CheckLevelRequirments())
+            {
+                GameObject oldHouse = _houseList[i - 1];
+                GameObject newHouse = _levelBoard.UpdateHouse(oldHouse);
+                if (newHouse != null)
+                {
+                    _houseList[i - 1] = newHouse;
+                    // надо перепрописать жителей, при увеличении мест - добавить в список свободных
+                    HouseRequirement newHouseRequirement = newHouse.GetComponent<HouseRequirement>();
+                    if (newHouseRequirement != null)
+                    {
+                        newHouseRequirement.SetLevelControl(_levelControl);
+                        if (newHouseRequirement.FreePlaces > 0)
+                        {
+                            int index = GetIndexBuilding(newHouse);
+                            if (index != -1)
+                            {
+                                for (int j = 0; j < newHouseRequirement.FreePlaces; j++) _freePlacesIndex.Add(index);
+                            }
+                        }
+                    }
+                    // при уменьшении - удалить из списка и отправить лишних жителей в другие дома со свободными местами или на выезд из города !!!
+                    Destroy(oldHouse);
+                }
+            }
+            houseRequirement = _houseList[i - 1].GetComponent<HouseRequirement>();
+            _countCitizens += houseRequirement.Citizens;
+            _freePlaces += houseRequirement.FreePlaces;
+            _totalNalog += houseRequirement.Nalog;
+        }
+        foreach (VictoryCondition vc in _victoryConditions)
+        {
+            if (vc.NameConditionCategory == "Население")
+            {
+                vc.SetValue(_countCitizens);
+            }
+        }
+    }
+
+    private void CalcProfit(bool isYear)
+    {
+        if (isYear)
+        {
+            _many += _totalNalog - _totalServiceCost;
+        }
+        else
+        {
+            _many += _totalNalog;
+        }
+        foreach (VictoryCondition vc in _victoryConditions)
+        {
+            if (vc.NameConditionCategory == "Деньги")
+            {
+                vc.SetValue(_many);
+            }
+        }
+        _levelUI.ViewMany(_many);
+    }
+
+    public bool GetPathToFreePlase(out List<Vector3> path)
+    {
+        path = new List<Vector3>();
+        if (_freePlacesIndex.Count > 0)
+        {
+            int plaseIndex = _freePlacesIndex[0];
+            _freePlacesIndex.RemoveAt(0);
+            if (_levelBoard != null)
+            {
+                path = _levelBoard.GetCurPath(plaseIndex);
+                return true;
+            }
+        }
+        //foreach (GameObject house in _houseList)
+        //{
+        //    HouseRequirement houseRequirement = house.GetComponent<HouseRequirement>();
+        //    if (houseRequirement != null && houseRequirement.FreePlaces > 0)
+        //    {
+        //        if (_levelBoard != null)
+        //        {
+        //            path = _levelBoard.GetCurPath(house.transform.position);
+        //            return true;
+        //        }
+        //    }
+        //}
+        return false;
+    }
+
+    private int GetIndexBuilding(GameObject build)
+    {
+        BuildingControl buildingControl = build.GetComponent<BuildingControl>();
+        if (buildingControl != null)
+        {
+            int div = (_levelShema.BoardSize == 35) ? 4 : 2;
+            int indexHouse = (buildingControl.BuildingInfo & 0xff) / 4 + (((buildingControl.BuildingInfo >> 8) & 0xff) * _levelShema.BoardSize) / 4;
+            return indexHouse;
+        }
+        return -1;
+    }
+
+    public void ChangeCitizen(GameObject house, GameObject citizen, bool isNew = true)
+    {
+        if (isNew)
+        {
+            _countCitizens++;
+        }
+        else
+        {
+            if (_countCitizens > 0) _countCitizens--;
+        }
+        print($"ChangeCitizen  count={_countCitizens}");
+        foreach (VictoryCondition vc in _victoryConditions)
+        {
+            if (vc.NameConditionCategory == "Население")
+            {
+                vc.SetValue(_countCitizens);
+            }
+        }
+        _levelUI.ViewConditionPanel(false, _victoryConditions);
     }
 }

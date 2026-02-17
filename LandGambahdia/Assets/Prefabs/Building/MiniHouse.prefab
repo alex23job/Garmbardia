@@ -97,9 +97,10 @@ GameObject:
   - component: {fileID: 7039053213288278026}
   - component: {fileID: 1811217492403731947}
   - component: {fileID: 1291832335739336293}
+  - component: {fileID: 887556019025804585}
   m_Layer: 0
   m_Name: MiniHouse
-  m_TagString: Untagged
+  m_TagString: House
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -160,3 +161,20 @@ MonoBehaviour:
   _nameBuilding: "\u0425\u0438\u0436\u0438\u043D\u0430"
   _price: 5
   _radius: 0
+  _requirement: -1
+  _prosperity: -1
+  _serviceCost: 0
+--- !u!114 &887556019025804585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9063256723559804655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeb3ba2c7894b484baacd10d21baaeb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxCitizens: 2
+  _oneCitizenNalog: 1

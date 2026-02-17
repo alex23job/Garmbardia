@@ -381,6 +381,7 @@ MonoBehaviour:
   _levelBoard: {fileID: 466888142}
   _levelCamera: {fileID: 2037983598}
   _speedSlider: {fileID: 1786306177}
+  _spawnSitizen: {fileID: 2077536859}
   _countSecondInMonth: 300
 --- !u!1 &39777470
 GameObject:
@@ -687,10 +688,12 @@ MonoBehaviour:
   - {fileID: 1685906234}
   - {fileID: 456899032}
   - {fileID: 752039514}
+  _txtVictory: {fileID: 389965233}
   _speedSlider: {fileID: 1786306177}
   _speedTxt: {fileID: 2046708250}
   _manyTxt: {fileID: 328227821}
   _currentTimeTxt: {fileID: 106969485}
+  _startYear: 1800
   _errorPanel: {fileID: 1927161536}
   _errorTxt: {fileID: 1078751662}
 --- !u!1 &101130045
@@ -3530,6 +3533,10 @@ MonoBehaviour:
   - {fileID: 7255914661505667177, guid: a3ef5953dbb413c4497f2edda6e2740c, type: 3}
   - {fileID: 526448866206679221, guid: 2af8c0099318c5943b5184c937286cf2, type: 3}
   - {fileID: 9139052209479412100, guid: bcd3ec18905d45145a22b7e92f91df6a, type: 3}
+  - {fileID: 1477390745975052394, guid: 1bdcdb612327413469b2752ed7f2dde2, type: 3}
+  - {fileID: 5370376281417531172, guid: ef69c1497d8183049a39fbf82258ef6e, type: 3}
+  - {fileID: 2418018468499290762, guid: 07ba396d5a74aa9408449fe13fce4796, type: 3}
+  - {fileID: 366489520849220599, guid: 736b575af36131e4b9ba04dbca699640, type: 3}
   - {fileID: 1200569258803335945, guid: f2c0f15be7467124c8af761bbf6ae934, type: 3}
 --- !u!1 &478615447
 GameObject:
@@ -14866,6 +14873,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2053111243}
   m_CullTransparentMesh: 1
+--- !u!1 &2077536858
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2077536860}
+  - component: {fileID: 2077536859}
+  m_Layer: 0
+  m_Name: SpawnCitizen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2077536859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2077536858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474a9b730f47a4c4c8662e9714bdb117, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _speedCitizen: 5
+  _prefabCitizen: {fileID: 8342388040030387161, guid: f56210422f9dff4418c12b507ead90d9, type: 3}
+  _monthPeriod: 300
+  _levelControl: {fileID: 38642154}
+--- !u!4 &2077536860
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2077536858}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2080932093
 GameObject:
   m_ObjectHideFlags: 0
@@ -15330,7 +15385,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5323904088613341805, guid: 43f29fcd08f7aa346b0ed0ba27012a8d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5323904088613341805, guid: 43f29fcd08f7aa346b0ed0ba27012a8d, type: 3}
       propertyPath: m_LocalPosition.y
@@ -15519,3 +15574,4 @@ SceneRoots:
   - {fileID: 759900342}
   - {fileID: 1523829509263003216}
   - {fileID: 7397163678833136654}
+  - {fileID: 2077536860}

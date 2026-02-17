@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public class BuildingControl : MonoBehaviour
 {
     /// <summary>
-    /// (0-3 биты) 16 видов зданий для (4-7 биты) каждой из 16ти категорий
+    /// (0-4 биты) 16 видов зданий для (5-7 биты) каждой из 8-ми категорий
     /// </summary>
     [SerializeField] private int _id = -1;
     [SerializeField] private int _rot = 0;
@@ -16,6 +16,9 @@ public class BuildingControl : MonoBehaviour
     [SerializeField] private String _nameBuilding;
     [SerializeField] private int _price;
     [SerializeField] private float _radius;
+    [SerializeField] private int _requirement = -1;
+    [SerializeField] private int _prosperity = -1;
+    [SerializeField] private int _serviceCost = 0;
 
     /// <summary>
     /// (0-3 биты) 16 видов зданий для (4-7 биты) каждой из 16ти категорий
@@ -27,6 +30,9 @@ public class BuildingControl : MonoBehaviour
     public string NameBuilding { get => _nameBuilding; }
     public int Price { get => _price; }
     public float Radius { get => _radius; }
+    public int Requirment { get => _requirement; }
+    public int Prosperity { get => _prosperity; }
+    public int ServiceCost { get => _serviceCost; }
 
     /// <summary>
     /// 0-7 биты - столбец, 8-15 биты - строка, 16-23 - _id, 24-25 - _rot => 0 - 0, 1 - 90, 2 - 180, 3 - 270 
@@ -61,6 +67,15 @@ public class BuildingControl : MonoBehaviour
     public BuildingInfo GetBuildingInfo()
     {
         return new BuildingInfo(_id,_rot, _isRotate, _nameBuilding, _sprite, _price);
+    }
+
+    public bool TestHouseInRadius(int row, int col)
+    {
+        if (_requirement == -1) return false;
+        int myRow = (_buildingInfo >> 8) & 0xff;
+        int myCol = _buildingInfo & 0xff;
+        if ((Mathf.Abs(myRow - row) <= _radius) && (Mathf.Abs(myCol - col) <= _radius)) return true;
+        return false;
     }
 
     public bool CmpPosition(int row, int col)

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class LevelBoard : MonoBehaviour
 {
@@ -18,6 +19,11 @@ public class LevelBoard : MonoBehaviour
     private List<GameObject> _tails = new List<GameObject>();
     private LevelBoard _levelBoard = null;
     private int[] _tailsID = null;
+    private int[] _buildsID = null;
+    private Vector3 _spawnPos = Vector3.zero;
+    private int _spawnPosZn = -1;
+
+    public Vector3 SpawnPosition { get => _spawnPos; }
 
     private LevelControl _levelControl = null;
 
@@ -33,12 +39,6 @@ public class LevelBoard : MonoBehaviour
     void Start()
     {
         Invoke("TranslateBuildingInfo", 1f);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     private void TranslateBuildingInfo()
@@ -83,14 +83,15 @@ public class LevelBoard : MonoBehaviour
                             return null;
                         }                        
                         int tailID = landTail.TailID;
-                        int num = (tailID >> 16) & 0xff;
-                        if (CheckBuilding(num, buildID) == false)
+                        int tailInfo = landTail.TailInfo;
+                        int num = (tailInfo >> 16) & 0xff;   //  это и есть tailID
+                        int x = tailInfo & 0xff;
+                        int y = (tailInfo >> 8) & 0xff;
+                        if (CheckBuilding(num, buildID, y / 4, x / 4) == false)
                         {
                             _levelControl.ViewError("Тип местности не соответствует виду постройки !");
                             return null;
                         }
-                        int x = tailID & 0xff;
-                        int y = (tailID >> 8) & 0xff;
                         Vector3 pos = _selectTail.transform.position;
                         pos.y = 1.5f;
 
@@ -101,6 +102,9 @@ public class LevelBoard : MonoBehaviour
                         nbc.SetBoardAndPosition(_levelBoard, y, x);
                         ConturRadius cr = b.GetComponent<ConturRadius>();
                         if (cr != null) cr.SetSize(nbc.Radius);
+                        print($"CreateBuilding  y={y} x={x}  buildID={nbc.BuildingID}   y/4={y/4} x/4={x/4} index={_levelShema.BoardSize * (y / 4) + (x / 4)}");
+                        if (_levelShema.BoardSize == 35) _buildsID[_levelShema.BoardSize * (y / 4) + (x / 4)] = nbc.BuildingID;
+                        if (_levelShema.BoardSize == 70) _buildsID[_levelShema.BoardSize * (y / 2) + (x / 2)] = nbc.BuildingID;
                         _selectTail = null;
                         _ceil.SetActive(false);
                         return b;
@@ -111,16 +115,48 @@ public class LevelBoard : MonoBehaviour
         return null;
     }
 
-    private bool CheckBuilding(int landID, int buildingID)
+    public GameObject UpdateHouse(GameObject house)
+    {
+        BuildingControl obc = house.GetComponent<BuildingControl>();
+        HouseRequirement houseRequirement = house.GetComponent<HouseRequirement>();
+        int buildID = houseRequirement.HouseLevel + 1;
+        foreach(GameObject prefab in _buildingPrefabs)
+        {
+            BuildingControl bc = prefab.GetComponent<BuildingControl>();
+            if (bc != null)
+            {
+                if (bc.BuildingID == buildID)
+                {   //  возможно нужно скорректировать buildID в массиве _buildsID
+                    Vector3 pos = house.transform.position;
+                    GameObject b = Instantiate(prefab, pos, Quaternion.identity);
+                    b.transform.localScale = house.transform.localScale;
+                    BuildingControl nbc = b.GetComponent<BuildingControl>();
+                    nbc.SetBoardAndPosition(_levelBoard, (obc.BuildingInfo >> 8) & 0xff, obc.BuildingInfo & 0xff);
+                    HouseRequirement nhr = b.GetComponent<HouseRequirement>();
+                    nhr.CopyLevelAndRequirements(houseRequirement.HouseLevel + 1, houseRequirement.GetRequirements());
+                    nhr.AddCitizen(houseRequirement.Citizens);
+                    nhr.CopyAllCitizen(houseRequirement.GetAllCitizens());
+                    return b;
+                }
+            }
+        }
+        return null;
+    }
+
+    private bool CheckBuilding(int landID, int buildingID, int row, int col)
     {
         if (landID == 24 || landID == 27)
         {   //  проверка на начало/конец моста
+            if (buildingID == 131 || buildingID == 133) return true;
+            else return false;
         }
         if (landID == 20 || landID == 23)
         {   //  проверка на постройку шахты
         }
         if (landID == 2)
         {   //  проверка на средину моста
+            if (buildingID == 132 || buildingID == 134) return true;
+            else return false;
         }
         if (landID == 90)
         {   //  проверка на постройку лесопилки
@@ -164,6 +200,7 @@ public class LevelBoard : MonoBehaviour
         int i, j, x, y, num, rot;
         Vector3 pos = new Vector3(0, 0.5f, 0);
         _tailsID = new int[_levelShema.BoardSize * _levelShema.BoardSize];
+        _buildsID = new int[_tailsID.Length];
         if (_levelShema.BoardSize == 35)
         {
             for (i = 0; i < terrain.Length; i++)
@@ -207,7 +244,7 @@ public class LevelBoard : MonoBehaviour
                     tail.transform.parent = transform;
                     tail.transform.localScale = _levelTailScale;
                     LandTail landTail = tail.GetComponent<LandTail>();
-                    if (landTail != null) landTail.SetBoardAndPosition(_levelBoard, y, x);
+                    if (landTail != null) landTail.SetBoardAndPosition(_levelBoard, 4 * y, 4 * x);  //  * 4
                     _tails.Add(tail);
                 }
             }
@@ -233,7 +270,7 @@ public class LevelBoard : MonoBehaviour
                         if (landTail != null) landTail.SetBoardAndPosition(_levelBoard, y, x);
                         if (landTail.IsRotate) for (j = 0; j < rot; j++) landTail.RotateTail();
                         _tails.Add(tail);
-                        _tailsID[_levelShema.BoardSize * y + x] = num;  //  возможно нужно y/2 и x/2
+                        _tailsID[_levelShema.BoardSize * (y / 2) + x / 2] = num;  //  возможно нужно y/2 и x/2
                         break;
                     }
                 }
@@ -249,11 +286,12 @@ public class LevelBoard : MonoBehaviour
                     GameObject tail = Instantiate(_landTailPrefabs[7], pos, Quaternion.identity);
                     tail.transform.parent = transform;
                     LandTail landTail = tail.GetComponent<LandTail>();
-                    if (landTail != null) landTail.SetBoardAndPosition(_levelBoard, y, x);
+                    if (landTail != null) landTail.SetBoardAndPosition(_levelBoard, 2 * y, 2 * x);  //  * 2
                     _tails.Add(tail);
                 }
             }
         }
+        CalkStartSpawnPosition();
         //_editorUI.InterUndo(_tails.Count > 0);
     }
     private void ClearTails()
@@ -290,6 +328,112 @@ public class LevelBoard : MonoBehaviour
                 _ceil.SetActive(true);
             }
         }
+    }
+
+    private void CalkStartSpawnPosition()
+    {
+        int i, col, row, maxSz = _levelShema.BoardSize, minCol = 100, minRow = 100, maxCol = -1, maxRow = 0, center = maxSz / 2, zn = -1;
+        for(i = 0; i < _tailsID.Length; i++)
+        {
+            if (_tailsID[i] == 96)
+            {
+                col = i % maxSz;
+                row = i / maxSz;
+                if (col > center && col > maxCol) { maxCol = col; zn = i; }
+                if (col < center && col < minCol) { minCol = col; zn = i; }
+                if (row > center && row > maxRow) { maxRow = row; zn = i; }
+                if (row < center && row < minRow) { minRow = row; zn = i; }
+            }
+        }
+        int start = -5;
+        if (minRow == 0) start = zn;
+        if (minCol == 0) start = zn;
+        if (maxCol == maxSz - 1) start = zn;
+        if (maxRow == maxSz - 1) start = zn;
+        if (start != -5)
+        {
+            col = start % maxSz;
+            row = start / maxSz;
+            _spawnPos.y = 2f;
+            if (maxSz == 35)
+            {
+                _spawnPos.x = _ofsX + col * 2f + 1f;
+                _spawnPos.z = _ofsY - row * 2f - 1f;
+            }
+            if (maxSz == 70)
+            {
+                _spawnPos.x = _ofsX + col + 0.5f;
+                _spawnPos.z = _ofsY - row - 0.5f;
+            }
+            _spawnPosZn = start;
+        }
+    }
+
+    public List<Vector3> GetCurPath(Vector3 target)
+    {
+        List<Vector3> path = new List<Vector3>();
+        WavePath wavePath = new WavePath();
+        int[] pole = new int[_tailsID.Length];
+        for (int i = 0; i < _tailsID.Length; i++)
+        {
+            pole[i] = -1;
+            if (_tailsID[i] == 96) pole[i] = 0;
+            if (_buildsID[i] >= 128 && _buildsID[i] < 135) pole[i] = 0;
+            if (_buildsID[i] != 0) print($"Fill pole   _buildsID[{i}] = {_buildsID[i]}");
+        }
+        float dop = (_levelShema.BoardSize == 35) ? 1f : 0.5f;
+        int div = (_levelShema.BoardSize == 35) ? 2 : 1;
+        //int tgRow = Mathf.RoundToInt(_ofsY - target.z - dop) / (2 * div);
+        //int tgCol = Mathf.RoundToInt(target.x - _ofsX - dop) / (2 * div);
+        int tgRow = Mathf.RoundToInt(_ofsY - target.z - dop) / div;
+        int tgCol = Mathf.RoundToInt(target.x - _ofsX - dop) / div;
+        pole[tgRow * _levelShema.BoardSize + tgCol] = 0;
+        List<int> pathZn = wavePath.GetPath(_spawnPosZn, new int[] { tgRow * _levelShema.BoardSize + tgCol }, pole, _levelShema.BoardSize);
+        string strPathZn = (pathZn != null) ? pathZn.Count.ToString() : "NULL !!!";
+        print($"GetCurPath(Vector3) target=><{target}>   tgRow={tgRow}  tgCol={tgCol}  index={tgRow * _levelShema.BoardSize + tgCol}   pathZn=<{pathZn}>   lenPath={strPathZn}");
+        int row, col;
+        if (pathZn != null && pathZn.Count > 0)
+        {
+            foreach (int zn in pathZn)
+            {
+                row = zn / _levelShema.BoardSize;
+                col = zn % _levelShema.BoardSize;
+                path.Add(new Vector3(_ofsX + 2 * col + dop, 1.5f, _ofsY - 2 * row - dop));
+                //print($"zn={zn}   point={path[path.Count - 1]}");
+            }
+        }
+        return path;
+    }
+    public List<Vector3> GetCurPath(int targetIndex)
+    {
+        List<Vector3> path = new List<Vector3>();
+        WavePath wavePath = new WavePath();
+        int[] pole = new int[_tailsID.Length];
+        for (int i = 0; i < _tailsID.Length; i++)
+        {
+            pole[i] = -1;
+            if (_tailsID[i] == 96) pole[i] = 0;
+            if (_buildsID[i] >= 128 && _buildsID[i] < 135) pole[i] = 0;
+            //if (_buildsID[i] != 0) print($"Fill pole   _buildsID[{i}] = {_buildsID[i]}");
+        }
+        float dop = (_levelShema.BoardSize == 35) ? 1f : 0.5f;
+        int div = (_levelShema.BoardSize == 35) ? 2 : 1;
+        pole[targetIndex] = 0;
+        List<int> pathZn = wavePath.GetPath(_spawnPosZn, new int[] { targetIndex }, pole, _levelShema.BoardSize);
+        string strPathZn = (pathZn != null) ? pathZn.Count.ToString() : "NULL !!!";
+        print($"GetCurPath(int)  index={targetIndex}   pathZn=<{pathZn}>   lenPath={strPathZn}");
+        int row, col;
+        if (pathZn != null && pathZn.Count > 0)
+        {
+            foreach (int zn in pathZn)
+            {
+                row = zn / _levelShema.BoardSize;
+                col = zn % _levelShema.BoardSize;
+                path.Add(new Vector3(_ofsX + 2 * col + dop, 1.5f, _ofsY - 2 * row - dop));
+                //print($"zn={zn}   point={path[path.Count - 1]}");
+            }
+        }
+        return path;
     }
 
     private Vector3 GetPos(int x, int y, float h = 1.5f)

@@ -246,6 +246,8 @@ MonoBehaviour:
   _nameBuilding: "\u041B\u0435\u0441\u043E\u043F\u0438\u043B\u043A\u0430"
   _price: 20
   _radius: 8
+  _requirement: -1
+  _prosperity: 5
 --- !u!114 &-5784045993963301385
 MonoBehaviour:
   m_ObjectHideFlags: 0

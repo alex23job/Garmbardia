@@ -21,11 +21,13 @@ public class LevelUI : MonoBehaviour
 
     [SerializeField] private GameObject _conditionsPanel;
     [SerializeField] private GameObject[] _conditionItems;
+    [SerializeField] private Text _txtVictory;
 
     [SerializeField] private Slider _speedSlider;
     [SerializeField] private Text _speedTxt;
     [SerializeField] private Text _manyTxt;
     [SerializeField] private Text _currentTimeTxt;
+    [SerializeField] private int _startYear;
 
     [SerializeField] private GameObject _errorPanel;
     [SerializeField] private Text _errorTxt;
@@ -116,8 +118,10 @@ public class LevelUI : MonoBehaviour
 
     public void ViewConditionPanel(bool value, List<VictoryCondition> list = null)
     {
-        if (value && list != null && list.Count > 0)
+        //if (value && list != null && list.Count > 0)
+        if (list != null && list.Count > 0)
         {
+            int conditionYes = 0;
             for (int i = 0; i < _conditionItems.Length; i++) 
             {
                 if (i <  list.Count)
@@ -126,13 +130,21 @@ public class LevelUI : MonoBehaviour
                     Text txtRight = _conditionItems[i].transform.GetChild(1).gameObject.GetComponent<Text>();
                     txtLeft.text = $"{list[i].NameConditionCategory} {list[i].NameCondition}";
                     txtRight.text = $"{list[i].Value}/{list[i].Count}";
-                    if (list[i].Value >= list[i].Count) txtRight.color = Color.green;
+                    if (list[i].Value >= list[i].Count)
+                    {
+                        txtRight.color = Color.green;
+                        conditionYes++;
+                    }
                     else
                     {
                         if (list[i].Value * 2 >= list[i].Count) txtRight.color = Color.yellow;
                         else txtRight.color = Color.red;
                     }
-                    if (list[i].NameConditionCategory == "Время") txtRight.color = Color.green;
+                    if (list[i].NameConditionCategory == "Время")
+                    {
+                        txtRight.color = Color.green;
+                        if (list[i].Value < list[i].Count) { conditionYes++; }
+                    }
                     _conditionItems[i].SetActive(true);
                 }
                 else
@@ -140,6 +152,7 @@ public class LevelUI : MonoBehaviour
                     _conditionItems[i].SetActive(false);
                 }
             }
+            _txtVictory.text = $"Условия победы  {conditionYes} из {list.Count}";
         }
         _conditionsPanel.SetActive(value);
     }
@@ -157,7 +170,17 @@ public class LevelUI : MonoBehaviour
 
     public void ViewCurrentTime(int month)
     {
-        _currentTimeTxt.text = $"Месяц:{month % 12} Год:{month / 12}";
+        _currentTimeTxt.text = $"Месяц:{month % 12} Год:{_startYear + (month / 12)}";
+    }
+
+    public void ViewWinPanel(List<VictoryCondition> victoryConditions, List<VictoryBonus> victoryBonus)
+    {
+        print("Победа");
+    }
+
+    public void ViewLossPanel(List<VictoryCondition> victoryConditions)
+    {
+        print("Проигрыш");
     }
 
     public void OnSaveLevelClick()

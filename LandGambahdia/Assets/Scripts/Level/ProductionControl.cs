@@ -12,6 +12,8 @@ public class ProductionControl : MonoBehaviour
     private int _producedCount = 0;
     private int _secondCount = 0;
 
+    public int Vacancy { get { return _maxWorkersCount - _workerCount; } }
+
     // Start is called before the first frame update
     void Start()
     {

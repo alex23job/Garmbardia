@@ -241,10 +241,12 @@ MonoBehaviour:
   _id: 34
   _rot: 0
   _isRotate: 1
-  _sprite: {fileID: 21300000, guid: 712a93ee22a3b9746a1d512014d262b6, type: 3}
+  _sprite: {fileID: 21300000, guid: f8168547d671244428cf114dd55513fb, type: 3}
   _nameBuilding: "\u041F\u043E\u0436\u0430\u0440\u043D\u0430\u044F"
   _price: 40
   _radius: 6
+  _requirement: 2
+  _prosperity: 5
 --- !u!114 &-347992125736745728
 MonoBehaviour:
   m_ObjectHideFlags: 0
