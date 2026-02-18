@@ -102,6 +102,8 @@ public class LevelBoard : MonoBehaviour
                         nbc.SetBoardAndPosition(_levelBoard, y, x);
                         ConturRadius cr = b.GetComponent<ConturRadius>();
                         if (cr != null) cr.SetSize(nbc.Radius);
+                        BuildRotation br = b.GetComponent<BuildRotation>();
+                        if (br != null) br.RotationBuilding(_selectTail);
                         print($"CreateBuilding  y={y} x={x}  buildID={nbc.BuildingID}   y/4={y/4} x/4={x/4} index={_levelShema.BoardSize * (y / 4) + (x / 4)}");
                         if (_levelShema.BoardSize == 35) _buildsID[_levelShema.BoardSize * (y / 4) + (x / 4)] = nbc.BuildingID;
                         if (_levelShema.BoardSize == 70) _buildsID[_levelShema.BoardSize * (y / 2) + (x / 2)] = nbc.BuildingID;
@@ -146,8 +148,8 @@ public class LevelBoard : MonoBehaviour
     private bool CheckBuilding(int landID, int buildingID, int row, int col)
     {
         if (landID == 24 || landID == 27)
-        {   //  проверка на начало/конец моста
-            if (buildingID == 131 || buildingID == 133) return true;
+        {   //  проверка на начало/конец моста или домик рыбака
+            if (buildingID == 131 || buildingID == 133 || buildingID == 98) return true;
             else return false;
         }
         if (landID == 20 || landID == 23)
