@@ -13,6 +13,18 @@ public class HouseRequirement : MonoBehaviour
         { /*0,*/ 1, 2, 10, 11, 12, 20, 21, 22, 23, 30, 31, 32, 33, 34, 
             40, 41, 42, 43, 50, 51, 52, 53, 60, 61, 62, 63, 70, 71, 72, 73, 80, 81, 82, 83,
             90, 91, 92, 93, 100, 101, 102, 103, 110, 111, 112, 113, 120, 121, 122, 123, 130, 131, 132, 133, 140, 141, 142, 143, 150, 151, 152, 153 };
+    public static int[] GetLevelRequirments(int level)
+    {
+        List<int> res = new List<int>();
+        int from = 10 * level;
+        int to = 10 * (level + 1);
+        foreach(int r in _totalRequirments)
+        {
+            if ((r >= from) && (r < to)) { res.Add(r); }
+        }
+        return res.ToArray();
+    }
+
     private List<int> _requirments = new List<int>();
 
     private int _houseLevel = 0;
@@ -22,8 +34,9 @@ public class HouseRequirement : MonoBehaviour
     public int MaxCitizens { get => _maxCitizens; }
     public int FreePlaces { get { return _maxCitizens - _citizens; } }
     public int Nalog { get { return _citizens * _oneCitizenNalog; } }
+    public int MaxNalog { get { return _maxCitizens * _oneCitizenNalog; } }
 
-    public List<GameObject> _houseCitizens = new List<GameObject>();
+    private List<GameObject> _houseCitizens = new List<GameObject>();
 
     private LevelControl _levelControl = null;
 

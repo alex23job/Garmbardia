@@ -7,6 +7,7 @@ using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class LevelControl : MonoBehaviour
 {
+    [SerializeField] private HouseUI _houseUI;
     [SerializeField] private LevelUI _levelUI;
     [SerializeField] private LevelBoard _levelBoard;
     [SerializeField] private LevelCamera _levelCamera;
@@ -188,6 +189,8 @@ public class LevelControl : MonoBehaviour
         if (_levelCamera != null)
         {
             _levelCamera.SetSelectTailPos(tail.transform.position);
+            HouseRequirement houseRequirement = tail.GetComponent<HouseRequirement>();
+            if (houseRequirement != null) _houseUI.ViewHouseInfo(tail);
         }
     }
 
