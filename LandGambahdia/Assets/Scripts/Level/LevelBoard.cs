@@ -153,7 +153,9 @@ public class LevelBoard : MonoBehaviour
             else return false;
         }
         if (landID == 20 || landID == 23)
-        {   //  проверка на постройку шахты
+        {   //  проверка на постройку шахты и каменоломни
+            if (buildingID == 99 || buildingID == 97) return true;
+            else return false;
         }
         if (landID == 2)
         {   //  проверка на средину моста

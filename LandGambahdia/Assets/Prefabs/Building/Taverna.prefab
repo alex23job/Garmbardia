@@ -76,8 +76,9 @@ MonoBehaviour:
   _nameBuilding: "\u0422\u0430\u0432\u0435\u0440\u043D\u0430"
   _price: 50
   _radius: 8
-  _requirement: -1
+  _requirement: 73
   _prosperity: 20
+  _serviceCost: 0
 --- !u!114 &-292359906753249215
 MonoBehaviour:
   m_ObjectHideFlags: 0

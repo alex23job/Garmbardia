@@ -15,7 +15,10 @@ public class LevelUI : MonoBehaviour
 
     [SerializeField] private GameObject _buildingPanel;
     [SerializeField] private Button[] _buildingsBtn;
+
+    [SerializeField] private GameObject _sciencePanel;
     
+
     private int _selectCategory = -1;
     private BuildingInfo[] _buildingInfos = null;
 
@@ -66,6 +69,11 @@ public class LevelUI : MonoBehaviour
         _buildingPanel.SetActive(true);
         _selectCategory = 0;
         UpdateBuildingPanel();
+    }
+
+    public void OnScienceClick()
+    {
+        _sciencePanel.SetActive(true);
     }
 
     public void SelectCategory(int cat)
@@ -160,7 +168,12 @@ public class LevelUI : MonoBehaviour
     public void SetSliderSpeed(float speed)
     {
         _speedTxt.text = $"x{speed:F1}";
-        if (_speedSlider.value != speed) _speedSlider.value = speed;
+        if (_speedSlider.value != speed)
+        {
+            _speedSlider.value = speed; 
+        }
+        Time.timeScale = speed;
+        print($"timeScale = {Time.timeScale}");
     }
 
     public void ViewMany(int many)
