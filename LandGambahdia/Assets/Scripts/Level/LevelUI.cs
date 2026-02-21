@@ -34,6 +34,7 @@ public class LevelUI : MonoBehaviour
     [SerializeField] private Text _manyTxt;
     [SerializeField] private Text _currentTimeTxt;
     [SerializeField] private int _startYear;
+    [SerializeField] private Image _currentTimeImg;
 
     [SerializeField] private GameObject _errorPanel;
     [SerializeField] private Text _errorTxt;
@@ -195,6 +196,11 @@ public class LevelUI : MonoBehaviour
     public void ViewCurrentTime(int month)
     {
         _currentTimeTxt.text = $"Ìוסÿצ:{month % 12} Ãמה:{_startYear + (month / 12)}";
+    }
+
+    public void ViewFillingMonth(float value)
+    {
+        _currentTimeImg.fillAmount = value;
     }
 
     public void ViewScienceCount(int count)

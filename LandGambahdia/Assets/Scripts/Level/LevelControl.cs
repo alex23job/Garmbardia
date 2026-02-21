@@ -271,11 +271,12 @@ public class LevelControl : MonoBehaviour
                 pc.AddSecond();
             }
         }
+        if (_levelUI != null) _levelUI.ViewFillingMonth((float)_countSecond / (float)_countSecondInMonth);
         if (_countSecond >= _countSecondInMonth)
         {
             _countSecond = 0;
             _countMonth++;
-            _levelUI.ViewCurrentTime(_countMonth);
+            if (_levelUI != null) _levelUI.ViewCurrentTime(_countMonth);
             SumProsperity();
             CheckHouses();
             CalcProfit(_countMonth % 12 == 0);
