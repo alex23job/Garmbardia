@@ -13,10 +13,13 @@ public class LevelUI : MonoBehaviour
     [SerializeField] private GameObject _pausePanel;
     [SerializeField] private Text _levelInfo;
 
+    [SerializeField] private GameObject _buildingSelectPanel;
+    [SerializeField] private Button _rotationBtn;
     [SerializeField] private GameObject _buildingPanel;
     [SerializeField] private Button[] _buildingsBtn;
 
     [SerializeField] private GameObject _sciencePanel;
+    [SerializeField] private Text _scienceCount;
     
 
     private int _selectCategory = -1;
@@ -124,6 +127,14 @@ public class LevelUI : MonoBehaviour
         }
     }
 
+    public void ViewActionsPanel(string name, bool isRotation = true)
+    {
+        Text txtName = _buildingSelectPanel.transform.GetChild(0).gameObject.GetComponent<Text>();
+        if (txtName != null) { txtName.text = name; }
+        if (_rotationBtn != null) { _rotationBtn.interactable = isRotation; }
+        _buildingSelectPanel.SetActive(true);
+    }
+
     public void ViewConditionPanel(bool value, List<VictoryCondition> list = null)
     {
         //if (value && list != null && list.Count > 0)
@@ -184,6 +195,11 @@ public class LevelUI : MonoBehaviour
     public void ViewCurrentTime(int month)
     {
         _currentTimeTxt.text = $"Ìוסÿצ:{month % 12} Ãמה:{_startYear + (month / 12)}";
+    }
+
+    public void ViewScienceCount(int count)
+    {
+        _scienceCount.text = count.ToString();
     }
 
     public void ViewWinPanel(List<VictoryCondition> victoryConditions, List<VictoryBonus> victoryBonus)

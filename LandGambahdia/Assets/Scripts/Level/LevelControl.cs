@@ -30,6 +30,7 @@ public class LevelControl : MonoBehaviour
     private bool _isVictoryConditionsView = false;
     private float _speedGame = 1f;
     private int _many = 200;
+    private int _scienceCount = 1;
 
     private float _timer = 1f;
     private int _countMonth = 0;
@@ -43,6 +44,8 @@ public class LevelControl : MonoBehaviour
     private int _totalNalog = 0;
     private bool _isWin = false;
     private bool _isLoss = false;
+
+    private GameObject _selectBuild = null;
 
     private void Awake()
     {
@@ -63,6 +66,7 @@ public class LevelControl : MonoBehaviour
         }
         _levelUI.SetSliderSpeed(_speedGame);
         _levelUI.ViewMany(_many);
+        _levelUI.ViewScienceCount(_scienceCount);
 
         // Подписываемся на события
         _levelUI.OnSelectBuilding += OnSelectBuilding;
@@ -106,6 +110,11 @@ public class LevelControl : MonoBehaviour
     {
         _speedGame = _speedSlider.value;
         _levelUI.SetSliderSpeed(_speedGame);
+    }
+
+    public void AddingWoodDoor(GameObject door)
+    {
+        _buildingList.Add(door);
     }
 
     private void OnSelectBuilding(int type, int num)
@@ -189,8 +198,32 @@ public class LevelControl : MonoBehaviour
         if (_levelCamera != null)
         {
             _levelCamera.SetSelectTailPos(tail.transform.position);
-            HouseRequirement houseRequirement = tail.GetComponent<HouseRequirement>();
-            if (houseRequirement != null) _houseUI.ViewHouseInfo(tail);
+            
+            BuildingControl buildingControl = tail.GetComponent<BuildingControl>();
+            if (buildingControl != null && _levelUI != null)
+            {
+                _selectBuild = tail;
+                _levelUI.ViewActionsPanel(buildingControl.NameBuilding, buildingControl.IsRotate);
+            }
+        }
+    }
+
+    public void TailRemove()
+    {
+        if (_selectBuild != null)
+        {
+            
+        }
+    }
+
+    public void TailViewInfo()
+    {
+        if (_selectBuild != null)
+        {
+            HouseRequirement houseRequirement = _selectBuild.GetComponent<HouseRequirement>();
+            if (houseRequirement != null) _houseUI.ViewHouseInfo(_selectBuild);
+            ProductionControl productionControl = _selectBuild.GetComponent<ProductionControl>();
+            if (productionControl != null) { }  //  показ информации о производстенном здании
         }
     }
 

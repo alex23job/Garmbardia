@@ -117,6 +117,16 @@ public class LevelBoard : MonoBehaviour
         return null;
     }
 
+    private GameObject GetBuild(int buildID)
+    {
+        foreach(GameObject prefab in _buildingPrefabs)
+        {
+            BuildingControl bc = prefab.GetComponent<BuildingControl>();
+            if (bc.BuildingID == buildID) return prefab;
+        }
+        return null;
+    }
+
     public GameObject UpdateHouse(GameObject house)
     {
         BuildingControl obc = house.GetComponent<BuildingControl>();
@@ -222,7 +232,26 @@ public class LevelBoard : MonoBehaviour
                         //pos.z = _ofsY - 2 * y - 1f;
                         pos.x = _ofsX + x * 0.5f + 1f;
                         pos.z = _ofsY - y * 0.5f - 1f;
-                        GameObject tail = Instantiate(_landTailPrefabs[j], pos, Quaternion.identity);
+                        GameObject tail;
+                        if (num == 96)  //  дорогу из схемы уровня заменяем на траву и "здание" деревянная дорога
+                        {
+                            tail = Instantiate(_landTailPrefabs[7], pos, Quaternion.identity);
+                            GameObject prefab = GetBuild(128);
+                            if (prefab != null)
+                            {
+                                Vector3 posDoor = pos;
+                                posDoor.y = 1.5f;
+                                GameObject b = Instantiate(prefab, posDoor, Quaternion.identity);
+                                if (_levelShema.BoardSize == 35) b.transform.localScale = new Vector3(2f, 2f, 2f);
+                                BuildingControl nbc = b.GetComponent<BuildingControl>();
+                                nbc.SetBoardAndPosition(_levelBoard, y, x);
+                                print($"Create wood door  y={y} x={x}  buildID={nbc.BuildingID}   y/4={y / 4} x/4={x / 4} index={_levelShema.BoardSize * (y / 4) + (x / 4)}");
+                                if (_levelShema.BoardSize == 35) _buildsID[_levelShema.BoardSize * (y / 4) + (x / 4)] = nbc.BuildingID;
+                                if (_levelShema.BoardSize == 70) _buildsID[_levelShema.BoardSize * (y / 2) + (x / 2)] = nbc.BuildingID;
+                                _levelControl.AddingWoodDoor(b);
+                            }
+                        }
+                        else tail = Instantiate(_landTailPrefabs[j], pos, Quaternion.identity);
                         tail.transform.parent = transform;
                         tail.transform.localScale = _levelTailScale;
                         LandTail landTail = tail.GetComponent<LandTail>();
@@ -330,6 +359,18 @@ public class LevelBoard : MonoBehaviour
                 //int y = (land.TailInfo >> 8) & 0xff;
                 _ceil.transform.position = new Vector3(tail.transform.position.x, 1.5f, tail.transform.position.z);
                 _ceil.SetActive(true);
+            }
+        }
+    }
+
+    public void BuildRotation()
+    {
+        if (_selectTail != null)
+        {
+            BuildingControl buildingControl = _selectTail.GetComponent<BuildingControl>();
+            if (buildingControl != null && buildingControl.IsRotate)
+            {
+                buildingControl.RotateTail();
             }
         }
     }
