@@ -8,6 +8,7 @@ using static UnityEngine.UIElements.UxmlAttributeDescription;
 public class LevelControl : MonoBehaviour
 {
     [SerializeField] private HouseUI _houseUI;
+    [SerializeField] private ScienceUI _cienceUI;
     [SerializeField] private LevelUI _levelUI;
     [SerializeField] private LevelBoard _levelBoard;
     [SerializeField] private LevelCamera _levelCamera;
@@ -30,7 +31,8 @@ public class LevelControl : MonoBehaviour
     private bool _isVictoryConditionsView = false;
     private float _speedGame = 1f;
     private int _many = 200;
-    private int _scienceCount = 1;
+    private int _scienceCount = 3;
+    private List<ProductionSciencePoints> _productionSciencePoints = new List<ProductionSciencePoints>(); 
 
     private float _timer = 1f;
     private int _countMonth = 0;
@@ -63,6 +65,9 @@ public class LevelControl : MonoBehaviour
             _victoryConditions = _levelShema.GetConditions();
             _levelUI.ViewConditionPanel(false, _victoryConditions);
             if (_spawnSitizen != null && _levelBoard != null) _spawnSitizen.SetLevelParams(_levelControl, _levelBoard.SpawnPosition);
+
+            //_levelUI.ViewWinPanel(_victoryConditions, _levelShema.GetBonuses());
+            //_levelUI.ViewLossPanel(_victoryConditions);
         }
         _levelUI.SetSliderSpeed(_speedGame);
         _levelUI.ViewMany(_many);
@@ -70,12 +75,14 @@ public class LevelControl : MonoBehaviour
 
         // Подписываемся на события
         _levelUI.OnSelectBuilding += OnSelectBuilding;
+        _cienceUI.OnInvestedPointsClick += OnInvestedPointsClick;
     }
 
     private void OnDisable()
     {
         //  Отписываемся от событий
         _levelUI.OnSelectBuilding -= OnSelectBuilding;
+        _cienceUI.OnInvestedPointsClick -= OnInvestedPointsClick;
     }
 
     // Update is called once per frame
@@ -160,6 +167,11 @@ public class LevelControl : MonoBehaviour
                 if (_spawnSitizen != null)
                 {
                     _spawnSitizen.CalcInterval(_countProsperity, _vacancy, _freePlaces);
+                }
+                ProductionSciencePoints productionSciencePoints = build.GetComponent<ProductionSciencePoints>();
+                if (productionSciencePoints != null)
+                {
+                    _productionSciencePoints.Add(productionSciencePoints);
                 }
             }
             else
@@ -250,6 +262,23 @@ public class LevelControl : MonoBehaviour
         return _many >= count;
     }
 
+    private int OnInvestedPointsClick(int delta)
+    {
+        if (_scienceCount >= delta)
+        {
+            _scienceCount -= delta;
+            _levelUI.ViewScienceCount(_scienceCount);
+            return delta;
+        }
+        else
+        {
+            int res = _scienceCount;
+            _scienceCount = 0;
+            _levelUI.ViewScienceCount(_scienceCount);
+            return res;
+        }
+    }
+
     private void AddSecond()
     {
         _countSecond++;
@@ -288,6 +317,12 @@ public class LevelControl : MonoBehaviour
                     vc.SetValue(_countMonth / 12);
                 }
             }
+
+            foreach(ProductionSciencePoints psp in _productionSciencePoints)
+            {
+                _scienceCount += psp.CountPointsInMonth;
+            }
+            if (_levelUI != null) _levelUI.ViewScienceCount(_scienceCount);
 
             if (TestEndGame())
             {   //  конец игры что-то нужно сделать кроме показа финишных панелей ?!

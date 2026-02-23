@@ -24,14 +24,25 @@ public class MainUIControl : MonoBehaviour
 
     private void SetSityName()
     {
-        List<LevelShemaInfo> levels = LevelList.Instance.GetLevelInfos();
-        for (int i = 0; i < levels.Count; i++)
+        //List<LevelShemaInfo> levels = LevelList.Instance.GetLevelInfos();
+        //for (int i = 0; i < levels.Count; i++)
+        //{
+        //    if (i < btnSity.Length)
+        //    {
+        //        Text txtSity = btnSity[i].gameObject.GetComponentInChildren<Text>();
+                
+        //        txtSity.text = $"{levels[i].LevelNumber}. {levels[i].LevelName}";
+        //    }
+        //}
+        for (int i = 0; i < btnSity.Length; i++)
         {
-            if (i < btnSity.Length)
+            LevelShema levelShema = LevelList.Instance.GetShemaLevel(i);
+            if (levelShema != null)
             {
                 Text txtSity = btnSity[i].gameObject.GetComponentInChildren<Text>();
-                txtSity.text = $"{levels[i].LevelNumber}. {levels[i].LevelName}";
+                txtSity.text = $"{levelShema.NumberLevel}. {levelShema.Name}";
             }
+
         }
     }
 

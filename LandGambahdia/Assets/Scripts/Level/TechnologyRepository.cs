@@ -8,6 +8,22 @@ public class TechnologyRepository : MonoBehaviour
 {
     private List<Technology> _technologies = new List<Technology>(); // Репозиторий всех технологий
 
+    public List<Technology> Technologies => _technologies;
+
+    private void Start()
+    {
+        _technologies.Clear();
+        _technologies.Add(new Technology("Камнедобыча", 1, new string[] { "Каменоломня" }, new string[] { "Шахтное дело" }));
+        _technologies.Add(new Technology("Рыболовство", 1, new string[] { "Домик рыбака" }, new string[] { "Садоводство" }));
+        _technologies.Add(new Technology("Лесоповал", 1, new string[] { "Лесопилка" }, new string[] { "Деревообработка" }));
+        _technologies.Add(new Technology("Шахтное дело", 5, new string[] { "Шахта" }, new string[] { "Обработка металла" }));
+        _technologies.Add(new Technology("Садоводство", 3, new string[] { "Сад" }, new string[] { "Овощеводство" }));
+        _technologies.Add(new Technology("Деревообработка", 5, new string[] { "Дом плотника" }, new string[] { "Мебельное дело" }));
+        _technologies.Add(new Technology("Обработка металла", 10, new string[] { "Кузница" }, new string[] { "Инструменты" }));
+        _technologies.Add(new Technology("Овощеводство", 5, new string[] { "Ферма" }, new string[] { "Зерноводство" }));
+
+        _technologies[0].AddSciencePoints(1);
+    }
     public Technology FindTechnologyByTitle(string title)
     {
         foreach (Technology techno in _technologies)

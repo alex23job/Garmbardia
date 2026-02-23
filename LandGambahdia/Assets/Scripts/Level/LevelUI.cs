@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Text;
 
 public class LevelUI : MonoBehaviour
 {
@@ -39,6 +40,11 @@ public class LevelUI : MonoBehaviour
     [SerializeField] private GameObject _errorPanel;
     [SerializeField] private Text _errorTxt;
 
+    [SerializeField] private GameObject _winPanel;
+    [SerializeField] private Text _txtWinBonus;
+    [SerializeField] private GameObject _lossPanel;
+    [SerializeField] private Text _txtLossInfo;
+
 
     // Start is called before the first frame update
     void Start()
@@ -68,6 +74,15 @@ public class LevelUI : MonoBehaviour
         _buildingInfos = arr;
     }
 
+    public BuildingInfo GetBuildingInfo(string nm)
+    {
+        foreach (var item in _buildingInfos)
+        {
+            if (item.Name == nm) return item;
+        }
+        return null;
+    }
+
     public void OnBuildingClick()
     {
         _buildingPanel.SetActive(true);
@@ -78,6 +93,12 @@ public class LevelUI : MonoBehaviour
     public void OnScienceClick()
     {
         _sciencePanel.SetActive(true);
+        ScienceUI scienceUI = _sciencePanel.transform.GetChild(0).gameObject.GetComponent<ScienceUI>();
+        if (scienceUI != null)
+        {
+            scienceUI.SetLevelUI(this);
+            scienceUI.UpdateSciences();
+        }
     }
 
     public void SelectCategory(int cat)
@@ -211,16 +232,35 @@ public class LevelUI : MonoBehaviour
     public void ViewWinPanel(List<VictoryCondition> victoryConditions, List<VictoryBonus> victoryBonus)
     {
         print("Победа");
+        StringBuilder sb = new StringBuilder();
+        foreach(VictoryBonus vb in victoryBonus)
+        {
+            sb.Append(vb.ToString() + "\n");
+        }
+        _txtWinBonus.text = sb.ToString();
+        _winPanel.SetActive(true);
     }
 
     public void ViewLossPanel(List<VictoryCondition> victoryConditions)
     {
         print("Проигрыш");
+        StringBuilder sb = new StringBuilder();
+        foreach (VictoryCondition vc in victoryConditions)
+        {
+            sb.Append($"{vc.NameConditionCategory}:{vc.NameCondition} {vc.Value}/{vc.Count}\n");
+        }
+        _txtLossInfo.text = sb.ToString();
+        _lossPanel.SetActive(true);
     }
 
     public void OnSaveLevelClick()
     {
 
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void OnExitClick()

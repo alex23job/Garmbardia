@@ -23,7 +23,7 @@ public class HouseTypeManager : MonoBehaviour
 
     public HouseInfo GetHouseInfoByID(int id)
     {
-        foreach(HouseInfo houseInfo in _houseInfos)
+        foreach (HouseInfo houseInfo in _houseInfos)
         {
             if (houseInfo.LevelID == id) return houseInfo;
         }

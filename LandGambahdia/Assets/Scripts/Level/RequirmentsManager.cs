@@ -25,7 +25,16 @@ public class RequirmentsManager : MonoBehaviour
         {
             if (requirments.Id == id) return requirments;
         }
-        return new Requirments(id = -1, "", "", null, "");
+        return new Requirments(-1, "", "", null, "");
+    }
+
+    public Requirments GetRequirmentsByName(string nm)
+    {
+        foreach (Requirments requirments in _requirments)
+        {
+            if (requirments.Name == nm) return requirments;
+        }
+        return new Requirments(-1, "", "", null, "");
     }
 }
 
