@@ -352,8 +352,8 @@ public class LevelControl : MonoBehaviour
             }
             else if (vc.NameConditionCategory == "Время")
             {
-                if (vc.Value < vc.Value) countYes++;
-                if (vc.Count >= vc.Value)
+                if (vc.Value < vc.Count) countYes++;
+                if (vc.Count <= vc.Value)
                 {   //  Отведённое время закончилось и что ?
                     //  Если все остальные условия выполнены, то победа
                     isEndTime = true;
@@ -468,17 +468,25 @@ public class LevelControl : MonoBehaviour
         if (isYear)
         {
             _many += _totalNalog - _totalServiceCost;
+            if (_many < 0) _isLoss = true;
         }
         else
         {
             _many += _totalNalog;
         }
+        bool isMany = false;
         foreach (VictoryCondition vc in _victoryConditions)
         {
             if (vc.NameConditionCategory == "Деньги")
             {
                 vc.SetValue(_many);
+                isMany = true;
             }
+        }
+        if ((isMany == false) && (_isLoss == true))
+        {
+            _victoryConditions.Add(new VictoryCondition("Деньги", 0, ""));
+            _victoryConditions[_victoryConditions.Count - 1].SetValue(_many);
         }
         _levelUI.ViewMany(_many);
     }
