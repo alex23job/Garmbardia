@@ -155,6 +155,32 @@ public class LevelBoard : MonoBehaviour
         return null;
     }
 
+    public bool CheckDoor(int row, int col)
+    {
+        int index;
+        if (row > 0)
+        {
+            index = (row - 1) * _levelShema.BoardSize + col;
+            if ((_buildsID[index] >= 128) && (_buildsID[index] <= 134)) return true;
+        }
+        if (row + 1 < _levelShema.BoardSize)
+        {
+            index = (row + 1) * _levelShema.BoardSize + col;
+            if ((_buildsID[index] >= 128) && (_buildsID[index] <= 134)) return true;
+        }
+        if (col > 0)
+        {
+            index = row * _levelShema.BoardSize + col - 1;
+            if ((_buildsID[index] >= 128) && (_buildsID[index] <= 134)) return true;
+        }
+        if (col + 1 < _levelShema.BoardSize)
+        {
+            index = row * _levelShema.BoardSize + col + 1;
+            if ((_buildsID[index] >= 128) && (_buildsID[index] <= 134)) return true;
+        }
+        return false;
+    }
+
     private bool CheckBuilding(int landID, int buildingID, int row, int col)
     {
         if (landID == 24 || landID == 27)
@@ -479,6 +505,24 @@ public class LevelBoard : MonoBehaviour
             }
         }
         return path;
+    }
+
+    public bool CheckPathBetweenTwoPoints(int indexStart, int indexFinish)
+    {
+        WavePath wavePath = new WavePath();
+        int[] pole = new int[_tailsID.Length];
+        for (int i = 0; i < _tailsID.Length; i++)
+        {
+            pole[i] = -1;
+            if (_tailsID[i] == 96) pole[i] = 0;
+            if (_buildsID[i] >= 128 && _buildsID[i] < 135) pole[i] = 0;
+            //if (_buildsID[i] != 0) print($"Fill pole   _buildsID[{i}] = {_buildsID[i]}");
+        }
+        pole[indexStart] = 0;
+        pole[indexFinish] = 0;
+        List<int> pathZn = wavePath.GetPath(indexStart, new int[] { indexFinish }, pole, _levelShema.BoardSize);
+        if (pathZn != null && pathZn.Count > 0) return true;
+        return false;
     }
 
     private Vector3 GetPos(int x, int y, float h = 1.5f)

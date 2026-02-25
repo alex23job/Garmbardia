@@ -94,7 +94,7 @@ public class HouseRequirement : MonoBehaviour
                 int myCol = bc.BuildingInfo & 0xff;
                 if ((Mathf.Abs(myRow - row) <= radius) && (Mathf.Abs(myCol - col) <= radius))
                 {
-                    _requirments.Add(req);
+                    if (_levelControl.CheckWay(row, col, myRow, myCol)) _requirments.Add(req);
                 }
                 print($"AddRequirement : radius={radius} <myRow={myRow} row={row}>  <myCol={myCol} col={col}   countReq={_requirments.Count}>");
             }

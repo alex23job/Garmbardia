@@ -7,6 +7,7 @@ using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class LevelControl : MonoBehaviour
 {
+    [SerializeField] private ProductUI _productUI;
     [SerializeField] private HouseUI _houseUI;
     [SerializeField] private ScienceUI _cienceUI;
     [SerializeField] private LevelUI _levelUI;
@@ -124,6 +125,15 @@ public class LevelControl : MonoBehaviour
         _buildingList.Add(door);
     }
 
+    public bool CheckWay(int rowS, int colS, int rowF, int colF)
+    {
+        int div = (_levelShema.BoardSize == 35) ? 4 : 2;
+        int indexStart = (rowS / div) * _levelShema.BoardSize + (colS / div);
+        int indexFinish = (rowF / div) * _levelShema.BoardSize + (colF / div);
+        if (_levelBoard != null) return _levelBoard.CheckPathBetweenTwoPoints(indexStart, indexFinish);
+        return false;
+    }
+
     private void OnSelectBuilding(int type, int num)
     {
         GameObject build = _levelBoard.CreateBuilding(type, num);
@@ -140,12 +150,15 @@ public class LevelControl : MonoBehaviour
                         int row = (bc.BuildingInfo >> 8) & 0xff;
                         int col = bc.BuildingInfo & 0xff;
                         int multRadius = (_levelShema.BoardSize == 35) ? 4 : 2;
-                        foreach (GameObject house in _houseList)
-                        {
-                            HouseRequirement houseRequirement = house.GetComponent<HouseRequirement>();
-                            if (houseRequirement != null) houseRequirement.AddRequirement(bc.Requirment, row, col, bc.Radius * multRadius);
+                        if (_levelBoard.CheckDoor(row / multRadius, col / multRadius))
+                        {   //  если здание соединёно с дорогой, то добавим удовлетворённые потребности в каждый из домов в радиусе                            
+                            foreach (GameObject house in _houseList)
+                            {
+                                HouseRequirement houseRequirement = house.GetComponent<HouseRequirement>();
+                                if (houseRequirement != null) houseRequirement.AddRequirement(bc.Requirment, row, col, bc.Radius * multRadius);
+                            }
+                            CheckHouses();
                         }
-                        CheckHouses();
                     }
                     if (bc.Prosperity > 0)
                     {
@@ -184,15 +197,18 @@ public class LevelControl : MonoBehaviour
                     houseRequirement.SetLevelControl(_levelControl);
                     int indexHouse = GetIndexBuilding(build);
                     if (indexHouse != -1) for (int i = 0; i < houseRequirement.FreePlaces; i++) _freePlacesIndex.Add(indexHouse);
-                    foreach (GameObject go in _buildingList)
-                    {
-                        BuildingControl bc = go.GetComponent<BuildingControl>();
-                        if (bc != null && bc.Requirment != -1)
+                    if (indexHouse != -1 && _levelBoard.CheckDoor(indexHouse / _levelShema.BoardSize, indexHouse % _levelShema.BoardSize))
+                    {   //  если дом соединён с дорогой, то проверим доступ к зданиям и добавим удовлетворённые потребности
+                        foreach (GameObject go in _buildingList)
                         {
-                            int row = (bc.BuildingInfo >> 8) & 0xff;
-                            int col = bc.BuildingInfo & 0xff;
-                            int multRadius = (_levelShema.BoardSize == 35) ? 4 : 2;
-                            houseRequirement.AddRequirement(bc.Requirment, row, col, bc.Radius * multRadius);
+                            BuildingControl bc = go.GetComponent<BuildingControl>();
+                            if (bc != null && bc.Requirment != -1)
+                            {
+                                int row = (bc.BuildingInfo >> 8) & 0xff;
+                                int col = bc.BuildingInfo & 0xff;
+                                int multRadius = (_levelShema.BoardSize == 35) ? 4 : 2;
+                                houseRequirement.AddRequirement(bc.Requirment, row, col, bc.Radius * multRadius);
+                            }
                         }
                     }
                     _freePlaces += houseRequirement.FreePlaces;
@@ -235,7 +251,10 @@ public class LevelControl : MonoBehaviour
             HouseRequirement houseRequirement = _selectBuild.GetComponent<HouseRequirement>();
             if (houseRequirement != null) _houseUI.ViewHouseInfo(_selectBuild);
             ProductionControl productionControl = _selectBuild.GetComponent<ProductionControl>();
-            if (productionControl != null) { }  //  показ информации о производстенном здании
+            if (productionControl != null)
+            {   //  показ информации о производстенном здании
+                _productUI.ViewBuildingInfo(_selectBuild);
+            }
         }
     }
 
@@ -421,7 +440,29 @@ public class LevelControl : MonoBehaviour
         _countCitizens = 0;
         _freePlaces = 0;
         _totalNalog = 0;
-        for(int i = _houseList.Count; i > 0; i--)
+        foreach (GameObject house in _houseList)
+        {
+            HouseRequirement houseRequirement = house.GetComponent<HouseRequirement>();
+            if (houseRequirement != null)
+            {
+                int indexHouse = GetIndexBuilding(house);
+                if (indexHouse != -1 && _levelBoard.CheckDoor(indexHouse / _levelShema.BoardSize, indexHouse % _levelShema.BoardSize))
+                {   //  если дом соединён с дорогой, то проверим доступ к зданиям и добавим удовлетворённые потребности
+                    foreach (GameObject go in _buildingList)
+                    {
+                        BuildingControl bc = go.GetComponent<BuildingControl>();
+                        if (bc != null && bc.Requirment != -1)
+                        {
+                            int row = (bc.BuildingInfo >> 8) & 0xff;
+                            int col = bc.BuildingInfo & 0xff;
+                            int multRadius = (_levelShema.BoardSize == 35) ? 4 : 2;
+                            houseRequirement.AddRequirement(bc.Requirment, row, col, bc.Radius * multRadius);
+                        }
+                    }
+                }
+            }
+        }
+        for (int i = _houseList.Count; i > 0; i--)
         {
             HouseRequirement houseRequirement = _houseList[i - 1].GetComponent<HouseRequirement>();
             if (houseRequirement != null && houseRequirement.CheckLevelRequirments())
