@@ -278,3 +278,5 @@ MonoBehaviour:
   _products: []
   _maxWorkersCount: 4
   _oneResourceCompleteTime: 40
+  _outResourses: 06000000
+  _inpResourses: 0000000002000000

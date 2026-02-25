@@ -170,6 +170,7 @@ MonoBehaviour:
   _radius: 5
   _requirement: -1
   _prosperity: 5
+  _serviceCost: 0
 --- !u!114 &330990433297568181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,6 +202,8 @@ MonoBehaviour:
   - {fileID: 3705463380498697802}
   _maxWorkersCount: 2
   _oneResourceCompleteTime: 10
+  _outResourses: 1e000000
+  _inpResourses: 00000000
 --- !u!1 &3705463380498697802
 GameObject:
   m_ObjectHideFlags: 0

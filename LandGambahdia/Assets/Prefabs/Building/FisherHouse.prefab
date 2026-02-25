@@ -283,6 +283,8 @@ MonoBehaviour:
   - {fileID: 7107833785256156713}
   _maxWorkersCount: 4
   _oneResourceCompleteTime: 40
+  _outResourses: 0a000000
+  _inpResourses: 0000000003000000
 --- !u!114 &-4080835395799140061
 MonoBehaviour:
   m_ObjectHideFlags: 0

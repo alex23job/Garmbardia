@@ -7,10 +7,15 @@ public class ProductionControl : MonoBehaviour
     [SerializeField] private GameObject[] _products;
     [SerializeField] private int _maxWorkersCount = 1;
     [SerializeField] private float _oneResourceCompleteTime = 1f;
+    [SerializeField] private int[] _outResourses;
+    [SerializeField] private int[] _inpResourses;
 
     private int _workerCount = 1;
     private int _producedCount = 0;
     private int _secondCount = 0;
+
+    public string Workers { get { return $"{_workerCount}/{_maxWorkersCount}"; } }
+    public string OneResourceCompleteTime { get { return $"производят 1 шт. за {CalcCompleteTime()} сек"; } }
 
     public int Vacancy { get { return _maxWorkersCount - _workerCount; } }
 
@@ -26,6 +31,11 @@ public class ProductionControl : MonoBehaviour
         
     }
 
+    private string CalcCompleteTime()
+    {
+        if (_workerCount == 0) return "-";
+        else return $"{(_oneResourceCompleteTime / _workerCount):F2}";
+    }
     public bool AddWorker()
     {
         if (_workerCount < _maxWorkersCount)
@@ -72,5 +82,19 @@ public class ProductionControl : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public int[] GetInpResoursesID()
+    {
+        int[] res = new int[_inpResourses.Length];
+        for (int i = 0; i < _inpResourses.Length; i++) res[i] = _inpResourses[i];
+        return res;
+    }
+
+    public int[] GetOutResoursesID()
+    {
+        int[] res = new int[_outResourses.Length];
+        for (int i = 0; i < _outResourses.Length; i++) res[i] = _outResourses[i];
+        return res;
     }
 }

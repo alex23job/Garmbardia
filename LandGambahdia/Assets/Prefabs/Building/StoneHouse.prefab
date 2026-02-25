@@ -533,3 +533,5 @@ MonoBehaviour:
   - {fileID: 1679606061488473060}
   _maxWorkersCount: 6
   _oneResourceCompleteTime: 60
+  _outResourses: 07000000
+  _inpResourses: 0000000001000000

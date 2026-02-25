@@ -210,6 +210,8 @@ MonoBehaviour:
   - {fileID: 548337612311055845}
   _maxWorkersCount: 8
   _oneResourceCompleteTime: 40
+  _outResourses: 09000000
+  _inpResourses: 0000000001000000
 --- !u!1 &6058732446820179805
 GameObject:
   m_ObjectHideFlags: 0
