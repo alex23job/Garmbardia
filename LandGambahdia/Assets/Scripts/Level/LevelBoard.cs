@@ -24,6 +24,7 @@ public class LevelBoard : MonoBehaviour
     private int _spawnPosZn = -1;
 
     public Vector3 SpawnPosition { get => _spawnPos; }
+    public int BoardSize { get { return (_levelShema != null) ? _levelShema.BoardSize : -1; } }
 
     private LevelControl _levelControl = null;
 
@@ -183,6 +184,55 @@ public class LevelBoard : MonoBehaviour
         return false;
     }
 
+    public bool CheckForest(int row, int col)
+    {
+        int index;
+        if (row > 0)
+        {
+            index = (row - 1) * _levelShema.BoardSize + col;
+            if (_tailsID[index] == 90) return true;
+        }
+        if (row + 1 < _levelShema.BoardSize)
+        {
+            index = (row + 1) * _levelShema.BoardSize + col;
+            if (_tailsID[index] == 90) return true;
+        }
+        if (col > 0)
+        {
+            index = row * _levelShema.BoardSize + col - 1;
+            if (_tailsID[index] == 90) return true;
+        }
+        if (col + 1 < _levelShema.BoardSize)
+        {
+            index = row * _levelShema.BoardSize + col + 1;
+            if (_tailsID[index] == 90) return true;
+        }
+        return false;
+    }
+
+    public bool CheckLand(int type, int index)
+    {
+        switch(type)
+        {
+            case 1: //  половинка горы
+                if (_tailsID[index] == 20 || _tailsID[index] == 23) return true;
+                break;
+            case 3: //  половинка воды
+                if (_tailsID[index] == 24 || _tailsID[index] == 27) return true;
+                break;
+            case 4: //  песок или трава/песок
+                if (_tailsID[index] == 3 || _tailsID[index] == 19) return true;
+                break;
+        }
+        return false;
+    }
+
+    public bool CheckBuildingInRadius(int buildID, int row, int col)
+    {
+
+        return false;
+    }
+
     private bool CheckBuilding(int landID, int buildingID, int row, int col)
     {
         //print($"CheckBuilding  landID={landID}  buildingID={buildingID}");
@@ -201,15 +251,16 @@ public class LevelBoard : MonoBehaviour
             if ((buildingID == 132) || (buildingID == 134)) return true;
             else return false;
         }
-        if (landID == 90)
+        if ((landID == 0) && (buildingID == 96))
         {   //  проверка на постройку лесопилки
+            return (CheckForest(row, col));
         }
         if (landID == 3)
         {   //  проверка на постройку стеклодува
         }
         if (landID == 96)
         {   //  это дорога
-            if ((buildingID == 129) || (buildingID == 130)) return true;
+            if ((buildingID == 128) || (buildingID == 129) || (buildingID == 130)) return true;
             else return false;
         }
         if (landID > 0)

@@ -10802,63 +10802,88 @@ MonoBehaviour:
   - ID: 0
     Name: "\u0414\u043E\u0441\u0442\u0443\u043F \u043A \u0434\u043E\u0440\u043E\u0433\u0435"
     Icon: {fileID: 21300000, guid: 40b82c61a08300f48a4c8eab696b2c6f, type: 3}
+    LandOrBuildID: 0
   - ID: 1
     Name: "\u0414\u043E\u0441\u0442\u0443\u043F \u043A \u0433\u043E\u0440\u0430\u043C"
     Icon: {fileID: 21300000, guid: 7ce22202c56e4984ca5157916b4057d8, type: 3}
+    LandOrBuildID: 1
   - ID: 2
     Name: "\u0414\u043E\u0441\u0442\u0443\u043F \u043A \u043B\u0435\u0441\u0443"
     Icon: {fileID: 21300000, guid: 104563baff45a614fa7d99b133fbaaba, type: 3}
+    LandOrBuildID: 2
   - ID: 3
     Name: "\u0414\u043E\u0441\u0442\u0443\u043F \u043A \u0432\u043E\u0434\u0435"
     Icon: {fileID: 21300000, guid: fc813dcfe037fa9418e514d6d11b18d6, type: 3}
+    LandOrBuildID: 3
   - ID: 4
+    Name: "\u0414\u043E\u0441\u0442\u0443\u043F \u043A \u043F\u0435\u0441\u043A\u0443"
+    Icon: {fileID: 21300000, guid: 52864973e78f5064793c99b24fc7fccd, type: 3}
+    LandOrBuildID: 4
+  - ID: 5
     Name: "\u0412\u043E\u0434\u0430"
     Icon: {fileID: 21300000, guid: 64a5451cd100210419dd65fd304be816, type: 3}
+    LandOrBuildID: 0
   - ID: 6
     Name: "\u0411\u0440\u0451\u0432\u043D\u0430"
     Icon: {fileID: 21300000, guid: e4c16cfe84047ad4c995b073366b6b63, type: 3}
+    LandOrBuildID: 0
   - ID: 7
     Name: "\u041A\u0430\u043C\u0435\u043D\u044C"
     Icon: {fileID: 21300000, guid: 477f9ecf4ee7eaf4da4e0af22d8b778d, type: 3}
+    LandOrBuildID: 0
   - ID: 8
     Name: "\u0413\u043B\u0438\u043D\u0430"
     Icon: {fileID: 21300000, guid: 701afbba42db3d5498846d670a4f6fd5, type: 3}
+    LandOrBuildID: 0
   - ID: 9
     Name: "\u0423\u0433\u043E\u043B\u044C"
     Icon: {fileID: 21300000, guid: 72a6fb633b04bf84b892cde00e001085, type: 3}
+    LandOrBuildID: 0
   - ID: 10
     Name: "\u0420\u044B\u0431\u0430"
     Icon: {fileID: 21300000, guid: 7eab104cbd3ee7e4ebf32dfd02f6b80f, type: 3}
+    LandOrBuildID: 0
   - ID: 11
     Name: "\u0417\u0435\u0440\u043D\u043E"
     Icon: {fileID: 21300000, guid: 6eefe4a70b1447a41b445dbf11721f88, type: 3}
+    LandOrBuildID: 0
   - ID: 12
     Name: "\u0424\u0440\u0443\u043A\u0442\u044B"
     Icon: {fileID: 21300000, guid: eb4e488ac050be241818a1501e7e3b49, type: 3}
+    LandOrBuildID: 0
   - ID: 13
     Name: "\u041E\u0432\u043E\u0449\u0438"
     Icon: {fileID: 21300000, guid: 846d47711bbad35478b45fe72b7b2eff, type: 3}
+    LandOrBuildID: 0
   - ID: 14
     Name: "\u041C\u043E\u043B\u043E\u043A\u043E"
     Icon: {fileID: 21300000, guid: 6fe5061c6e6191643b3f2152d2c0c9df, type: 3}
+    LandOrBuildID: 0
   - ID: 20
     Name: "\u0422\u043A\u0430\u043D\u044C"
     Icon: {fileID: 21300000, guid: 3681e43a1cf11834c955315501aad072, type: 3}
+    LandOrBuildID: 0
   - ID: 21
     Name: "\u041A\u043E\u0436\u0430"
     Icon: {fileID: 21300000, guid: 0ce963fe2e6c9004f9f71b59bb7bce88, type: 3}
+    LandOrBuildID: 0
   - ID: 30
     Name: "\u041B\u0435\u043A\u0430\u0440\u0441\u0442\u0432\u0430"
     Icon: {fileID: 21300000, guid: 7db786aad2fc4354cbee9b80f64c48ed, type: 3}
+    LandOrBuildID: 0
   - ID: 40
     Name: "\u041E\u0431\u0443\u0432\u044C"
     Icon: {fileID: 21300000, guid: 26ffde3fb8c95e44c8b0654988366a3f, type: 3}
+    LandOrBuildID: 0
   - ID: 41
     Name: "\u041E\u0434\u0435\u0436\u0434\u0430"
     Icon: {fileID: 21300000, guid: 9e2afbced78bdd34f939903c8c7ddc7d, type: 3}
+    LandOrBuildID: 0
   - ID: 42
     Name: "\u0421\u0442\u0435\u043A\u043B\u043E"
     Icon: {fileID: 21300000, guid: 83b6f875cc4c83a41906637f90785fd4, type: 3}
+    LandOrBuildID: 0
+  _levelBoard: {fileID: 466888142}
 --- !u!4 &636838886
 Transform:
   m_ObjectHideFlags: 0
