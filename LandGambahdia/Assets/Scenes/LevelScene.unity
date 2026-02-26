@@ -920,7 +920,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _productUI: {fileID: 811789845}
   _houseUI: {fileID: 138329870}
-  _cienceUI: {fileID: 313900477}
+  _scienceUI: {fileID: 313900477}
   _levelUI: {fileID: 84556264}
   _levelBoard: {fileID: 466888142}
   _levelCamera: {fileID: 2037983598}

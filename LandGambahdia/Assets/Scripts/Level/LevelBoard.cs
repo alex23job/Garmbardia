@@ -87,7 +87,8 @@ public class LevelBoard : MonoBehaviour
                         int num = (tailInfo >> 16) & 0xff;   //  это и есть tailID
                         int x = tailInfo & 0xff;
                         int y = (tailInfo >> 8) & 0xff;
-                        if (CheckBuilding(num, buildID, y / 4, x / 4) == false)
+                        int div = (_levelShema.BoardSize == 35) ? 4 : 2;
+                        if (CheckBuilding(num, buildID, y / div, x / div) == false)
                         {
                             _levelControl.ViewError("Тип местности не соответствует виду постройки !");
                             return null;
@@ -104,9 +105,10 @@ public class LevelBoard : MonoBehaviour
                         if (cr != null) cr.SetSize(nbc.Radius);
                         BuildRotation br = b.GetComponent<BuildRotation>();
                         if (br != null) br.RotationBuilding(_selectTail);
-                        print($"CreateBuilding  y={y} x={x}  buildID={nbc.BuildingID}   y/4={y/4} x/4={x/4} index={_levelShema.BoardSize * (y / 4) + (x / 4)}");
-                        if (_levelShema.BoardSize == 35) _buildsID[_levelShema.BoardSize * (y / 4) + (x / 4)] = nbc.BuildingID;
-                        if (_levelShema.BoardSize == 70) _buildsID[_levelShema.BoardSize * (y / 2) + (x / 2)] = nbc.BuildingID;
+                        print($"CreateBuilding  y={y} x={x}  buildID={nbc.BuildingID}   y/div={y/div} x/div={x/div} index={_levelShema.BoardSize * (y / div) + (x / div)}");
+                        _buildsID[_levelShema.BoardSize * (y / div) + (x / div)] = nbc.BuildingID;
+                        //if (_levelShema.BoardSize == 35) _buildsID[_levelShema.BoardSize * (y / 4) + (x / 4)] = nbc.BuildingID;
+                        //if (_levelShema.BoardSize == 70) _buildsID[_levelShema.BoardSize * (y / 2) + (x / 2)] = nbc.BuildingID;
                         _selectTail = null;
                         _ceil.SetActive(false);
                         return b;
@@ -183,19 +185,20 @@ public class LevelBoard : MonoBehaviour
 
     private bool CheckBuilding(int landID, int buildingID, int row, int col)
     {
-        if (landID == 24 || landID == 27)
+        //print($"CheckBuilding  landID={landID}  buildingID={buildingID}");
+        if ((landID == 24) || (landID == 27))
         {   //  проверка на начало/конец моста или домик рыбака
-            if (buildingID == 131 || buildingID == 133 || buildingID == 98) return true;
+            if ((buildingID == 131) || (buildingID == 133) || (buildingID == 98)) return true;
             else return false;
         }
-        if (landID == 20 || landID == 23)
+        if ((landID == 20) || (landID == 23))
         {   //  проверка на постройку шахты и каменоломни
-            if (buildingID == 99 || buildingID == 97) return true;
+            if ((buildingID == 99) || (buildingID == 97)) return true;
             else return false;
         }
         if (landID == 2)
         {   //  проверка на средину моста
-            if (buildingID == 132 || buildingID == 134) return true;
+            if ((buildingID == 132) || (buildingID == 134)) return true;
             else return false;
         }
         if (landID == 90)
@@ -212,6 +215,12 @@ public class LevelBoard : MonoBehaviour
         if (landID > 0)
         {   //  это не трава
             return false;
+        }
+        if (landID == 0)
+        {
+            if ((buildingID == 131) || (buildingID == 133) || (buildingID == 98)) return false;
+            if ((buildingID == 99) || (buildingID == 97)) return false;
+            if ((buildingID == 132) || (buildingID == 134)) return false;
         }
         return true;
     }

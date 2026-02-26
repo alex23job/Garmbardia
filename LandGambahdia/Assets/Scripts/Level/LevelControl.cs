@@ -9,7 +9,7 @@ public class LevelControl : MonoBehaviour
 {
     [SerializeField] private ProductUI _productUI;
     [SerializeField] private HouseUI _houseUI;
-    [SerializeField] private ScienceUI _cienceUI;
+    [SerializeField] private ScienceUI _scienceUI;
     [SerializeField] private LevelUI _levelUI;
     [SerializeField] private LevelBoard _levelBoard;
     [SerializeField] private LevelCamera _levelCamera;
@@ -76,14 +76,14 @@ public class LevelControl : MonoBehaviour
 
         // Подписываемся на события
         _levelUI.OnSelectBuilding += OnSelectBuilding;
-        _cienceUI.OnInvestedPointsClick += OnInvestedPointsClick;
+        _scienceUI.OnInvestedPointsClick += OnInvestedPointsClick;
     }
 
     private void OnDisable()
     {
         //  Отписываемся от событий
         _levelUI.OnSelectBuilding -= OnSelectBuilding;
-        _cienceUI.OnInvestedPointsClick -= OnInvestedPointsClick;
+        _scienceUI.OnInvestedPointsClick -= OnInvestedPointsClick;
     }
 
     // Update is called once per frame
@@ -249,7 +249,11 @@ public class LevelControl : MonoBehaviour
         if (_selectBuild != null)
         {
             HouseRequirement houseRequirement = _selectBuild.GetComponent<HouseRequirement>();
-            if (houseRequirement != null) _houseUI.ViewHouseInfo(_selectBuild);
+            if (houseRequirement != null)
+            {   //  показ информации о жилом доме
+                _houseUI.ViewHouseInfo(_selectBuild);
+            }
+
             ProductionControl productionControl = _selectBuild.GetComponent<ProductionControl>();
             if (productionControl != null)
             {   //  показ информации о производстенном здании
