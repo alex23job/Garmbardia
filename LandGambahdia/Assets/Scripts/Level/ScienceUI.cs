@@ -131,4 +131,14 @@ public class ScienceUI : MonoBehaviour
     {
         return _repository.CheckTechnologyByTitle(name);
     }
+
+    public bool CheckTechoEntity(string name)
+    {
+        return _repository.CheckEntity(name);
+    }
+
+    public bool CheckContainsEntity(string name)
+    {
+        return _repository.CheckContainsEntity(name);
+    }
 }

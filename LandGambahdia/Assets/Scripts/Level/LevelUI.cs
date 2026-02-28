@@ -110,6 +110,7 @@ public class LevelUI : MonoBehaviour
     private void UpdateBuildingPanel()
     {
         List<BuildingInfo> buildings = new List<BuildingInfo>();
+        ScienceUI scienceUI = _sciencePanel.transform.GetChild(0).gameObject.GetComponent<ScienceUI>();
         foreach (BuildingInfo buildingInfo in _buildingInfos)
         {
             if (((buildingInfo.Id >> 5) & 0x7) == _selectCategory)
@@ -117,26 +118,28 @@ public class LevelUI : MonoBehaviour
                 buildings.Add(buildingInfo);
             }
         }
-        //if (buildings.Count > 0)
-        //{
-            for (int i = 0; i < _buildingsBtn.Length; i++)
+        for (int i = 0; i < _buildingsBtn.Length; i++)
+        {
+            if (i < buildings.Count)
             {
-                if (i < buildings.Count)
-                {
-                    _buildingsBtn[i].gameObject.SetActive(true);
-                    Image img = _buildingsBtn[i].gameObject.transform.GetChild(0).gameObject.GetComponent<Image>();
-                    if (img != null) img.sprite = buildings[i].Sprite;
+                _buildingsBtn[i].gameObject.SetActive(true);
+                Image img = _buildingsBtn[i].gameObject.transform.GetChild(0).gameObject.GetComponent<Image>();
+                if (img != null) img.sprite = buildings[i].Sprite;
                 Text txtName = _buildingsBtn[i].gameObject.transform.GetChild(1).gameObject.GetComponent<Text>();
                 if (txtName != null) txtName.text = $"{buildings[i].Name}";
                 Text txtMany = _buildingsBtn[i].gameObject.transform.GetChild(2).gameObject.GetComponent<Text>();
                 if (txtMany != null) txtMany.text = $"{buildings[i].Price}";
-            }
-            else
+                if (scienceUI != null)
                 {
-                    _buildingsBtn[i].gameObject.SetActive(false);
+                    if (scienceUI.CheckContainsEntity(buildings[i].Name)) _buildingsBtn[i].interactable = scienceUI.CheckTechoEntity(buildings[i].Name);
+                    else _buildingsBtn[i].interactable = true;
                 }
             }
-        //}
+            else
+            {
+                _buildingsBtn[i].gameObject.SetActive(false);
+            }
+        }
     }
 
     public void SelectBuilding(int num)

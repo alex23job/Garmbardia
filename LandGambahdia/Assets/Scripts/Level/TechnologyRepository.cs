@@ -51,6 +51,15 @@ public class TechnologyRepository : MonoBehaviour
         return false;
     }
 
+    public bool CheckContainsEntity(string entity)
+    {
+        foreach(Technology techno in _technologies)
+        {
+            if (techno.CheckContainsEntity(entity)) return true;
+        }
+        return false;
+    }
+
     //public void ResearchTechnology(Technology tech)
     //{
     //    tech.IsResearched = true;
@@ -104,5 +113,10 @@ public class Technology
     public bool CheckUnlockEntity(string entity)
     {
         return _isResearched && _unlocksEntity.Contains(entity);
+    }
+
+    public bool CheckContainsEntity(string entity)
+    {
+        return _unlocksEntity.Contains(entity);
     }
 }
