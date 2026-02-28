@@ -7,6 +7,7 @@ using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class LevelControl : MonoBehaviour
 {
+    [SerializeField] private OtherBuildUI _otherBuildUI;
     [SerializeField] private ProductUI _productUI;
     [SerializeField] private HouseUI _houseUI;
     [SerializeField] private ScienceUI _scienceUI;
@@ -258,6 +259,11 @@ public class LevelControl : MonoBehaviour
             if (productionControl != null)
             {   //  показ информации о производстенном здании
                 _productUI.ViewBuildingInfo(_selectBuild);
+            }
+
+            if (houseRequirement == null && productionControl == null)
+            {   //  показ информации об остальных зданиях
+                _otherBuildUI.ViewBuildingInfo(_selectBuild);
             }
         }
     }
