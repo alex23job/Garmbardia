@@ -126,4 +126,9 @@ public class ScienceUI : MonoBehaviour
             }
         }
     }
+
+    public bool CheckTechnology(string name)
+    {
+        return _repository.CheckTechnologyByTitle(name);
+    }
 }

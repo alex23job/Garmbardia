@@ -391,6 +391,20 @@ public class LevelControl : MonoBehaviour
             }
             else
             {
+                if (vc.NameConditionCategory == "Здание")
+                {
+                    int countBuild = 0;
+                    foreach (GameObject build in _buildingList)
+                    {
+                        BuildingControl bc = build.GetComponent<BuildingControl>();
+                        if ((bc != null) && (bc.NameBuilding == vc.NameCondition)) countBuild++;
+                    }
+                    vc.SetValue(countBuild);
+                }
+                if (vc.NameConditionCategory == "Технология")
+                {
+                    if (_scienceUI.CheckTechnology(vc.NameCondition)) vc.SetValue(1);
+                }
                 if (vc.Value > vc.Count) countYes++;
             }
         }

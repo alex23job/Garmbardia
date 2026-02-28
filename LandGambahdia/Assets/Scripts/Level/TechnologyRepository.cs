@@ -42,6 +42,15 @@ public class TechnologyRepository : MonoBehaviour
         return false;
     }
 
+    public bool CheckTechnologyByTitle(string title)
+    {
+        foreach (Technology techno in _technologies)
+        {
+            if (techno.Title == title) return techno.IsResearched;
+        }
+        return false;
+    }
+
     //public void ResearchTechnology(Technology tech)
     //{
     //    tech.IsResearched = true;
