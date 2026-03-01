@@ -234,6 +234,10 @@ public class LevelControl : MonoBehaviour
                 _selectBuild = tail;
                 _levelUI.ViewActionsPanel(buildingControl.NameBuilding, buildingControl.IsRotate);
             }
+            else
+            {
+                _levelUI.HideActionsPanel();
+            }
         }
     }
 

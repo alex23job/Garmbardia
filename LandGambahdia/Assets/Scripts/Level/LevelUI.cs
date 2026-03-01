@@ -160,6 +160,11 @@ public class LevelUI : MonoBehaviour
         _buildingSelectPanel.SetActive(true);
     }
 
+    public void HideActionsPanel()
+    {
+        _buildingSelectPanel.SetActive(false);
+    }
+
     public void ViewConditionPanel(bool value, List<VictoryCondition> list = null)
     {
         //if (value && list != null && list.Count > 0)
