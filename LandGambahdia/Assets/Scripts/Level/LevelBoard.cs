@@ -66,7 +66,7 @@ public class LevelBoard : MonoBehaviour
     public GameObject CreateBuilding(int cat, int build)
     {
         int buildID = (cat << 5) + build;
-        print($"CreateBuilding id={buildID}");
+        print($"CreateBuilding id={buildID}  _selectTail={_selectTail}");
         if (_selectTail != null)
         {
             LandTail landTail = _selectTail.GetComponent<LandTail>();
@@ -93,6 +93,14 @@ public class LevelBoard : MonoBehaviour
                         {
                             _levelControl.ViewError("Тип местности не соответствует виду постройки !");
                             return null;
+                        }
+                        if (buildID == 100)
+                        {   //  пока только ферма 2х2 
+                            if (CheckFree2x2(y / div, x / div) == false)
+                            {
+                                _levelControl.ViewError("Для этой постройки требуется 4 клетки!\nХотя бы одна из них уже занята другой постройкой.");
+                                return null;
+                            }
                         }
                         Vector3 pos = _selectTail.transform.position;
                         pos.y = 1.5f;
@@ -151,6 +159,11 @@ public class LevelBoard : MonoBehaviour
                     nhr.CopyLevelAndRequirements(houseRequirement.HouseLevel + 1, houseRequirement.GetRequirements());
                     nhr.AddCitizen(houseRequirement.Citizens);
                     nhr.CopyAllCitizen(houseRequirement.GetAllCitizens());
+                    int rot = (obc.BuildingInfo >> 24) & 0x3;
+                    if (rot > 0)
+                    {
+                        for (int i = 0; i < rot; i++) nbc.RotateTail();
+                    }
                     return b;
                 }
             }
@@ -225,6 +238,24 @@ public class LevelBoard : MonoBehaviour
                 break;
         }
         return false;
+    }
+
+    private bool CheckFree2x2(int row, int col)
+    {
+        int index;
+        if (col > 0)
+        {
+            index = row * _levelShema.BoardSize + col - 1;
+            if (_buildsID[index] > 0) return false;
+            if (row > 0)
+            {
+                index = (row - 1) * _levelShema.BoardSize + col;
+                if (_buildsID[index] > 0) return false;
+                index--;
+                if (_buildsID[index] > 0) return false;
+            }
+        }
+        return true;
     }
 
     public bool CheckBuildingInRadius(int buildID, int row, int col)
@@ -331,7 +362,7 @@ public class LevelBoard : MonoBehaviour
                                 if (_levelShema.BoardSize == 35) b.transform.localScale = new Vector3(2f, 2f, 2f);
                                 BuildingControl nbc = b.GetComponent<BuildingControl>();
                                 nbc.SetBoardAndPosition(_levelBoard, y, x);
-                                print($"Create wood door  y={y} x={x}  buildID={nbc.BuildingID}   y/4={y / 4} x/4={x / 4} index={_levelShema.BoardSize * (y / 4) + (x / 4)}");
+                                //print($"Create wood door  y={y} x={x}  buildID={nbc.BuildingID}   y/4={y / 4} x/4={x / 4} index={_levelShema.BoardSize * (y / 4) + (x / 4)}");
                                 if (_levelShema.BoardSize == 35) _buildsID[_levelShema.BoardSize * (y / 4) + (x / 4)] = nbc.BuildingID;
                                 if (_levelShema.BoardSize == 70) _buildsID[_levelShema.BoardSize * (y / 2) + (x / 2)] = nbc.BuildingID;
                                 _levelControl.AddingWoodDoor(b);
