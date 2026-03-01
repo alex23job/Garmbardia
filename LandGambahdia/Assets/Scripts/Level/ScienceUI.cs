@@ -46,7 +46,14 @@ public class ScienceUI : MonoBehaviour
             {
                 Technology techno = list[i];
                 Button incBtn = _scienceItems[i].transform.GetChild(0).gameObject.GetComponent<Button>();
-                if (incBtn != null) incBtn.interactable = !techno.IsResearched;
+                if (incBtn != null)
+                {
+                    incBtn.interactable = !techno.IsResearched;
+                    if (incBtn.interactable)
+                    {
+                        if (_repository.CheckContainsNextTechno(techno.Title)) incBtn.interactable = _repository.CheckNextTechno(techno.Title);
+                    }
+                }
 
                 Text title = _scienceItems[i].transform.GetChild(1).gameObject.GetComponent<Text>();
                 if (title != null) title.text = techno.Title;
@@ -115,7 +122,11 @@ public class ScienceUI : MonoBehaviour
                 if (progressCost != null) progressCost.text = $"{techno.InvestedSciencePoints}/{techno.SciencePointsCost}";
                 if (index < _arrows.Length)
                 {
-                    if (techno.IsResearched) _arrows[index].color = _itemColors[0];
+                    if (techno.IsResearched)
+                    {
+                        _arrows[index].color = _itemColors[0];
+                        UpdateSciences();
+                    }
                     else
                     {
                         if (techno.InvestedSciencePoints > 0) _arrows[index].color = _itemColors[2];
