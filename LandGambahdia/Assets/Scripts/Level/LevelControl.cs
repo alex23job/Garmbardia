@@ -405,7 +405,7 @@ public class LevelControl : MonoBehaviour
                 {
                     if (_scienceUI.CheckTechnology(vc.NameCondition)) vc.SetValue(1);
                 }
-                if (vc.Value > vc.Count) countYes++;
+                if (vc.Value >= vc.Count) countYes++;
             }
         }
         if (countYes == _victoryConditions.Count)

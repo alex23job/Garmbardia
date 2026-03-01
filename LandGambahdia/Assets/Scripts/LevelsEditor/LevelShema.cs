@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
+using Unity.VisualScripting.FullSerializer;
+using UnityEngine;
 
 [Serializable]
 public class LevelShema
@@ -257,14 +260,16 @@ public class VictoryBonus
     public VictoryBonus(string csv, char sep = ';')
     {
         string[] ar = csv.Split(sep, StringSplitOptions.RemoveEmptyEntries);
-        if (ar.Length >= 3)
+        if (ar.Length >= 2)
         {
+            //UnityEngine.Debug.Log($"csv=<{csv}>   ar[0]=<{ar[0]}>   ar[1]=<{ar[1]}>   ar[2]=<{((ar.Length >= 3) ? ar[2] : "")}>");
             _title = ar[0];
             if (int.TryParse(ar[1], out int zn))
             {
                 _count = zn;
             }
-            _nameBonus += ar[2];
+            if (ar.Length >= 3) _nameBonus = ar[2];
+            else _nameBonus = "";
         }
     }
 
