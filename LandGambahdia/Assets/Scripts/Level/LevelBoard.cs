@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public class LevelBoard : MonoBehaviour
 {
+    [SerializeField] private BuildingDoorUI _buildingDoorUI;
+    [SerializeField] private GameObject _buildingDoorPanel;
+    [SerializeField] private GameObject _markerDoor;
     [SerializeField] private GameObject _ceil;
     [SerializeField] private GameObject[] _landTailPrefabs;
     [SerializeField] private float _ofsX;
@@ -22,6 +25,9 @@ public class LevelBoard : MonoBehaviour
     private int[] _buildsID = null;
     private Vector3 _spawnPos = Vector3.zero;
     private int _spawnPosZn = -1;
+
+    private List<GameObject> _tmpDoor1 = new List<GameObject>();
+    private List<GameObject> _tmpDoor2 = new List<GameObject>();
 
     public Vector3 SpawnPosition { get => _spawnPos; }
     public int BoardSize { get { return (_levelShema != null) ? _levelShema.BoardSize : -1; } }
@@ -453,6 +459,194 @@ public class LevelBoard : MonoBehaviour
         _tails.Clear();
     }
 
+
+    private int TestBuildingTmpDoors(int startCeil, int finishCeil)
+    {
+        List<int> tmpInd1 = new List<int>();
+        List<int> tmpInd2 = new List<int>();
+        int i, sz = _levelShema.BoardSize;
+        int start = (startCeil < finishCeil) ? startCeil : finishCeil;
+        int finish = (startCeil > finishCeil) ? startCeil : finishCeil;
+        int sRow = start / sz, sCol = start % sz, eRow = finish / sz, eCol = finish % sz;
+        if (sRow == eRow) for (i = sCol; i <= eCol; i++) tmpInd1.Add(sz * sRow + i);    // в одной строке
+        else
+        {
+            if (sCol == eCol) for (i = sRow; i <= eRow; i++) tmpInd1.Add(sz * i + sCol);    //  в одном столбце
+            else
+            {   //  буквой Г
+                if (sCol < eCol)
+                {
+                    for (i = sCol; i <= eCol; i++) tmpInd1.Add(sRow * sz + i);
+                    for (i = sRow + 1; i <= eRow; i++) tmpInd1.Add(eCol + i * sz);
+                    for (i = sRow; i <= eRow; i++) tmpInd2.Add(i * sz + sCol);
+                    for (i = sCol + 1; i <= eCol; i++) tmpInd2.Add(eRow * sz + i);
+                }
+                else
+                {   // sCol > eCol
+                    for (i = sCol; i >= eCol; i--) tmpInd1.Add(sRow * sz + i);
+                    for (i = sRow + 1; i <= eRow; i++) tmpInd1.Add(eCol + i * sz);
+                    for (i = sRow; i <= eRow; i++) tmpInd2.Add(i * sz + sCol);
+                    for (i = sCol - 1; i >= eCol; i--) tmpInd2.Add(eRow * sz + i);
+                }
+            }
+        }
+        //  проверка на траву и отсутствие зданий
+        int maska = 3;
+        for (i = 0; i < tmpInd1.Count; i++)
+        {
+            if (_tailsID[tmpInd1[i]] != 0) { maska ^= 1; break; }
+            if (_buildsID[tmpInd1[i]] != 0) { maska ^= 1; break; }
+            else
+            {
+                if (_levelControl.CheckHouseInBoard(tmpInd1[i])) { maska ^= 1; break; }
+            }
+        }
+        if (tmpInd2.Count == 0) maska ^= 2;
+        else
+        {
+            for (i = 0; i < tmpInd2.Count; i++)
+            {
+                if (_tailsID[tmpInd2[i]] != 0) { maska ^= 2; break; }
+                if (_buildsID[tmpInd2[i]] != 0) { maska ^= 2; break; }
+                else
+                {
+                    if (_levelControl.CheckHouseInBoard(tmpInd2[i])) { maska ^= 2; break; }
+                }
+            }
+        }
+        Vector3 pos = new Vector3(0, 1.5f, 0);
+        int mult = (_levelShema.BoardSize == 35) ? 2 : 1;
+        ClearTmpDoor();
+        if ((maska & 1) > 0)
+        {   //  генерим красные квадраты по первому пути
+            for (i = 0; i < tmpInd1.Count; i++) 
+            {
+                //print($"tmpInd1[{i}]={tmpInd1[i]}  row={tmpInd1[i] / sz} col={tmpInd1[i] % sz}    pos=<{pos}>");
+                pos.x = _ofsX + (tmpInd1[i] % sz) * mult + 0.5f * mult;
+                pos.z = _ofsY - (tmpInd1[i] / sz) * mult - 0.5f * mult;
+                GameObject cube = Instantiate(_markerDoor, pos, Quaternion.identity);
+                cube.transform.localScale *= mult;
+                _tmpDoor1.Add(cube);
+            }
+        }
+        if ((maska & 2) > 0)
+        {   //  генерим красные квадраты по второму пути
+            for (i = 0; i < tmpInd2.Count; i++)
+            {
+                //print($"tmpInd2[{i}]={tmpInd2[i]}  row={tmpInd2[i] / sz} col={tmpInd2[i] % sz}    pos=<{pos}>");
+                pos.x = _ofsX + (tmpInd2[i] % sz) * mult + 0.5f * mult;
+                pos.z = _ofsY - (tmpInd2[i] / sz) * mult - 0.5f * mult;
+                GameObject cube = Instantiate(_markerDoor, pos, Quaternion.identity);
+                cube.transform.localScale *= mult;
+                _tmpDoor2.Add(cube);
+            }
+        }
+        //if (tmpInd1.Count > 0)
+        //{
+        //    StringBuilder sb = new StringBuilder("tmpIndex1 => ");
+        //    for (i = 0; i < tmpInd1.Count; i++) sb.Append($"{tmpInd1[i]} ");
+        //    print(sb.ToString());
+        //}
+        //if (tmpInd2.Count > 0)
+        //{
+        //    StringBuilder sb = new StringBuilder("tmpIndex2 => ");
+        //    for (i = 0; i < tmpInd2.Count; i++) sb.Append($"{tmpInd2[i]} ");
+        //    print(sb.ToString());
+        //}
+        int res = 0;
+        if ((sRow == eRow) || (sCol == eCol))
+        {
+            if ((maska & 1) > 0) res = 1;
+        }
+        else
+        {
+            res = maska << 1;
+        }
+        return res;
+    }
+
+    public void BuildingDoor(int mode)
+    {
+        if (mode == 0) 
+        {
+            ClearTmpDoor();
+            return; 
+        }
+        int i, index, row, col;
+        int mult = (_levelShema.BoardSize == 35) ? 2 : 1;
+        int sz = _levelShema.BoardSize;
+        GameObject prefab = GetBuild(128);
+        if (mode == 1 && _tmpDoor1.Count > 0)
+        {
+            for (i = 0; i < _tmpDoor1.Count; i++)
+            {
+                if (prefab != null)
+                {
+                    Vector3 posDoor = _tmpDoor1[i].transform.position;
+                    index = GetIndexCeils(posDoor);
+                    posDoor.y = 1.5f;
+                    row = index / sz;
+                    col = index % sz;
+                    GameObject b = Instantiate(prefab, posDoor, Quaternion.identity);
+                    if (_levelShema.BoardSize == 35) b.transform.localScale *= mult;
+                    BuildingControl nbc = b.GetComponent<BuildingControl>();
+                    nbc.SetBoardAndPosition(_levelBoard, (int)posDoor.z, (int)posDoor.x);
+                    //print($"Create wood door  y={y} x={x}  buildID={nbc.BuildingID}   y/4={y / 4} x/4={x / 4} index={_levelShema.BoardSize * (y / 4) + (x / 4)}");
+                    _buildsID[index] = nbc.BuildingID;
+                    //if (_levelShema.BoardSize == 35) _buildsID[_levelShema.BoardSize * (y / 4) + (x / 4)] = nbc.BuildingID;
+                    //if (_levelShema.BoardSize == 70) _buildsID[_levelShema.BoardSize * (y / 2) + (x / 2)] = nbc.BuildingID;
+                    _levelControl.AddingWoodDoor(b);
+                }
+            }
+        }
+        if (mode == 2 && _tmpDoor2.Count > 0)
+        {
+            for (i = 0; i < _tmpDoor2.Count; i++)
+            {
+                if (prefab != null)
+                {
+                    Vector3 posDoor = _tmpDoor2[i].transform.position;
+                    index = GetIndexCeils(posDoor);
+                    posDoor.y = 1.5f;
+                    row = index / sz;
+                    col = index % sz;
+                    GameObject b = Instantiate(prefab, posDoor, Quaternion.identity);
+                    if (_levelShema.BoardSize == 35) b.transform.localScale *= mult;
+                    BuildingControl nbc = b.GetComponent<BuildingControl>();
+                    nbc.SetBoardAndPosition(_levelBoard, (int)posDoor.z, (int)posDoor.x);
+                    //print($"Create wood door  y={y} x={x}  buildID={nbc.BuildingID}   y/4={y / 4} x/4={x / 4} index={_levelShema.BoardSize * (y / 4) + (x / 4)}");
+                    _buildsID[index] = nbc.BuildingID;
+                    //if (_levelShema.BoardSize == 35) _buildsID[_levelShema.BoardSize * (y / 4) + (x / 4)] = nbc.BuildingID;
+                    //if (_levelShema.BoardSize == 70) _buildsID[_levelShema.BoardSize * (y / 2) + (x / 2)] = nbc.BuildingID;
+                    _levelControl.AddingWoodDoor(b);
+                }
+            }
+        }
+        _buildingDoorPanel.SetActive(false);
+        ClearTmpDoor();
+    }
+
+    private void ClearTmpDoor()
+    {
+        int i;
+        if (_tmpDoor1.Count > 0)
+        {
+            for (i = _tmpDoor1.Count; i > 0; i--)
+            {
+                Destroy(_tmpDoor1[i - 1]);
+            }
+            _tmpDoor1.Clear();
+        }
+        if (_tmpDoor2.Count > 0)
+        {
+            for (i = _tmpDoor2.Count; i > 0; i--)
+            {
+                Destroy(_tmpDoor2[i - 1]);
+            }
+            _tmpDoor2.Clear();
+        }
+    }
+
     public void TailSelect(GameObject tail)
     {
         if (_selectTail != null)
@@ -460,7 +654,25 @@ public class LevelBoard : MonoBehaviour
             ConturRadius cr = _selectTail.GetComponent<ConturRadius>();
             if (cr != null) cr.ViewContur(false);
             LandTail land = _selectTail.GetComponent<LandTail>();
-            if (land != null) _ceil.SetActive(false);
+            if (land != null)
+            {
+                _ceil.SetActive(false);
+                // а может надо построить дорогу от А до Б ?
+                LandTail landEnd = tail.GetComponent<LandTail>();
+                if (landEnd != null)
+                {
+                    int start = GetIndexCeils(_selectTail.transform.position);
+                    int end = GetIndexCeils(tail.transform.position);
+                    int maskaDoor = TestBuildingTmpDoors(start, end);
+                    print($"А может надо построить дорогу от А {start} до Б {end} ?  maskaDoor = {maskaDoor}");
+                    if (maskaDoor > 0)
+                    {
+                        _buildingDoorPanel.SetActive(true);
+                        _buildingDoorUI.ViewPanel(maskaDoor);
+                    }
+                }
+                else _buildingDoorPanel.SetActive(false);
+            }
         }
 
         if (_levelControl  != null)
@@ -616,6 +828,16 @@ public class LevelBoard : MonoBehaviour
         return false;
     }
 
+    private int GetIndexCeils(Vector3 pos)
+    {
+        float dop = (_levelShema.BoardSize == 35) ? 1f : 0.5f;
+        int div = (_levelShema.BoardSize == 35) ? 2 : 1;
+        int tgRow = Mathf.RoundToInt(_ofsY - pos.z - dop) / div;
+        int tgCol = Mathf.RoundToInt(pos.x - _ofsX - dop) / div;
+        int index = tgRow * _levelShema.BoardSize + tgCol;
+        if ((tgRow >= 0 && tgRow < _levelShema.BoardSize) && (tgCol >= 0 && tgCol < _levelShema.BoardSize)) return index;
+        return -1;
+    }
     private Vector3 GetPos(int x, int y, float h = 1.5f)
     {
         Vector3 pos = Vector3.zero;

@@ -311,8 +311,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 0.8, z: 1}
-  m_Center: {x: 0, y: 0.4, z: 0}
+  m_Size: {x: 1, y: 0.4, z: 1}
+  m_Center: {x: 0, y: 0.2, z: 0}
 --- !u!114 &8542337580202078182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -332,8 +332,9 @@ MonoBehaviour:
   _nameBuilding: "\u041E\u0445\u0440\u0430\u043D\u0430"
   _price: 50
   _radius: 6
-  _requirement: -1
+  _requirement: 23
   _prosperity: 5
+  _serviceCost: 0
 --- !u!114 &-3297191842182879169
 MonoBehaviour:
   m_ObjectHideFlags: 0

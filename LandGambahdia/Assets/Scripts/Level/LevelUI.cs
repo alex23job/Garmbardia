@@ -214,7 +214,7 @@ public class LevelUI : MonoBehaviour
             _speedSlider.value = speed; 
         }
         Time.timeScale = speed;
-        print($"timeScale = {Time.timeScale}");
+        //print($"timeScale = {Time.timeScale}");
     }
 
     public void ViewMany(int many)

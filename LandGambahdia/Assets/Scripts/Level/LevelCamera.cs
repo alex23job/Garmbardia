@@ -15,6 +15,7 @@ public class LevelCamera : MonoBehaviour
 
     private Camera _camera;
     private int _quadrant = 0;
+    private int _countRot = 0;
     private Vector3 _selectTailPos = new Vector3(0, 2f, 0);
 
     private void Awake()
@@ -66,13 +67,39 @@ public class LevelCamera : MonoBehaviour
 
     private void ChangeCameraPos()
     {
+        Vector3 rot = new Vector3(30f, 90f * _countRot, 0);
+        //Quaternion lookRot = Quaternion.LookRotation(rot);
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(rot), _lerpRate * Time.deltaTime * 1000);
+        //transform.rotation = Quaternion.Euler(rot);
         Vector3 center = new Vector3(_selectTailPos.x, _ofsY, _ofsZ + _selectTailPos.z);
-        transform.position = Vector3.Lerp(transform.position, center, _lerpRate);
+        switch(_countRot)
+        {
+            case 1:
+                center = new Vector3(_ofsX + _selectTailPos.x, _ofsY, _selectTailPos.z);
+                break;
+            case 2:
+                center = new Vector3(_selectTailPos.x, _ofsY, _ofsZ * -1 + _selectTailPos.z);
+                //center = new Vector3(_selectTailPos.x, _ofsY, (_ofsZ + _selectTailPos.z) * -1);
+                break;
+            case 3:
+                center = new Vector3(_ofsX * -1 + _selectTailPos.x, _ofsY, _selectTailPos.z);
+                //center = new Vector3((_ofsX + _selectTailPos.x) * -1, _ofsY, _selectTailPos.z);
+                break;
+        }
+        transform.position = Vector3.Lerp(transform.position, center, _lerpRate * 10);
+        //transform.position = center;
     }
 
     public void SetSelectTailPos(Vector3 pos)
     {
         _selectTailPos = pos;
+        ChangeCameraPos();
+    }
+
+    public void OnRotateCameraClick()
+    {
+        _countRot++;
+        _countRot %= 4;
         ChangeCameraPos();
     }
 }

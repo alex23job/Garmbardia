@@ -78,6 +78,8 @@ public class LevelControl : MonoBehaviour
         // Подписываемся на события
         _levelUI.OnSelectBuilding += OnSelectBuilding;
         _scienceUI.OnInvestedPointsClick += OnInvestedPointsClick;
+
+        _levelUI.ViewErrorPanel("Чтобы построить здание, кликните по свободной клетке с травой и выберите нужное здание перейдя в меню строительства кликом по кнопке стройки слева внизу. Чтобы просмотреть науки вызовите экран наук кликом по кнопке наук слева внизу.");
     }
 
     private void OnDisable()
@@ -588,13 +590,21 @@ public class LevelControl : MonoBehaviour
         return false;
     }
 
+    public bool CheckHouseInBoard(int index)
+    {
+        foreach(GameObject house in _houseList)
+        {
+            if (GetIndexBuilding(house) == index) return true;
+        }
+        return false;
+    }
     private int GetIndexBuilding(GameObject build)
     {
         BuildingControl buildingControl = build.GetComponent<BuildingControl>();
         if (buildingControl != null)
         {
             int div = (_levelShema.BoardSize == 35) ? 4 : 2;
-            int indexHouse = (buildingControl.BuildingInfo & 0xff) / 4 + (((buildingControl.BuildingInfo >> 8) & 0xff) * _levelShema.BoardSize) / 4;
+            int indexHouse = (buildingControl.BuildingInfo & 0xff) / div + (((buildingControl.BuildingInfo >> 8) & 0xff) * _levelShema.BoardSize) / div;
             return indexHouse;
         }
         return -1;
