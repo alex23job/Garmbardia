@@ -572,7 +572,7 @@ public class LevelBoard : MonoBehaviour
             ClearTmpDoor();
             return; 
         }
-        int i, index, row, col;
+        int i, index; //, row, col;
         int mult = (_levelShema.BoardSize == 35) ? 2 : 1;
         int sz = _levelShema.BoardSize;
         GameObject prefab = GetBuild(128);
@@ -585,12 +585,13 @@ public class LevelBoard : MonoBehaviour
                     Vector3 posDoor = _tmpDoor1[i].transform.position;
                     index = GetIndexCeils(posDoor);
                     posDoor.y = 1.5f;
-                    row = index / sz;
-                    col = index % sz;
+                    //row = index / sz;
+                    //col = index % sz;
                     GameObject b = Instantiate(prefab, posDoor, Quaternion.identity);
                     if (_levelShema.BoardSize == 35) b.transform.localScale *= mult;
                     BuildingControl nbc = b.GetComponent<BuildingControl>();
-                    nbc.SetBoardAndPosition(_levelBoard, (int)posDoor.z, (int)posDoor.x);
+                    //nbc.SetBoardAndPosition(_levelBoard, (int)posDoor.z, (int)posDoor.x);
+                    nbc.SetBoardAndPosition(_levelBoard, 2 * mult * (index / sz), 2 * mult * (index % sz));
                     //print($"Create wood door  y={y} x={x}  buildID={nbc.BuildingID}   y/4={y / 4} x/4={x / 4} index={_levelShema.BoardSize * (y / 4) + (x / 4)}");
                     _buildsID[index] = nbc.BuildingID;
                     //if (_levelShema.BoardSize == 35) _buildsID[_levelShema.BoardSize * (y / 4) + (x / 4)] = nbc.BuildingID;
@@ -608,12 +609,13 @@ public class LevelBoard : MonoBehaviour
                     Vector3 posDoor = _tmpDoor2[i].transform.position;
                     index = GetIndexCeils(posDoor);
                     posDoor.y = 1.5f;
-                    row = index / sz;
-                    col = index % sz;
+                    //row = index / sz;
+                    //col = index % sz;
                     GameObject b = Instantiate(prefab, posDoor, Quaternion.identity);
                     if (_levelShema.BoardSize == 35) b.transform.localScale *= mult;
                     BuildingControl nbc = b.GetComponent<BuildingControl>();
-                    nbc.SetBoardAndPosition(_levelBoard, (int)posDoor.z, (int)posDoor.x);
+                    //nbc.SetBoardAndPosition(_levelBoard, (int)posDoor.z, (int)posDoor.x);
+                    nbc.SetBoardAndPosition(_levelBoard, 2 * mult * (index / sz), 2 * mult * (index % sz));
                     //print($"Create wood door  y={y} x={x}  buildID={nbc.BuildingID}   y/4={y / 4} x/4={x / 4} index={_levelShema.BoardSize * (y / 4) + (x / 4)}");
                     _buildsID[index] = nbc.BuildingID;
                     //if (_levelShema.BoardSize == 35) _buildsID[_levelShema.BoardSize * (y / 4) + (x / 4)] = nbc.BuildingID;

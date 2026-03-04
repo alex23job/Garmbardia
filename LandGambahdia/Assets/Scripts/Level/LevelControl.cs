@@ -126,6 +126,7 @@ public class LevelControl : MonoBehaviour
     public void AddingWoodDoor(GameObject door)
     {
         _buildingList.Add(door);
+        CorrectRequirment(door);
     }
 
     public bool CheckWay(int rowS, int colS, int rowF, int colF)
@@ -135,6 +136,30 @@ public class LevelControl : MonoBehaviour
         int indexFinish = (rowF / div) * _levelShema.BoardSize + (colF / div);
         if (_levelBoard != null) return _levelBoard.CheckPathBetweenTwoPoints(indexStart, indexFinish);
         return false;
+    }
+
+    private void CorrectRequirment(GameObject build)
+    {
+        BuildingControl bc = build.GetComponent<BuildingControl>();
+        if (bc != null)
+        {
+            if (bc.Requirment != -1)
+            {
+                int row = (bc.BuildingInfo >> 8) & 0xff;
+                int col = bc.BuildingInfo & 0xff;
+                int multRadius = (_levelShema.BoardSize == 35) ? 4 : 2;
+                //print($"CorrectRequirment  name={bc.NameBuilding}   row={row} col={col} rad={multRadius} pos={build.transform.position}");
+                if (_levelBoard.CheckDoor(row / multRadius, col / multRadius))
+                {   //  если здание соединёно с дорогой, то добавим удовлетворённые потребности в каждый из домов в радиусе                            
+                    foreach (GameObject house in _houseList)
+                    {
+                        HouseRequirement houseRequirement = house.GetComponent<HouseRequirement>();
+                        if (houseRequirement != null) houseRequirement.AddRequirement(bc.Requirment, row, col, bc.Radius * multRadius);
+                    }
+                    CheckHouses();
+                }
+            }
+        }
     }
 
     private void OnSelectBuilding(int type, int num)
@@ -148,7 +173,8 @@ public class LevelControl : MonoBehaviour
                 BuildingControl bc = build.GetComponent<BuildingControl>();
                 if (bc != null)                    
                 {
-                    if (bc.Requirment != -1)
+                    CorrectRequirment(build);
+                    /*if (bc.Requirment != -1)
                     {
                         int row = (bc.BuildingInfo >> 8) & 0xff;
                         int col = bc.BuildingInfo & 0xff;
@@ -162,7 +188,7 @@ public class LevelControl : MonoBehaviour
                             }
                             CheckHouses();
                         }
-                    }
+                    }*/
                     if (bc.Prosperity > 0)
                     {
                         _countProsperity += bc.Prosperity;

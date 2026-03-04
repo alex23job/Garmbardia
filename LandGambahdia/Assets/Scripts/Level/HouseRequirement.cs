@@ -96,7 +96,7 @@ public class HouseRequirement : MonoBehaviour
                 {
                     if (_levelControl.CheckWay(row, col, myRow, myCol)) _requirments.Add(req);
                 }
-                print($"AddRequirement : radius={radius} <myRow={myRow} row={row}>  <myCol={myCol} col={col}   countReq={_requirments.Count}>");
+                //print($"AddRequirement : radius={radius} <myRow={myRow} row={row}>  <myCol={myCol} col={col}   countReq={_requirments.Count}>");
             }
         }
     }
