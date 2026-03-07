@@ -157,6 +157,8 @@ MonoBehaviour:
   _isRotate: 0
   _sprite: {fileID: 21300000, guid: 2acb42442cd62d949b8235c057dcf03c, type: 3}
   _nameBuilding: "\u041F\u043B\u0438\u0442\u043A\u0430"
+  _descr: "\u0414\u043E\u0440\u043E\u0436\u043A\u0430 \u0438\u0437 \u043F\u043B\u0438\u0442\u043A\u0438
+    \u0434\u0430\u0451\u0442 +5  \u043F\u0440\u043E\u0446\u0432\u0435\u0442\u0430\u043D\u0438\u0435"
   _price: 20
   _radius: 1
   _requirement: 0

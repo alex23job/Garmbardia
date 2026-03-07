@@ -158,6 +158,9 @@ MonoBehaviour:
   _isRotate: 1
   _sprite: {fileID: 21300000, guid: f5a296a061cf4804a8d8867c7c47a64c, type: 3}
   _nameBuilding: "\u0423\u043F\u0440\u0430\u0432\u0430"
+  _descr: "\u041C\u0443\u043D\u0438\u0446\u0438\u043F\u0430\u043B\u0438\u0442\u0435\u0442,
+    \u0434\u0430\u0451\u0442 +10 \u043F\u0440\u043E\u0446\u0432\u0435\u0442\u0430\u043D\u0438\u044F
+    \u0438 1 \u043E\u0447\u043A\u043E \u043D\u0430\u0443\u043A\u0438"
   _price: 50
   _radius: 14
   _requirement: -1

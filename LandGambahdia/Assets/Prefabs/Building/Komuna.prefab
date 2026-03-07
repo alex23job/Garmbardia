@@ -184,7 +184,7 @@ GameObject:
   - component: {fileID: 7845665457870973718}
   m_Layer: 0
   m_Name: Komuna
-  m_TagString: Untagged
+  m_TagString: House
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -244,6 +244,8 @@ MonoBehaviour:
   _isRotate: 1
   _sprite: {fileID: 21300000, guid: 712a93ee22a3b9746a1d512014d262b6, type: 3}
   _nameBuilding: "\u041A\u043E\u043C\u043C\u0443\u043D\u0430\u043B\u043A\u0430"
+  _descr: "\u0416\u0438\u043B\u043E\u0435 \u0437\u0434\u0430\u043D\u0438\u0435 5
+    \u0443\u0440\u043E\u0432\u043D\u044F \u043D\u0430 10 \u0436\u0438\u0442\u0435\u043B\u0435\u0439"
   _price: 50
   _radius: 0
   _requirement: -1

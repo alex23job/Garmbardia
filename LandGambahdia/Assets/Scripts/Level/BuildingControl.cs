@@ -14,6 +14,7 @@ public class BuildingControl : MonoBehaviour
     [SerializeField] private bool _isRotate = false;
     [SerializeField] private Sprite _sprite;
     [SerializeField] private String _nameBuilding;
+    [SerializeField] private String _descr;
     [SerializeField] private int _price;
     [SerializeField] private float _radius;
     [SerializeField] private int _requirement = -1;
@@ -28,6 +29,7 @@ public class BuildingControl : MonoBehaviour
     public bool IsRotate { get { return _isRotate; } }
     public Sprite BuildingSprite { get { return _sprite; } }
     public string NameBuilding { get => _nameBuilding; }
+    public string Description { get { return _descr; } }
     public int Price { get => _price; }
     public float Radius { get => _radius; }
     public int Requirment { get => _requirement; }
@@ -66,7 +68,7 @@ public class BuildingControl : MonoBehaviour
 
     public BuildingInfo GetBuildingInfo()
     {
-        return new BuildingInfo(_id,_rot, _isRotate, _nameBuilding, _sprite, _price);
+        return new BuildingInfo(_id,_rot, _isRotate, _nameBuilding, _sprite, _price, _descr);
     }
 
     public bool TestHouseInRadius(int row, int col)
@@ -114,6 +116,7 @@ public class BuildingInfo
     private string _name;
     private Sprite _sprite;
     private int _price;
+    private string _descr;
 
     public int Id { get => _id; }
     public int Rot { get => _rot; }
@@ -121,9 +124,10 @@ public class BuildingInfo
     public string Name { get => _name; }
     public Sprite Sprite { get => _sprite; }
     public int Price { get => _price; }
+    public string Descr { get => _descr; }
 
     public BuildingInfo() { }
-    public BuildingInfo(int id, int rot, bool isRot, string nm, Sprite spr, int pr)
+    public BuildingInfo(int id, int rot, bool isRot, string nm, Sprite spr, int pr, string descr)
     {
         _id = id;
         _rot = rot;
@@ -131,5 +135,6 @@ public class BuildingInfo
         _name = nm;
         _sprite = spr;
         _price = pr;
+        _descr = descr;
     }
 }

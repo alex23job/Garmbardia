@@ -1,11 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
-public class CitizenMovement : MonoBehaviour
+public class FreeWorkerMovement : MonoBehaviour
 {
-    [SerializeField] private GameObject _cart;
     private LevelControl _levelControl = null;
 
     private bool _isNew = true;
@@ -32,7 +30,7 @@ public class CitizenMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     public void SetParams(LevelControl level, Vector3 start, List<Vector3> pt, bool isCart = true, float moveSpeed = 3f, float rotSpeed = 5f)
@@ -52,47 +50,26 @@ public class CitizenMovement : MonoBehaviour
         }
     }
 
-    public void SetPathToLabor(List<Vector3> pt)
-    {
-        _path = pt;
-        if (_path.Count > 0)
-        {
-            _currentPoint = 1;
-            _target = _path[0];
-            _isUsed = true;
-            anim.SetBool("IsCartWalk", false);
-            anim.SetBool("IsWalk", true);
-            _cart.SetActive(false);
-            Invoke("ClearKinematic", 2f);
-        }
-    }
-
-    private void ClearKinematic()
-    {
-        rb.isKinematic = false;
-    }
-
-    public void MoveCitizen(float dt)
+    public void MoveCitizen()
     {
         if (_isUsed == false) return;
         Vector2 pos = new Vector2(transform.position.x, transform.position.z);
         Vector2 tg = new Vector2(_target.x, _target.z);
-        if (Vector2.Distance(pos, tg) < stoppingDistance)
+        if (Vector3.Distance(pos, tg) < stoppingDistance)
         {
             NextPoint();
         }
         else
         {
-            LookAtWaypoint(dt);
-            MoveTowardsWaypoint(dt);
+            LookAtWaypoint();
+            MoveTowardsWaypoint();
         }
     }
-    private void LookAtWaypoint(float dt)
+    private void LookAtWaypoint()
     {
         Vector3 dir = _target - transform.position; dir.y = 0f;
         Quaternion lookRot = Quaternion.LookRotation(dir);
-        //transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, _rotationSpeed * Time.deltaTime);
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, _rotationSpeed * dt);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, _rotationSpeed * Time.deltaTime);
     }
 
     private void NextPoint()
@@ -100,15 +77,6 @@ public class CitizenMovement : MonoBehaviour
         if (_currentPoint < _path.Count)
         {
             _target = _path[_currentPoint];
-            if (_currentPoint < _path.Count - 1) rb.isKinematic = false;
-            if (_path[_currentPoint - 1].x == _path[_currentPoint].x)
-            {
-                if (_path[_currentPoint - 1].z < _path[_currentPoint].z) _target.x += 0.15f; else _target.x -= 0.15f;
-            }
-            else
-            {
-                if (_path[_currentPoint - 1].x < _path[_currentPoint].x) _target.z -= 0.15f; else _target.z += 0.15f; 
-            }
             _currentPoint++;
         }
         else
@@ -118,12 +86,10 @@ public class CitizenMovement : MonoBehaviour
             anim.SetBool("IsCartWalk", false);
         }
     }
-    private void MoveTowardsWaypoint(float dt)
+    private void MoveTowardsWaypoint()
     {
         Vector3 dir = _target - transform.position; dir.y = 0f;
-        //rb.MovePosition(transform.position + dir.normalized * _movementSpeed * Time.deltaTime);
-        rb.MovePosition(transform.position + _movementSpeed * dt * dir.normalized);
-        //rb.AddForce(dir.normalized * _movementSpeed * dt, ForceMode.Force);
+        rb.MovePosition(transform.position + dir.normalized * _movementSpeed * Time.deltaTime);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -138,10 +104,6 @@ public class CitizenMovement : MonoBehaviour
                 houseRequirement.AddCitizen(1);
                 houseRequirement.PushCitizen(gameObject);
             }
-        }
-        if (other.CompareTag("LaborExch"))
-        {
-            rb.isKinematic = true;
         }
     }
 }

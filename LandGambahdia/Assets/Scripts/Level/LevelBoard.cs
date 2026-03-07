@@ -780,7 +780,7 @@ public class LevelBoard : MonoBehaviour
         }
         return path;
     }
-    public List<Vector3> GetCurPath(int targetIndex)
+    public List<Vector3> GetCurPath(int targetIndex, int startIndex = -1)
     {
         List<Vector3> path = new List<Vector3>();
         WavePath wavePath = new WavePath();
@@ -795,7 +795,8 @@ public class LevelBoard : MonoBehaviour
         float dop = (_levelShema.BoardSize == 35) ? 1f : 0.5f;
         int div = (_levelShema.BoardSize == 35) ? 2 : 1;
         pole[targetIndex] = 0;
-        List<int> pathZn = wavePath.GetPath(_spawnPosZn, new int[] { targetIndex }, pole, _levelShema.BoardSize);
+        int startPos = (startIndex == -1) ? _spawnPosZn : startIndex; 
+        List<int> pathZn = wavePath.GetPath(startPos, new int[] { targetIndex }, pole, _levelShema.BoardSize);
         string strPathZn = (pathZn != null) ? pathZn.Count.ToString() : "NULL !!!";
         print($"GetCurPath(int)  index={targetIndex}   pathZn=<{pathZn}>   lenPath={strPathZn}");
         int row, col;

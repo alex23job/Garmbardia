@@ -156,6 +156,7 @@ MonoBehaviour:
   _isRotate: 0
   _sprite: {fileID: 21300000, guid: 40b82c61a08300f48a4c8eab696b2c6f, type: 3}
   _nameBuilding: "\u0414\u0435\u0440\u0435\u0432\u043E"
+  _descr: "\u0414\u0435\u0440\u0435\u0432\u044F\u043D\u043D\u0430\u044F \u0434\u043E\u0440\u043E\u0436\u043A\u0430"
   _price: 2
   _radius: 1
   _requirement: 0

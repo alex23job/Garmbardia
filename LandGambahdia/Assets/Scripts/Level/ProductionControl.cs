@@ -5,6 +5,7 @@ using UnityEngine;
 public class ProductionControl : MonoBehaviour
 {
     [SerializeField] private GameObject[] _products;
+    [SerializeField] private GameObject[] _dopProducts;
     [SerializeField] private int _maxWorkersCount = 1;
     [SerializeField] private float _oneResourceCompleteTime = 1f;
     [SerializeField] private int[] _outResourses;
@@ -13,6 +14,9 @@ public class ProductionControl : MonoBehaviour
     private int _workerCount = 1;
     private int _producedCount = 0;
     private int _secondCount = 0;
+    private float _maxDeltaDop = 0.2f;
+    private float _deltaDopY = 0f;
+    private Vector3[] _startDopProducts = null;
 
     public string Workers { get { return $"{_workerCount}/{_maxWorkersCount}"; } }
     public string OneResourceCompleteTime { get { return $"производят 1 шт. за {CalcCompleteTime()} сек"; } }
@@ -22,7 +26,16 @@ public class ProductionControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        for (int i = 0; i < _products.Length; i++) _products[i].SetActive(false);
+        int i;
+        for (i = 0; i < _products.Length; i++) _products[i].SetActive(false);
+        if (_dopProducts != null && _dopProducts.Length > 0)
+        {
+            _startDopProducts = new Vector3[_dopProducts.Length];
+            for (i = 0; i < _dopProducts.Length; i++)
+            {
+                _startDopProducts[i] = _dopProducts[i].transform.position;
+            }
+        }
     }
 
     // Update is called once per frame
@@ -68,6 +81,16 @@ public class ProductionControl : MonoBehaviour
                     _products[_producedCount].gameObject.SetActive(true);
                     _producedCount++;
                     _secondCount = 0;
+                }
+            }
+            if (_dopProducts != null && _dopProducts.Length > 0)
+            {
+                if (_deltaDopY < _maxDeltaDop) _deltaDopY += 0.001f; else _deltaDopY = 0;
+                for (int i = 0; i < _dopProducts.Length; i++)
+                {
+                    Vector3 pos = _startDopProducts[i];
+                    pos.y += _deltaDopY;
+                    _dopProducts[i].transform.position = pos;
                 }
             }
         }

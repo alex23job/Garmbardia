@@ -28,6 +28,8 @@ public class LevelControl : MonoBehaviour
 
     private List<GameObject> _citizens = new List<GameObject>();
     private List<CitizenMovement> _citizenMovements = new List<CitizenMovement>();
+    private GameObject _laborExchange = null;
+    private int _laborIndexZn = -1;
 
     private List<VictoryCondition> _victoryConditions = new List<VictoryCondition>();
     private bool _isVictoryConditionsView = false;
@@ -96,7 +98,7 @@ public class LevelControl : MonoBehaviour
         {
             foreach(CitizenMovement movement in _citizenMovements)
             {
-                movement.MoveCitizen();
+                movement.MoveCitizen(Time.deltaTime);
             }
         }
         if (_timer > 0) _timer -= Time.deltaTime;
@@ -173,6 +175,11 @@ public class LevelControl : MonoBehaviour
                 BuildingControl bc = build.GetComponent<BuildingControl>();
                 if (bc != null)                    
                 {
+                    if (bc.BuildingID == 38)
+                    {   //  биржа построена
+                        _laborExchange = build;
+                        _laborIndexZn = GetIndexBuilding(build);
+                    }
                     CorrectRequirment(build);
                     /*if (bc.Requirment != -1)
                     {
@@ -616,6 +623,17 @@ public class LevelControl : MonoBehaviour
         return false;
     }
 
+    private bool GetPathToLabor(int houseIndexPos, out List<Vector3> path)
+    {
+        path = new List<Vector3>();
+        if ((_levelBoard != null) && (_laborIndexZn != -1))
+        {
+            path = _levelBoard.GetCurPath(_laborIndexZn, houseIndexPos);
+            return true;
+        }
+        return false;
+    }
+
     public bool CheckHouseInBoard(int index)
     {
         foreach(GameObject house in _houseList)
@@ -641,6 +659,19 @@ public class LevelControl : MonoBehaviour
         if (isNew)
         {
             _countCitizens++;
+            if (_laborExchange != null)
+            {
+                int index = GetIndexBuilding(house);
+                List<Vector3> list = new List<Vector3>();   
+                if ((index != -1) && (GetPathToLabor(index, out list)))
+                {
+                    CitizenMovement cm = citizen.GetComponent<CitizenMovement>();
+                    if (cm != null)
+                    {
+                        cm.SetPathToLabor(list);
+                    }
+                }
+            }
         }
         else
         {

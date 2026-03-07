@@ -134,6 +134,11 @@ public class LevelUI : MonoBehaviour
                     if (scienceUI.CheckContainsEntity(buildings[i].Name)) _buildingsBtn[i].interactable = scienceUI.CheckTechoEntity(buildings[i].Name);
                     else _buildingsBtn[i].interactable = true;
                 }
+                ButtonHint buttonHintControl = _buildingsBtn[i].gameObject.GetComponent<ButtonHint>();
+                if (buttonHintControl != null)
+                {
+                    buttonHintControl.SetTextHint(buildings[i].Descr);
+                }
             }
             else
             {
