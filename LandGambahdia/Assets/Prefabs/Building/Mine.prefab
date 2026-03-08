@@ -93,13 +93,14 @@ GameObject:
   m_Component:
   - component: {fileID: 1525746563546188170}
   - component: {fileID: 5986095859357806695}
+  - component: {fileID: 2840921585218334692}
   - component: {fileID: 1872310908265115573}
   - component: {fileID: 2377452137317388847}
   - component: {fileID: 2607975196346988075}
   - component: {fileID: 5343392922614166092}
   m_Layer: 0
   m_Name: Mine
-  m_TagString: Untagged
+  m_TagString: Product
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -139,12 +140,33 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 0.6, z: 1}
   m_Center: {x: 0, y: 0.3, z: 0}
+--- !u!65 &2840921585218334692
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1632164501056779318}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.1, z: 1}
+  m_Center: {x: 0, y: 0.05, z: 0}
 --- !u!114 &1872310908265115573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,6 +236,7 @@ MonoBehaviour:
   - {fileID: 6058732446820179805}
   - {fileID: 6872938966036449887}
   - {fileID: 548337612311055845}
+  _dopProducts: []
   _maxWorkersCount: 8
   _oneResourceCompleteTime: 40
   _outResourses: 09000000

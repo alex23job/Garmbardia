@@ -429,12 +429,13 @@ GameObject:
   m_Component:
   - component: {fileID: 2542774782311902298}
   - component: {fileID: 605949422600687346}
+  - component: {fileID: -2092004302425661670}
   - component: {fileID: 8706175190769539081}
   - component: {fileID: -4517232591072619684}
   - component: {fileID: 6962346287059612386}
   m_Layer: 0
   m_Name: StoneHouse
-  m_TagString: Untagged
+  m_TagString: Product
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -474,12 +475,33 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 0.4, z: 1}
   m_Center: {x: 0, y: 0.2, z: 0}
+--- !u!65 &-2092004302425661670
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6047215369128843003}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.1, z: 1}
+  m_Center: {x: 0, y: 0.05, z: 0}
 --- !u!114 &8706175190769539081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -535,6 +557,7 @@ MonoBehaviour:
   - {fileID: 365583071784679102}
   - {fileID: 2063343066111376565}
   - {fileID: 1679606061488473060}
+  _dopProducts: []
   _maxWorkersCount: 6
   _oneResourceCompleteTime: 60
   _outResourses: 07000000

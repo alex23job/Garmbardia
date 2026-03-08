@@ -177,13 +177,14 @@ GameObject:
   m_Component:
   - component: {fileID: 4624060778300599602}
   - component: {fileID: 1721335258745872045}
+  - component: {fileID: 3402240366680489093}
   - component: {fileID: 2586555167768684171}
   - component: {fileID: 209442770341753745}
   - component: {fileID: 1135837277580778353}
   - component: {fileID: -4080835395799140061}
   m_Layer: 0
   m_Name: FisherHouse
-  m_TagString: Untagged
+  m_TagString: Product
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -224,12 +225,33 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 0.3, z: 1}
   m_Center: {x: 0, y: 0.15, z: 0}
+--- !u!65 &3402240366680489093
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1263571855314875095}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.1, z: 1}
+  m_Center: {x: 0, y: 0.05, z: 0}
 --- !u!114 &2586555167768684171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -285,6 +307,7 @@ MonoBehaviour:
   - {fileID: 848738574629977008}
   - {fileID: 7138141990334121594}
   - {fileID: 7107833785256156713}
+  _dopProducts: []
   _maxWorkersCount: 4
   _oneResourceCompleteTime: 40
   _outResourses: 0a000000

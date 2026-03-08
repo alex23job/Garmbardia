@@ -9,6 +9,8 @@ public class CitizenMovement : MonoBehaviour
     private LevelControl _levelControl = null;
 
     private bool _isNew = true;
+    private bool _isFree = false;
+    private bool _isWorker = false;
     private bool _isUsed = false;
     private Vector3 _startPosition;
     private Vector3 _target = Vector3.zero;
@@ -53,6 +55,21 @@ public class CitizenMovement : MonoBehaviour
     }
 
     public void SetPathToLabor(List<Vector3> pt)
+    {
+        _path = pt;
+        if (_path.Count > 0)
+        {
+            _currentPoint = 1;
+            _target = _path[0];
+            _isUsed = true;
+            anim.SetBool("IsCartWalk", false);
+            anim.SetBool("IsWalk", true);
+            _cart.SetActive(false);
+            Invoke("ClearKinematic", 2f);
+        }
+    }
+
+    public void SetPathToProduct(List<Vector3> pt)
     {
         _path = pt;
         if (_path.Count > 0)
@@ -130,7 +147,7 @@ public class CitizenMovement : MonoBehaviour
     {
         if (other.CompareTag("House"))
         {
-            rb.isKinematic = true;
+            //rb.isKinematic = true;
             HouseRequirement houseRequirement = other.gameObject.GetComponent<HouseRequirement>();
             if (houseRequirement != null && _isNew)
             {
@@ -141,7 +158,22 @@ public class CitizenMovement : MonoBehaviour
         }
         if (other.CompareTag("LaborExch"))
         {
-            rb.isKinematic = true;
+            //rb.isKinematic = true;
+            if ((_levelControl != null) && (_isFree == false))
+            {
+                _isFree = true;
+                _levelControl.AddingFreeWorker(gameObject);
+            }
+        }
+        if (other.CompareTag("Product"))
+        {
+            //rb.isKinematic = true;
+            ProductionControl pc = other.gameObject.GetComponent<ProductionControl>();
+            if ((pc != null) && (_isWorker == false))
+            {
+                _isWorker = true;
+                pc.AddWorker(gameObject);
+            }
         }
     }
 }

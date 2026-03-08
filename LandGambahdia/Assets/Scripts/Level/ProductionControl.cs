@@ -11,12 +11,14 @@ public class ProductionControl : MonoBehaviour
     [SerializeField] private int[] _outResourses;
     [SerializeField] private int[] _inpResourses;
 
-    private int _workerCount = 1;
+    private int _workerCount = 0;
     private int _producedCount = 0;
     private int _secondCount = 0;
     private float _maxDeltaDop = 0.2f;
     private float _deltaDopY = 0f;
     private Vector3[] _startDopProducts = null;
+
+    private List<GameObject> _workers = new List<GameObject>();
 
     public string Workers { get { return $"{_workerCount}/{_maxWorkersCount}"; } }
     public string OneResourceCompleteTime { get { return $"производят 1 шт. за {CalcCompleteTime()} сек"; } }
@@ -49,11 +51,12 @@ public class ProductionControl : MonoBehaviour
         if (_workerCount == 0) return "-";
         else return $"{(_oneResourceCompleteTime / _workerCount):F2}";
     }
-    public bool AddWorker()
+    public bool AddWorker(GameObject worker)
     {
         if (_workerCount < _maxWorkersCount)
         {
             _workerCount++;
+            _workers.Add(worker);
             return true;
         }
         return false;
@@ -64,6 +67,7 @@ public class ProductionControl : MonoBehaviour
         if (_workerCount > 0)
         {
             _workerCount--;
+            _workers.RemoveAt(0);
             return true;
         }
         return false;

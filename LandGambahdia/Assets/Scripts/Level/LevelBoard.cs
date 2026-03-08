@@ -766,7 +766,7 @@ public class LevelBoard : MonoBehaviour
         pole[tgRow * _levelShema.BoardSize + tgCol] = 0;
         List<int> pathZn = wavePath.GetPath(_spawnPosZn, new int[] { tgRow * _levelShema.BoardSize + tgCol }, pole, _levelShema.BoardSize);
         string strPathZn = (pathZn != null) ? pathZn.Count.ToString() : "NULL !!!";
-        print($"GetCurPath(Vector3) target=><{target}>   tgRow={tgRow}  tgCol={tgCol}  index={tgRow * _levelShema.BoardSize + tgCol}   pathZn=<{pathZn}>   lenPath={strPathZn}");
+        //print($"GetCurPath(Vector3) target=><{target}>   tgRow={tgRow}  tgCol={tgCol}  index={tgRow * _levelShema.BoardSize + tgCol}   pathZn=<{pathZn}>   lenPath={strPathZn}");
         int row, col;
         if (pathZn != null && pathZn.Count > 0)
         {
@@ -774,7 +774,7 @@ public class LevelBoard : MonoBehaviour
             {
                 row = zn / _levelShema.BoardSize;
                 col = zn % _levelShema.BoardSize;
-                path.Add(new Vector3(_ofsX + 2 * col + dop, 1.5f, _ofsY - 2 * row - dop));
+                path.Add(new Vector3(_ofsX + 2 * col + dop, 1.7f, _ofsY - 2 * row - dop));
                 //print($"zn={zn}   point={path[path.Count - 1]}");
             }
         }
@@ -798,7 +798,7 @@ public class LevelBoard : MonoBehaviour
         int startPos = (startIndex == -1) ? _spawnPosZn : startIndex; 
         List<int> pathZn = wavePath.GetPath(startPos, new int[] { targetIndex }, pole, _levelShema.BoardSize);
         string strPathZn = (pathZn != null) ? pathZn.Count.ToString() : "NULL !!!";
-        print($"GetCurPath(int)  index={targetIndex}   pathZn=<{pathZn}>   lenPath={strPathZn}");
+        //print($"GetCurPath(int)  index={targetIndex}   pathZn=<{pathZn}>   lenPath={strPathZn}");
         int row, col;
         if (pathZn != null && pathZn.Count > 0)
         {

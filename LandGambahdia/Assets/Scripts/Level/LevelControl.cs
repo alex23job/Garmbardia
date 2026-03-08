@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.UIElements.UxmlAttributeDescription;
@@ -16,6 +17,8 @@ public class LevelControl : MonoBehaviour
     [SerializeField] private LevelCamera _levelCamera;
     [SerializeField] private Slider _speedSlider;
     [SerializeField] private SpawnSitizen _spawnSitizen;
+    [SerializeField] private ProductResourseRepository _productRepository;
+    [SerializeField] private RequirmentsManager _requirmentsManager;
 
     [SerializeField] private int _countSecondInMonth = 300;
 
@@ -30,6 +33,8 @@ public class LevelControl : MonoBehaviour
     private List<CitizenMovement> _citizenMovements = new List<CitizenMovement>();
     private GameObject _laborExchange = null;
     private int _laborIndexZn = -1;
+    private List<int> _freeVacancysIndex = new List<int>();
+    private List<GameObject> _freeCitizens = new List<GameObject>();
 
     private List<VictoryCondition> _victoryConditions = new List<VictoryCondition>();
     private bool _isVictoryConditionsView = false;
@@ -208,15 +213,26 @@ public class LevelControl : MonoBehaviour
                         }
                     }
                 }
+                MultiProduct mp = build.GetComponent<MultiProduct>();
+                if (mp != null)
+                {
+                    _vacancy += mp.Vacancy;
+                    int i, indexBuild = GetIndexBuilding(build);
+                    for (i = 0; i < mp.Vacancy; i++) _freeVacancysIndex.Add(indexBuild);
+                    mp.SetParams(_productRepository, _requirmentsManager, indexBuild);
+                }
                 ProductionControl pc = build.GetComponent<ProductionControl>();
                 if (pc != null)
                 {
                     _vacancy += pc.Vacancy;
+                    int i, indexBuild = GetIndexBuilding(build);
+                    for (i = 0; i < pc.Vacancy; i++) _freeVacancysIndex.Add(indexBuild);
                 }
                 if (_spawnSitizen != null)
                 {
                     _spawnSitizen.CalcInterval(_countProsperity, _vacancy, _freePlaces);
                 }
+                WorkingForFreeCitizen();
                 ProductionSciencePoints productionSciencePoints = build.GetComponent<ProductionSciencePoints>();
                 if (productionSciencePoints != null)
                 {
@@ -686,5 +702,71 @@ public class LevelControl : MonoBehaviour
             }
         }
         _levelUI.ViewConditionPanel(false, _victoryConditions);
+    }
+
+    public void AddingFreeWorker(GameObject worker)
+    {
+        List<Vector3> path = new List<Vector3>();
+        bool noPath = true;
+        if ((_levelBoard != null) && (_laborIndexZn != -1))
+        {
+            int productIndex = -1, i;
+            if (_freeVacancysIndex.Count > 0)
+            {
+                for (i = _freeVacancysIndex.Count; i > 0; i--)
+                {
+                    productIndex = _freeVacancysIndex[i - 1];
+                    path = _levelBoard.GetCurPath(productIndex, _laborIndexZn);
+                    if (path.Count > 0)
+                    {
+                        _freeVacancysIndex.RemoveAt(i - 1);
+                        break;
+                    }
+                }
+                if (path.Count > 0)
+                {
+                    CitizenMovement cm = worker.GetComponent<CitizenMovement>();
+                    if (cm != null) cm.SetPathToProduct(path);
+                    noPath = false;
+                }
+            }
+        }
+        if (noPath)
+        {   //  горожанин остался на бирже -> добавить в массив безработных
+            //  нет вакансий или нет пути к производству от биржи
+            _freeCitizens.Add(worker);
+        }
+    }
+
+    private void WorkingForFreeCitizen()
+    {
+        int i, productIndex, countOvers = 0;
+        List<Vector3> path = new List<Vector3>();
+        bool noPath = true;
+        while ((_freeCitizens.Count > 0) && (_freeVacancysIndex.Count > 0))
+        {
+            noPath = true;
+            GameObject worker = _freeCitizens[0];
+            for (i = _freeVacancysIndex.Count; i > 0; i--)
+            {
+                productIndex = _freeVacancysIndex[i - 1];
+                path = _levelBoard.GetCurPath(productIndex, _laborIndexZn);
+                if (path.Count > 0)
+                {
+                    _freeVacancysIndex.RemoveAt(i - 1);
+                    break;
+                }
+            }
+            if (path.Count > 0)
+            {
+                CitizenMovement cm = worker.GetComponent<CitizenMovement>();
+                if (cm != null) cm.SetPathToProduct(path);
+                noPath = false;
+                countOvers++;
+                _freeCitizens.RemoveAt(0);
+            }
+            if (noPath) break;
+        }
+        print($"freeCitizens={_freeCitizens.Count}   vacancys={_freeVacancysIndex.Count}    ofers={countOvers}");
     }
 }

@@ -942,6 +942,8 @@ MonoBehaviour:
   _levelCamera: {fileID: 2037983598}
   _speedSlider: {fileID: 1786306177}
   _spawnSitizen: {fileID: 2077536859}
+  _productRepository: {fileID: 0}
+  _requirmentsManager: {fileID: 0}
   _countSecondInMonth: 300
 --- !u!1 &39777470
 GameObject:
@@ -7994,6 +7996,7 @@ MonoBehaviour:
   - {fileID: 1297044210183645678, guid: 49564d039c41e79469464555d81aa146, type: 3}
   - {fileID: 8593600879835638258, guid: f94dd26d818c4ad48b347117c79a0aae, type: 3}
   - {fileID: 8551926300115123264, guid: 2a8601a1a5c4ce4488cec227e7a0295b, type: 3}
+  - {fileID: 1797599123014688690, guid: 2e97ea7e7ecadc84e9d930f82b60ded3, type: 3}
   - {fileID: 9063256723559804655, guid: 8fa712582d628f647b18149069d64dcf, type: 3}
   - {fileID: 7077776410835692281, guid: ecc26df0d1ac2cc49963a8e5b01f2fec, type: 3}
   - {fileID: 7831963402833363852, guid: 54408ccccaee86141807b558f088f4d1, type: 3}
@@ -11635,7 +11638,7 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: 7eab104cbd3ee7e4ebf32dfd02f6b80f, type: 3}
     LandOrBuildID: 0
   - ID: 11
-    Name: "\u0417\u0435\u0440\u043D\u043E"
+    Name: "\u0417\u0435\u0440\u043D\u043E\u0432\u044B\u0435"
     Icon: {fileID: 21300000, guid: 6eefe4a70b1447a41b445dbf11721f88, type: 3}
     LandOrBuildID: 0
   - ID: 12
