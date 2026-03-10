@@ -28,6 +28,8 @@ public class OtherBuildUI : MonoBehaviour
         ProductionSciencePoints psp = build.GetComponent<ProductionSciencePoints>();
         string sn = "";
         if (psp != null) sn = $"Производит очки наук (в месяц): {psp.CountPointsInMonth} шт.";
+        ProductionControl pc = build.GetComponent<ProductionControl>();
+        if (pc != null) sn = $"Сотрудники {pc.Workers}";
         _txtInfo2.text = sn;
         _txtInfo3.text = "";
     }

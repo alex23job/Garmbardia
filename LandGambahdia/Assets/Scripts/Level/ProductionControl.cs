@@ -20,6 +20,7 @@ public class ProductionControl : MonoBehaviour
 
     private List<GameObject> _workers = new List<GameObject>();
 
+    public int CountOutResourse { get { return _outResourses.Length; } }
     public string Workers { get { return $"{_workerCount}/{_maxWorkersCount}"; } }
     public string OneResourceCompleteTime { get { return $"производят 1 шт. за {CalcCompleteTime()} сек"; } }
 

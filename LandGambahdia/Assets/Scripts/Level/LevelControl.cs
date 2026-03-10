@@ -313,7 +313,8 @@ public class LevelControl : MonoBehaviour
             ProductionControl productionControl = _selectBuild.GetComponent<ProductionControl>();
             if (productionControl != null)
             {   //  показ информации о производстенном здании
-                _productUI.ViewBuildingInfo(_selectBuild);
+                if (productionControl.CountOutResourse > 0) _productUI.ViewBuildingInfo(_selectBuild);
+                else _otherBuildUI.ViewBuildingInfo(_selectBuild);
             }
 
             if (houseRequirement == null && productionControl == null)

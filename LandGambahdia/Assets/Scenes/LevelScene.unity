@@ -37394,7 +37394,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speedCitizen: 5
   _prefabCitizen: {fileID: 8342388040030387161, guid: f56210422f9dff4418c12b507ead90d9, type: 3}
-  _monthPeriod: 300
+  _monthPeriod: 60
   _levelControl: {fileID: 38642154}
 --- !u!4 &2077536860
 Transform:
