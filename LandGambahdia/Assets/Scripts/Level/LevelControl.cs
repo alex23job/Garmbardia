@@ -166,6 +166,36 @@ public class LevelControl : MonoBehaviour
                     CheckHouses();
                 }
             }
+            else
+            {
+                MultiProduct mp = build.GetComponent<MultiProduct>();
+                if (mp != null)
+                {
+                    int[] requirements = mp.GetCheckRequirements();
+                    if ((requirements != null) && (requirements.Length > 0))
+                    {
+                        int i;
+                        int row = (bc.BuildingInfo >> 8) & 0xff;
+                        int col = bc.BuildingInfo & 0xff;
+                        int multRadius = (_levelShema.BoardSize == 35) ? 4 : 2;
+                        if (_levelBoard.CheckDoor(row / multRadius, col / multRadius))
+                        {   //  если здание соединёно с дорогой, то добавим удовлетворённые потребности в каждый из домов в радиусе                            
+                            foreach (GameObject house in _houseList)
+                            {
+                                HouseRequirement houseRequirement = house.GetComponent<HouseRequirement>();
+                                if (houseRequirement != null)
+                                {
+                                    for (i = 0; i < requirements.Length; i++)
+                                    {
+                                        houseRequirement.AddRequirement(requirements[i], row, col, bc.Radius * multRadius);
+                                    }
+                                }
+                            }
+                            CheckHouses();
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -254,12 +284,27 @@ public class LevelControl : MonoBehaviour
                         foreach (GameObject go in _buildingList)
                         {
                             BuildingControl bc = go.GetComponent<BuildingControl>();
-                            if (bc != null && bc.Requirment != -1)
+                            if (bc != null)
                             {
                                 int row = (bc.BuildingInfo >> 8) & 0xff;
                                 int col = bc.BuildingInfo & 0xff;
                                 int multRadius = (_levelShema.BoardSize == 35) ? 4 : 2;
-                                houseRequirement.AddRequirement(bc.Requirment, row, col, bc.Radius * multRadius);
+                                if (bc.Requirment != -1) houseRequirement.AddRequirement(bc.Requirment, row, col, bc.Radius * multRadius);
+                                else
+                                {
+                                    MultiProduct mp = go.GetComponent<MultiProduct>();
+                                    if (mp != null)
+                                    {
+                                        int[] requirements = mp.GetCheckRequirements();
+                                        if ((requirements != null) && (requirements.Length > 0))
+                                        {
+                                            for (int i = 0; i < requirements.Length; i++)
+                                            {
+                                                houseRequirement.AddRequirement(requirements[i], row, col, bc.Radius * multRadius);
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -531,12 +576,27 @@ public class LevelControl : MonoBehaviour
                     foreach (GameObject go in _buildingList)
                     {
                         BuildingControl bc = go.GetComponent<BuildingControl>();
-                        if (bc != null && bc.Requirment != -1)
+                        if (bc != null)
                         {
                             int row = (bc.BuildingInfo >> 8) & 0xff;
                             int col = bc.BuildingInfo & 0xff;
                             int multRadius = (_levelShema.BoardSize == 35) ? 4 : 2;
-                            houseRequirement.AddRequirement(bc.Requirment, row, col, bc.Radius * multRadius);
+                            if (bc.Requirment != -1) houseRequirement.AddRequirement(bc.Requirment, row, col, bc.Radius * multRadius);
+                            else
+                            {
+                                MultiProduct mp = go.GetComponent<MultiProduct>();
+                                if (mp != null)
+                                {
+                                    int[] requirements = mp.GetCheckRequirements();
+                                    if ((requirements != null) && (requirements.Length > 0))
+                                    {
+                                        for (int i = 0; i < requirements.Length; i++)
+                                        {
+                                            houseRequirement.AddRequirement(requirements[i], row, col, bc.Radius * multRadius);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

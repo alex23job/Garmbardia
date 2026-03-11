@@ -99,9 +99,10 @@ GameObject:
   - component: {fileID: -7868576999536245247}
   - component: {fileID: 6215037170221740776}
   - component: {fileID: -2155598319596272425}
+  - component: {fileID: 1856835874208827253}
   m_Layer: 0
   m_Name: Store
-  m_TagString: Untagged
+  m_TagString: Product
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -202,6 +203,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _contur: {fileID: 9082376579165305401}
+--- !u!114 &1856835874208827253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5836133294172955917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fb6a9234bb1626448902f0d9998f7ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxWorkersCount: 8
+  _outResourses: 06000000070000000800000009000000
+  _inpResourses: 0000000006000000070000000800000009000000
 --- !u!1 &9082376579165305401
 GameObject:
   m_ObjectHideFlags: 0
