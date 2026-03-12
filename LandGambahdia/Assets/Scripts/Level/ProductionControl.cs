@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ProductionControl : MonoBehaviour, IWorkerResourse
@@ -42,12 +43,6 @@ public class ProductionControl : MonoBehaviour, IWorkerResourse
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private string CalcCompleteTime()
     {
         if (_workerCount == 0) return "-";
@@ -82,11 +77,12 @@ public class ProductionControl : MonoBehaviour, IWorkerResourse
             _secondCount++;
             if (_secondCount > _oneResourceCompleteTime / _workerCount)
             {
+                CheckWorkersPath();
                 if (_producedCount < _products.Length)
                 {
                     _products[_producedCount].gameObject.SetActive(true);
                     _producedCount++;
-                    _secondCount = 0;
+                    _secondCount = 0;                    
                 }
             }
             if (_dopProducts != null && _dopProducts.Length > 0)
@@ -97,6 +93,22 @@ public class ProductionControl : MonoBehaviour, IWorkerResourse
                     Vector3 pos = _startDopProducts[i];
                     pos.y += _deltaDopY;
                     _dopProducts[i].transform.position = pos;
+                }
+            }
+        }
+    }
+
+    private void CheckWorkersPath()
+    {
+        foreach (GameObject worker in _workers)
+        {
+            WorkerMovement wm = worker.GetComponent<WorkerMovement>();
+            if (wm != null)
+            {
+                if (wm.ResourseID == -1)
+                {
+                    CitizenMovement cm = worker.GetComponent<CitizenMovement>();
+                    if (cm != null) cm.SelectPathForWorker(gameObject);
                 }
             }
         }

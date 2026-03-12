@@ -197,4 +197,9 @@ public class CitizenMovement : MonoBehaviour
             }
         }
     }
+
+    public void SelectPathForWorker(GameObject prodBuild)
+    {
+        _levelControl.SelectPathForWorker(prodBuild, wm);
+    }
 }
