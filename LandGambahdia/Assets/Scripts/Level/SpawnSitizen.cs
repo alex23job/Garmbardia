@@ -49,7 +49,7 @@ public class SpawnSitizen : MonoBehaviour
             List<Vector3> path = new List<Vector3>();
             if (_levelControl != null && _levelControl.GetPathToFreePlase(out path))
             {
-                print("Новый житель приехал !");
+                //print("Новый житель приехал !");
                 GameObject citizen = Instantiate(_prefabCitizen, _startPos, Quaternion.identity);
                 CitizenMovement citizenMovement = citizen.GetComponent<CitizenMovement>();
                 if (citizenMovement != null)
@@ -65,7 +65,7 @@ public class SpawnSitizen : MonoBehaviour
     public void CalcInterval(int prosperity, int vacancy, int freePlaces)
     {
         float coef = ((float)prosperity / 100f) * Mathf.Sqrt(freePlaces) * Mathf.Log10(1 + vacancy);
-        print($"coef={coef}   prosperity={prosperity}({(float)prosperity / 100f})   freePlaces={freePlaces}({Mathf.Sqrt(freePlaces)})  vacancy={vacancy}({Mathf.Log10(1 + vacancy)})");
+        //print($"coef={coef}   prosperity={prosperity}({(float)prosperity / 100f})   freePlaces={freePlaces}({Mathf.Sqrt(freePlaces)})  vacancy={vacancy}({Mathf.Log10(1 + vacancy)})");
         if (freePlaces > 0)
         {
             if (coef < 1) _interval = Mathf.RoundToInt((float)_monthPeriod / (float)freePlaces);

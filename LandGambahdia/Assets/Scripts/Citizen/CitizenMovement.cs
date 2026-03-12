@@ -22,6 +22,7 @@ public class CitizenMovement : MonoBehaviour
 
     private Animator anim;
     private Rigidbody rb;
+    private WorkerMovement wm;
 
     public bool IsUsed { get => _isUsed; }
 
@@ -29,6 +30,7 @@ public class CitizenMovement : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
+        wm = GetComponent<WorkerMovement>();
     }
 
     // Start is called before the first frame update
@@ -91,18 +93,29 @@ public class CitizenMovement : MonoBehaviour
 
     public void MoveCitizen(float dt)
     {
-        if (_isUsed == false) return;
-        Vector2 pos = new Vector2(transform.position.x, transform.position.z);
-        Vector2 tg = new Vector2(_target.x, _target.z);
-        if (Vector2.Distance(pos, tg) < stoppingDistance)
+        if (_isUsed)
         {
-            NextPoint();
+            Vector2 pos = new Vector2(transform.position.x, transform.position.z);
+            Vector2 tg = new Vector2(_target.x, _target.z);
+            if (Vector2.Distance(pos, tg) < stoppingDistance)
+            {
+                NextPoint();
+            }
+            else
+            {
+                LookAtWaypoint(dt);
+                MoveTowardsWaypoint(dt);
+            }
         }
         else
         {
-            LookAtWaypoint(dt);
-            MoveTowardsWaypoint(dt);
+            if (_isWorker)
+            {
+                wm.MoveWorker(dt);
+                return;
+            }
         }
+        //if (_isUsed == false) return;
     }
     private void LookAtWaypoint(float dt)
     {
@@ -173,6 +186,14 @@ public class CitizenMovement : MonoBehaviour
             {
                 _isWorker = true;
                 pc.AddWorker(gameObject);
+                _levelControl.SelectPathForWorker(other.gameObject, wm);
+            }
+            MultiProduct mp = other.gameObject.GetComponent<MultiProduct>();
+            if ((mp != null) && (_isWorker == false))
+            {
+                _isWorker = true;
+                mp.AddWorker(gameObject);
+                _levelControl.SelectPathForWorker(other.gameObject, wm);
             }
         }
     }

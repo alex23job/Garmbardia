@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class ProductionControl : MonoBehaviour
+public class ProductionControl : MonoBehaviour, IWorkerResourse
 {
     [SerializeField] private GameObject[] _products;
     [SerializeField] private GameObject[] _dopProducts;
@@ -124,5 +125,74 @@ public class ProductionControl : MonoBehaviour
         int[] res = new int[_outResourses.Length];
         for (int i = 0; i < _outResourses.Length; i++) res[i] = _outResourses[i];
         return res;
+    }
+
+    public int GetInputResourseID()
+    {
+        int i, j;
+        bool isUsedRes = false;
+        for (i = 0; i < _inpResourses.Length; i++)
+        {
+            if (_inpResourses[i] > 5)
+            {
+                isUsedRes = false;
+                for (j = 0; j < _workers.Count; j++)
+                {
+                    WorkerMovement wm = _workers[j].GetComponent<WorkerMovement>();
+                    if (wm.ResourseID == _inpResourses[i])
+                    {
+                        isUsedRes = true;
+                        break;
+                    }
+                }
+                if (isUsedRes == false) return _inpResourses[i];
+            }
+        }
+        return -1;
+    }
+
+    public int GetOutputResourseID()
+    {
+        int i, j;
+        bool isUsedRes = false;
+        for (i = 0; i < _outResourses.Length; i++)
+        {
+            isUsedRes = false;
+            for (j = 0; j < _workers.Count; j++)
+            {
+                WorkerMovement wm = _workers[j].GetComponent<WorkerMovement>();
+                if (wm.ResourseID == _outResourses[i])
+                {
+                    isUsedRes = true;
+                    break;
+                }
+            }
+            if (isUsedRes == false) return _outResourses[i];
+        }
+        //  уже есть рабочие для всех ресурсов => дополнительные рабочие для вывоза
+        int numOutRes = _workers.Count - GetCountInpResourses();
+        if (numOutRes > 0 && _outResourses.Length > 0)
+        {
+            numOutRes %= _outResourses.Length;
+            return _outResourses[numOutRes];
+        }
+        return -1;
+    }
+
+    private int GetCountInpResourses()
+    {
+        int i, res = 0;
+        for (i = 0; i < _inpResourses.Length; i++) if (_inpResourses[i] > 5) res++;
+        return res;
+    }
+
+    public bool CheckInputResourseByID(int id)
+    {
+        return _inpResourses.Contains(id);
+    }
+
+    public bool CheckOutputResourseByID(int id)
+    {
+        return _outResourses.Contains(id);
     }
 }

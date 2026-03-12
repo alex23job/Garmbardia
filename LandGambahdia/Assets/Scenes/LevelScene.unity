@@ -942,8 +942,8 @@ MonoBehaviour:
   _levelCamera: {fileID: 2037983598}
   _speedSlider: {fileID: 1786306177}
   _spawnSitizen: {fileID: 2077536859}
-  _productRepository: {fileID: 0}
-  _requirmentsManager: {fileID: 0}
+  _productRepository: {fileID: 636838885}
+  _requirmentsManager: {fileID: 1915186788}
   _countSecondInMonth: 300
 --- !u!1 &39777470
 GameObject:

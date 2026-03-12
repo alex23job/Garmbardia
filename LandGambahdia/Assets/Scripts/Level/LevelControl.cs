@@ -2,8 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.PlayerSettings;
 using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class LevelControl : MonoBehaviour
@@ -147,6 +150,7 @@ public class LevelControl : MonoBehaviour
 
     private void CorrectRequirment(GameObject build)
     {
+        int index = GetIndexBuilding(build);
         BuildingControl bc = build.GetComponent<BuildingControl>();
         if (bc != null)
         {
@@ -156,7 +160,7 @@ public class LevelControl : MonoBehaviour
                 int col = bc.BuildingInfo & 0xff;
                 int multRadius = (_levelShema.BoardSize == 35) ? 4 : 2;
                 //print($"CorrectRequirment  name={bc.NameBuilding}   row={row} col={col} rad={multRadius} pos={build.transform.position}");
-                if (_levelBoard.CheckDoor(row / multRadius, col / multRadius))
+                if (_levelBoard.CheckDoor(index / _levelShema.BoardSize, index % _levelShema.BoardSize))
                 {   //  если здание соединёно с дорогой, то добавим удовлетворённые потребности в каждый из домов в радиусе                            
                     foreach (GameObject house in _houseList)
                     {
@@ -178,7 +182,7 @@ public class LevelControl : MonoBehaviour
                         int row = (bc.BuildingInfo >> 8) & 0xff;
                         int col = bc.BuildingInfo & 0xff;
                         int multRadius = (_levelShema.BoardSize == 35) ? 4 : 2;
-                        if (_levelBoard.CheckDoor(row / multRadius, col / multRadius))
+                        if (_levelBoard.CheckDoor(index / _levelShema.BoardSize, index % _levelShema.BoardSize))
                         {   //  если здание соединёно с дорогой, то добавим удовлетворённые потребности в каждый из домов в радиусе                            
                             foreach (GameObject house in _houseList)
                             {
@@ -590,10 +594,13 @@ public class LevelControl : MonoBehaviour
                                     int[] requirements = mp.GetCheckRequirements();
                                     if ((requirements != null) && (requirements.Length > 0))
                                     {
+                                        StringBuilder sb = new StringBuilder($"CheckHouses int[] requirements <{requirements.Length}>");
                                         for (int i = 0; i < requirements.Length; i++)
                                         {
+                                            sb.Append($" <{i}. {requirements[i]}>");
                                             houseRequirement.AddRequirement(requirements[i], row, col, bc.Radius * multRadius);
                                         }
+                                        print(sb.ToString());
                                     }
                                 }
                             }
@@ -754,7 +761,7 @@ public class LevelControl : MonoBehaviour
         {
             if (_countCitizens > 0) _countCitizens--;
         }
-        print($"ChangeCitizen  count={_countCitizens}");
+        //print($"ChangeCitizen  count={_countCitizens}");
         foreach (VictoryCondition vc in _victoryConditions)
         {
             if (vc.NameConditionCategory == "Население")
@@ -829,5 +836,78 @@ public class LevelControl : MonoBehaviour
             if (noPath) break;
         }
         print($"freeCitizens={_freeCitizens.Count}   vacancys={_freeVacancysIndex.Count}    ofers={countOvers}");
+    }
+
+    public void SelectPathForWorker(GameObject prodBuild, WorkerMovement wm)
+    {
+        int startProd = GetIndexBuilding(prodBuild);
+        IWorkerResourse workerResourse = prodBuild.GetComponent<IWorkerResourse>();
+        BuildingControl bc = prodBuild.GetComponent<BuildingControl>();
+        int pbRow = (bc.BuildingInfo >> 8) & 0xff;
+        int pbCol = bc.BuildingInfo & 0xff;
+        int multRadius = (_levelShema.BoardSize == 35) ? 4 : 2; 
+        float radius = bc.Radius * multRadius;
+        if (workerResourse != null)
+        {
+            int resID = workerResourse.GetInputResourseID();
+            if (resID != -1)
+            {
+                foreach(GameObject build in _buildingList)
+                {
+                    BuildingControl b = build.GetComponent<BuildingControl>();
+                    int row = (b.BuildingInfo >> 8) & 0xff;
+                    int col = b.BuildingInfo & 0xff;
+                    int index = GetIndexBuilding(build);
+                    IWorkerResourse iwr = build.GetComponent<IWorkerResourse>();
+                    if (iwr != null)
+                    {
+                        if (iwr.CheckOutputResourseByID(resID) && _levelBoard.CheckDoor(index / _levelShema.BoardSize, index % _levelShema.BoardSize))
+                        {
+                            if ((Mathf.Abs(pbRow - row) <= radius) && (Mathf.Abs(pbCol - col) <= radius))
+                            {
+                                List<Vector3> path = _levelBoard.GetLoopPath(GetIndexBuilding(build), startProd);
+                                if (path != null && path.Count > 1)
+                                {
+                                    wm.SetLoopPath(path, resID, 0);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                resID = workerResourse.GetOutputResourseID();
+                if (resID != -1)
+                {
+                    foreach (GameObject build in _buildingList)
+                    {
+                        BuildingControl b = build.GetComponent<BuildingControl>();
+                        int row = (b.BuildingInfo >> 8) & 0xff;
+                        int col = b.BuildingInfo & 0xff;
+                        int index = GetIndexBuilding(build);
+                        radius = b.Radius * multRadius;
+                        IWorkerResourse iwr = build.GetComponent<IWorkerResourse>();
+                        if (iwr != null)
+                        {
+                            if (iwr.CheckInputResourseByID(resID) && _levelBoard.CheckDoor(index / _levelShema.BoardSize, index % _levelShema.BoardSize))
+                            {
+                                if ((Mathf.Abs(pbRow - row) <= radius) && (Mathf.Abs(pbCol - col) <= radius))
+                                {
+                                    List<Vector3> path = _levelBoard.GetLoopPath(GetIndexBuilding(build), startProd);
+                                    if (path != null && path.Count > 1)
+                                    {
+                                        wm.SetLoopPath(path, resID, 1);
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
     }
 }

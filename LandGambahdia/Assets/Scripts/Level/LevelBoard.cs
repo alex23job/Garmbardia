@@ -306,6 +306,8 @@ public class LevelBoard : MonoBehaviour
         }
         if (landID == 0)
         {
+            int buildID = _buildsID[_levelShema.BoardSize * row + col];
+            if ((buildID >= 128) && (buildID <= 134)) return false;
             if ((buildingID == 131) || (buildingID == 133) || (buildingID == 98)) return false;
             if ((buildingID == 99) || (buildingID == 97)) return false;
             if ((buildingID == 132) || (buildingID == 134)) return false;
@@ -795,7 +797,7 @@ public class LevelBoard : MonoBehaviour
         float dop = (_levelShema.BoardSize == 35) ? 1f : 0.5f;
         int div = (_levelShema.BoardSize == 35) ? 2 : 1;
         pole[targetIndex] = 0;
-        int startPos = (startIndex == -1) ? _spawnPosZn : startIndex; 
+        int startPos = (startIndex == -1) ? _spawnPosZn : startIndex;
         List<int> pathZn = wavePath.GetPath(startPos, new int[] { targetIndex }, pole, _levelShema.BoardSize);
         string strPathZn = (pathZn != null) ? pathZn.Count.ToString() : "NULL !!!";
         //print($"GetCurPath(int)  index={targetIndex}   pathZn=<{pathZn}>   lenPath={strPathZn}");
@@ -808,6 +810,46 @@ public class LevelBoard : MonoBehaviour
                 col = zn % _levelShema.BoardSize;
                 path.Add(new Vector3(_ofsX + 2 * col + dop, 1.5f, _ofsY - 2 * row - dop));
                 //print($"zn={zn}   point={path[path.Count - 1]}");
+            }
+        }
+        return path;
+    }
+
+    public List<Vector3> GetLoopPath(int targetIndex, int startIndex)
+    {
+        List<Vector3> path = new List<Vector3>();
+        WavePath wavePath = new WavePath();
+        int[] pole = new int[_tailsID.Length];
+        for (int i = 0; i < _tailsID.Length; i++)
+        {
+            pole[i] = -1;
+            if (_tailsID[i] == 96) pole[i] = 0;
+            if (_buildsID[i] >= 128 && _buildsID[i] < 135) pole[i] = 0;
+            //if (_buildsID[i] != 0) print($"Fill pole   _buildsID[{i}] = {_buildsID[i]}");
+        }
+        float dop = (_levelShema.BoardSize == 35) ? 1f : 0.5f;
+        int div = (_levelShema.BoardSize == 35) ? 2 : 1;
+        pole[targetIndex] = 0;
+        int startPos = startIndex;
+        List<int> pathZn = wavePath.GetPath(startPos, new int[] { targetIndex }, pole, _levelShema.BoardSize);
+        string strPathZn = (pathZn != null) ? pathZn.Count.ToString() : "NULL !!!";
+        //print($"GetLoopPath(int)  index={targetIndex}   pathZn=<{pathZn}>   lenPath={strPathZn}");
+        int row, col;
+        if (pathZn != null && pathZn.Count > 0)
+        {
+            foreach (int zn in pathZn)
+            {
+                row = zn / _levelShema.BoardSize;
+                col = zn % _levelShema.BoardSize;
+                path.Add(new Vector3(_ofsX + 2 * col + dop, 1.7f, _ofsY - 2 * row - dop));
+                //print($"zn={zn}   point={path[path.Count - 1]}");
+            }
+            for (int j = pathZn.Count; j > 1; j--)
+            {
+                int zn1 = pathZn[j - 2];
+                row = zn1 / _levelShema.BoardSize;
+                col = zn1 % _levelShema.BoardSize;
+                path.Add(new Vector3(_ofsX + 2 * col + dop, 1.7f, _ofsY - 2 * row - dop));
             }
         }
         return path;

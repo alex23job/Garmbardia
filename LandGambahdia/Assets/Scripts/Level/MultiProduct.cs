@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class MultiProduct : MonoBehaviour
+public class MultiProduct : MonoBehaviour, IWorkerResourse
 {
     [SerializeField] private int _maxWorkersCount = 1;
     [SerializeField] private int[] _outResourses;
@@ -14,6 +15,7 @@ public class MultiProduct : MonoBehaviour
     private int _workerCount = 0;
     private List<SimpleResourse> _arrResourses = new List<SimpleResourse>();
     private int _indexPosInBoard = -1;
+    private List<GameObject> _workers = new List<GameObject>();
 
     public string Workers { get { return $"{_workerCount}/{_maxWorkersCount}"; } }
     public int WorkersCount { get { return _workerCount; } }
@@ -92,7 +94,12 @@ public class MultiProduct : MonoBehaviour
     {
         for (int i = 0; i < _arrResourses.Count; i++)
         {
-            if (_arrResourses[i].ResourseID == idRes) _arrResourses[i].AddResourse(count);
+            if (_arrResourses[i].ResourseID == idRes)
+            {
+                _arrResourses[i].AddResourse(count);
+                print($"Привезли ресурс {idRes} количество {count} / {_arrResourses[i].Count}");
+                break;
+            }
         }
     }
 
@@ -100,13 +107,108 @@ public class MultiProduct : MonoBehaviour
     {
         for (int i = 0; i < _arrResourses.Count; i++)
         {
-            if (_arrResourses[i].ResourseID == idRes) return _arrResourses[i].GetResourse(count);
+            if (_arrResourses[i].ResourseID == idRes)
+            {
+                int num = _arrResourses[i].GetResourse(count);
+                print($"Забрали ресурс {idRes}? ( количество {num} / {_arrResourses[i].Count})");
+                return num;
+            }
         }
         return 0;
     }
+    public bool AddWorker(GameObject worker)
+    {
+        if (_workerCount < _maxWorkersCount)
+        {
+            _workerCount++;
+            _workers.Add(worker);
+            return true;
+        }
+        return false;
+    }
+
+    public bool RemoveWorker()
+    {
+        if (_workerCount > 0)
+        {
+            _workerCount--;
+            _workers.RemoveAt(0);
+            return true;
+        }
+        return false;
+    }
+
+    public int GetInputResourseID()
+    {
+        int i, j;
+        bool isUsedRes = false;
+        for (i = 0; i < _inpResourses.Length; i++)
+        {
+            if (_inpResourses[i] > 5)
+            {
+                isUsedRes = false;
+                for (j = 0; j < _workers.Count; j++)
+                {
+                    WorkerMovement wm = _workers[j].GetComponent<WorkerMovement>();
+                    if (wm.ResourseID == _inpResourses[i])
+                    {
+                        isUsedRes = true;
+                        break;
+                    }
+                }
+                if (isUsedRes == false) return _inpResourses[i];
+            }
+        }
+        return -1;
+    }
+
+    public int GetOutputResourseID()
+    {
+        int i, j;
+        bool isUsedRes = false;
+        for (i = 0; i < _outResourses.Length; i++)
+        {
+            isUsedRes = false;
+            for (j = 0; j < _workers.Count; j++)
+            {
+                WorkerMovement wm = _workers[j].GetComponent<WorkerMovement>();
+                if (wm.ResourseID == _outResourses[i])
+                {
+                    isUsedRes = true;
+                    break;
+                }
+            }
+            if (isUsedRes == false) return _outResourses[i];
+        }
+        //  уже есть рабочие для всех ресурсов => дополнительные рабочие для вывоза
+        int numOutRes = _workers.Count - GetCountInpResourses();
+        if (numOutRes > 0)
+        {
+            numOutRes %= _outResourses.Length;
+            return _outResourses[numOutRes];
+        }
+        return -1;
+    }
+
+    private int GetCountInpResourses()
+    {
+        int i, res = 0;
+        for (i = 0; i < _inpResourses.Length; i++) if (_inpResourses[i] > 5) res++;
+        return res;
+    }
+
+    public bool CheckInputResourseByID(int id)
+    {
+        return _inpResourses.Contains(id);
+    }
+
+    public bool CheckOutputResourseByID(int id)
+    {
+        return _outResourses.Contains(id);
+    }
 }
 
-public struct SimpleResourse
+public class SimpleResourse
 {
     public int ResourseID;
     public int Count;
@@ -137,4 +239,13 @@ public struct SimpleResourse
         }
         return 0;
     }
+}
+
+public interface IWorkerResourse
+{
+    public int GetInputResourseID();
+    public int GetOutputResourseID();
+
+    public bool CheckInputResourseByID(int id);
+    public bool CheckOutputResourseByID(int id);
 }
