@@ -97,7 +97,7 @@ public class MultiProduct : MonoBehaviour, IWorkerResourse
             if (_arrResourses[i].ResourseID == idRes)
             {
                 _arrResourses[i].AddResourse(count);
-                print($"Привезли ресурс {idRes} количество {count} / {_arrResourses[i].Count}");
+                //print($"Привезли ресурс {idRes} количество {count} / {_arrResourses[i].Count}");
                 break;
             }
         }
@@ -110,7 +110,7 @@ public class MultiProduct : MonoBehaviour, IWorkerResourse
             if (_arrResourses[i].ResourseID == idRes)
             {
                 int num = _arrResourses[i].GetResourse(count);
-                print($"Забрали ресурс {idRes}? ( количество {num} / {_arrResourses[i].Count})");
+                //print($"Забрали ресурс {idRes}? ( количество {num} / {_arrResourses[i].Count})");
                 return num;
             }
         }

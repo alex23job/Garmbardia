@@ -6,8 +6,6 @@ using System.Text;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.PlayerSettings;
-using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class LevelControl : MonoBehaviour
 {
@@ -89,7 +87,7 @@ public class LevelControl : MonoBehaviour
         _levelUI.OnSelectBuilding += OnSelectBuilding;
         _scienceUI.OnInvestedPointsClick += OnInvestedPointsClick;
 
-        _levelUI.ViewErrorPanel("Чтобы построить здание, кликните по свободной клетке с травой и выберите нужное здание перейдя в меню строительства кликом по кнопке стройки слева внизу. Чтобы просмотреть науки вызовите экран наук кликом по кнопке наук слева внизу.");
+        _levelUI.ViewErrorPanel("Чтобы построить здание, кликните по свободной клетке с травой и выберите нужное здание перейдя в меню строительства кликом по кнопке стройки слева внизу. Чтобы просмотреть науки вызовите экран наук кликом по кнопке наук слева внизу. Не забудьте построить биржу труда.");
     }
 
     private void OnDisable()
